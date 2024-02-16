@@ -1,0 +1,568 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="hlsl">
+      <UniqueIdentifier>{48a15213-fc33-4fdf-8037-e09d2077729c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{7e8b66e8-972f-45a3-b331-f91dd61a3752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon">
+      <UniqueIdentifier>{f3ec6e00-4df8-45a2-972c-fa2dc3882bc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon\2D">
+      <UniqueIdentifier>{b50ef791-69bd-4918-a0df-100c185bb808}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon\3D">
+      <UniqueIdentifier>{7c8db71f-774b-4438-85c7-989a20568a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{4af11e8a-b7e6-4a97-bcfb-e6157c294b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model">
+      <UniqueIdentifier>{2413b6ef-3429-4fd2-b49b-5faa64d92a39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\Player">
+      <UniqueIdentifier>{6c6eebe7-c201-4b62-a091-3f1fadbe7a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\Weapon">
+      <UniqueIdentifier>{e8ff7caf-7a51-4856-8038-64caee0c0740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\Object">
+      <UniqueIdentifier>{df3dfa05-4f91-4aaf-9cd9-7fd966e9f71c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon">
+      <UniqueIdentifier>{fe00ad8b-e079-4149-bcf1-e6fe230aa0a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon\2D">
+      <UniqueIdentifier>{422c1032-f757-4615-a3b4-7bcf08c158e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon\3D">
+      <UniqueIdentifier>{b7952878-38ba-455b-930f-9ac5e04a15b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{5ba09a44-a3f9-418b-93a8-ab3b5fb9f680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model">
+      <UniqueIdentifier>{8a552f46-dd64-4392-893d-1a412e9a9937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\Object">
+      <UniqueIdentifier>{adf9b1a1-887d-4275-a515-cb014f6b45aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\Player">
+      <UniqueIdentifier>{132aae14-0bbc-472f-8030-d60a24f5a730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\Weapon">
+      <UniqueIdentifier>{6eb0e0d9-25fc-4d81-a49e-5de10cf198bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Camera">
+      <UniqueIdentifier>{2b7b5349-2df0-420c-a40e-b097112447db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Camera">
+      <UniqueIdentifier>{df0ed7f3-8e43-4624-80c2-490c5d454b1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\PS">
+      <UniqueIdentifier>{7d2a47fb-5933-4f08-a585-13afaa205f4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\VS">
+      <UniqueIdentifier>{3cb4ee80-6724-4cd2-9565-892f8d176b09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon\2D\Texture">
+      <UniqueIdentifier>{97d37f27-4e5d-4059-8cd9-de02b824debe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon\2D\Texture">
+      <UniqueIdentifier>{44f66ac6-f02c-46a0-accc-d5f12d6ef86a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon\3D\Effect">
+      <UniqueIdentifier>{0caf18cf-bbdd-43c8-a7b4-7141d2eae822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon\3D\Effect">
+      <UniqueIdentifier>{04c5c6d9-d0db-4712-8cc7-746b77572b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System">
+      <UniqueIdentifier>{851d0c8b-f89d-4938-b6c3-9a7b31580f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System">
+      <UniqueIdentifier>{93777287-668e-4d0f-8c45-06ba6aac3760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Component">
+      <UniqueIdentifier>{8aff2fff-027e-4b42-b80e-e9e0900732d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Component">
+      <UniqueIdentifier>{04c5f7cb-5596-4ea4-a360-1f94a3114fc3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="cross.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="explosion.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="field.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="hpGauge.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="jetUI.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="loadingLogo.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="loadingScreen.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="lock.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="lockOn.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="meshField.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="missileUI.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="polygon2D.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="resultLogo.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="score.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="smoke.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="startButton.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="titleLogo.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="trail.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="loading.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="backLeftWing.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="backRightWing.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="leftVertical.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="rightVertical.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="rightWing.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="leftWing.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="flare.cpp">
+      <Filter>ソース ファイル\Model\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>ソース ファイル\Model\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>ソース ファイル\Model\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="airport.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="box.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cylinder.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="dome.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="titleCamera.cpp">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="jet.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="collisionBox.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="textureLoad.cpp">
+      <Filter>ソース ファイル\Polygon\2D\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="textureManager.cpp">
+      <Filter>ソース ファイル\Polygon\2D\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyDistance.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="effectLoad.cpp">
+      <Filter>ソース ファイル\Polygon\3D\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="effectManager.cpp">
+      <Filter>ソース ファイル\Polygon\3D\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="arrow.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>ソース ファイル\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="audio.cpp">
+      <Filter>ソース ファイル\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="titleField.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="spritefield.cpp">
+      <Filter>ソース ファイル\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="imgui\imgui_impl_win32.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx11.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="airport.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="box.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="backLeftWing.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="backRightWing.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="cross.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="cylinder.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="explosion.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="field.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="hpGauge.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="jetUI.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="leftVertical.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="leftWing.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="loadingScreen.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="loadingLogo.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="flare.h">
+      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="rightVertical.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="rightWing.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="lock.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="missileUI.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="lockOn.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="meshField.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="polygon2D.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="resultLogo.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="startButton.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="titleLogo.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="titleField.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="trail.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="smoke.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="score.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="loading.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
+      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="dome.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ヘッダー ファイル\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="titleCamera.h">
+      <Filter>ヘッダー ファイル\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="jet.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionBox.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="textureLoad.h">
+      <Filter>ヘッダー ファイル\Polygon\2D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="textureManager.h">
+      <Filter>ヘッダー ファイル\Polygon\2D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyDistance.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="effectLoad.h">
+      <Filter>ヘッダー ファイル\Polygon\3D\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="effectManager.h">
+      <Filter>ヘッダー ファイル\Polygon\3D\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="arrow.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="component.h">
+      <Filter>ヘッダー ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="audio.h">
+      <Filter>ヘッダー ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>ヘッダー ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="spritefield.h">
+      <Filter>ヘッダー ファイル\Component</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\common.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowEnvMappingPS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowEnvMappingVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowFogMappingPS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowFogMappingVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowMappingPS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthShadowMappingVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\FogPS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\FogVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gaugePS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gaugeVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\missileGaugePS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\unlitTexturePS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\unlitTextureVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vertexLightingPS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vertexLightingVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\boxTexturePS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgui\imgui.ini">
+      <Filter>imgui</Filter>
+    </None>
+  </ItemGroup>
+</Project>

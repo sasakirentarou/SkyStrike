@@ -1,0 +1,10 @@
+﻿  main.cpp
+c:\users\airi-\source\repos\gm31 23.04.18\gm31 23.04.18\main.cpp(39): error C2440: '=': 'const char *' から 'LPCWSTR' に変換できません。
+  c:\users\airi-\source\repos\gm31 23.04.18\gm31 23.04.18\main.cpp(39): note: 指示された型は関連がありません。変換には reinterpret_cast、C スタイル キャストまたは関数スタイルのキャストが必要です。
+c:\users\airi-\source\repos\gm31 23.04.18\gm31 23.04.18\main.cpp(48): error C2664: 'HWND CreateWindowExW(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID)': 引数 2 を 'const char *' から 'LPCWSTR' へ変換できません。
+  c:\users\airi-\source\repos\gm31 23.04.18\gm31 23.04.18\main.cpp(49): note: 指示された型は関連がありません。変換には reinterpret_cast、C スタイル キャストまたは関数スタイルのキャストが必要です。
+c:\users\airi-\source\repos\gm31 23.04.18\gm31 23.04.18\main.cpp(103): error C2664: 'BOOL UnregisterClassW(LPCWSTR,HINSTANCE)': 引数 1 を 'const char *' から 'LPCWSTR' へ変換できません。
+  c:\users\airi-\source\repos\gm31 23.04.18\gm31 23.04.18\main.cpp(103): note: 指示された型は関連がありません。変換には reinterpret_cast、C スタイル キャストまたは関数スタイルのキャストが必要です。
+  manager.cpp
+  renderer.cpp
+  コードを生成中...
