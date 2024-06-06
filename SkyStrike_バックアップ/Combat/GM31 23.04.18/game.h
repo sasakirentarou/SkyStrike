@@ -4,7 +4,10 @@
 class Game : public Scene
 {
 private:
-	class Audio* m_BGM{};
+	class Audio* m_Wind0{};
+	class Audio* m_Wind1{};
+	class Audio* m_Engine{};
+
 	class Fade* m_Fade{};
 
 	static bool m_LoadFinish;

@@ -26,6 +26,8 @@ private:
 	D3DXVECTOR3 m_Top{};
 	D3DXVECTOR3 m_Bottom{};
 	D3DXMATRIX m_Pearent{};
+
+	float m_Alpha = 0.5f;
 public:
 	void Init() override;
 	void Uninit() override;

@@ -6,11 +6,11 @@
 #include "enemy.h"
 #include "explosion.h"
 #include "player.h"
-#include "score.h"
 #include "smoke.h"
 #include "hpGauge.h"
 #include "camera.h"
 #include "textureManager.h"
+#include "audio.h"
 
 Model* Missile::m_Model{};
 Player* Missile::m_Player{};
@@ -31,11 +31,12 @@ void Missile::Init()
 {
 	m_Scene = Manager::GetScene();
 	m_Player = m_Scene->GetGameObject<Player>();
+	m_Camera = m_Scene->GetGameObject<Camera>();
+	m_PlayerHp = m_Scene->GetGameObject<HpGauge>();
 
 	m_Scale = D3DXVECTOR3(0.35f, 0.35f, 0.35f);
 
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\vertexLightingVS.cso");
-
 	Renderer::CreatePixelShader(&m_PixelShader, "shader\\vertexLightingPS.cso");
 
 	GameObject::Init();
@@ -134,6 +135,7 @@ void Missile::Update()
 			{
 				MisiileBom();
 				enemy->HealthMinus(50);
+				texture->SetHitReportFlg(true);
 				return;
 			}
 		}
@@ -191,17 +193,24 @@ void Missile::Update()
 			if (angle >= 1.0f)
 			{
 				m_PlayerTrackingFlg = false;
+				m_Player->GetMissileAlertSE()->Stop();
 			}
 
 			if (!m_FlareFlg)
-			{
 				angle *= -1.0f;
-			}
+			else
+				m_Player->GetMissileAlertSE()->Stop();
 
 			D3DXQUATERNION quat;
 			D3DXQuaternionRotationAxis(&quat, &gaiseki, angle);//ŠOÏ‚ðŽ²‚ÉŠp“x•ª‰ñ‚·
 			D3DXQUATERNION q = m_Quaternion * quat;
 			D3DXQuaternionSlerp(&m_Quaternion, &m_Quaternion, &q, ENEMY_MISSILE_ROT);//‰ñ“]—Ê
+		
+			texture->SetMissileAlertFlg(true);
+		}
+		else
+		{
+			texture->SetMissileAlertFlg(false);
 		}
 
 		m_Velocity += GetForwardQuaternion() * 0.5f;//‘¬“x
@@ -211,14 +220,16 @@ void Missile::Update()
 		{
 			D3DXVECTOR3 direction = m_Position - m_Player->GetPosition();
 			float length = D3DXVec3Length(&direction);
-			auto playerhp = m_Scene->GetGameObject<HpGauge>();
-			auto camera = m_Scene->GetGameObject<Camera>();
 
 			if (length < 10.0f)
 			{
 				MisiileBom();
-				playerhp->HPMinus(10.0f);
-				camera->Shake(5.0f, 0.6f);
+				m_PlayerHp->HPMinus(10.0f);
+				m_Camera->Shake(5.0f, 0.6f);
+
+				if(m_PlayerTrackingFlg)
+					m_Player->GetMissileAlertSE()->Stop();
+
 				return;
 			}
 		}
@@ -268,9 +279,10 @@ void Missile::Draw()
 
 void Missile::MisiileBom()
 {
-	Scene* scene = Manager::GetScene();
+	//ƒJƒƒ‰‚Ì—h‚ê
+	m_Camera->SetBomShake(m_Position);
 
-	auto explosion = scene->AddGameObject<Explosion>(1);
+	auto explosion = m_Scene->AddGameObject<Explosion>(1);
 	explosion->SetScale(D3DXVECTOR3(4.5f, 4.5f, 0.0f));
 	explosion->SetPosition(m_Position);
 	explosion->BomTime(2);

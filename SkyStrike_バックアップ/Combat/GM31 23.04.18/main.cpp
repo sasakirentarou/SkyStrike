@@ -4,14 +4,19 @@
 #include "input.h"
 
 const char* CLASS_NAME = "AppClass";
-const char* WINDOW_NAME = "DX11ゲーム";
+const char* WINDOW_NAME = "SkyStrike";
 
-POINT lastMousePos; //マウスポジション保存用
-POINT CursorPos;	//マウスポジション
-POINT CursorPos2D;
-bool Pause = false;
-float hweel; //回転量加算用
-short rot;//マウスホイール回転量
+//グローバル宣言
+POINT g_LastMousePos; //マウスポジション保存用
+POINT g_CursorPos;	//マウスポジション
+POINT g_CursorPos2D;
+
+bool g_Pause = false;
+int g_Frame = 60;
+float g_Hweel; //回転量加算用
+short g_Rot;//マウスホイール回転量
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
@@ -47,7 +52,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		RECT rc = { 0, 0, (LONG)SCREEN_WIDTH, (LONG)SCREEN_HEIGHT };
 
 		//タスクバーなどを考慮しサイズ調整
-		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+		//AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
 		//Windowサイズ設定
 		g_Window = CreateWindowEx(0, CLASS_NAME, WINDOW_NAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -59,7 +64,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	Manager::Init();
 
 	//cursor
-	GetCursorPos(&lastMousePos);
+	GetCursorPos(&g_LastMousePos);
 	ShowCursor(false);
 
 
@@ -96,23 +101,23 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		{
 			dwCurrentTime = timeGetTime();
 
-			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
+			if ((dwCurrentTime - dwExecLastTime) >= (1000 / g_Frame))
 			{
 				dwExecLastTime = dwCurrentTime;
 
-				GetCursorPos(&CursorPos);
+				GetCursorPos(&g_CursorPos);
 
-				if (!Pause) {
-					SetCursorPos(lastMousePos.x, lastMousePos.y);
+				if (!g_Pause) {
+					SetCursorPos(g_LastMousePos.x, g_LastMousePos.y);
 				}
 				if (Input::GetKeyTrigger('O'))
 				{
-					Pause = true;
+					g_Pause = true;
 					ShowCursor(true);
 				}
 				if (Input::GetKeyTrigger('I'))
 				{
-					Pause = false;
+					g_Pause = false;
 					ShowCursor(false);
 				}
 
@@ -158,17 +163,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEWHEEL:
-		rot = GET_WHEEL_DELTA_WPARAM(wParam);
+		g_Rot = GET_WHEEL_DELTA_WPARAM(wParam);
 
-		hweel += -rot;
+		g_Hweel += -g_Rot;
 
-		if (hweel < 15.0f * 100)
+		if (g_Hweel < 15.0f * 100)
 		{
-			hweel = 15.0f * 100;
+			g_Hweel = 15.0f * 100;
 		}
-		else if (hweel > 100.0f * 100)
+		else if (g_Hweel > 100.0f * 100)
 		{
-			hweel = 100.0f * 100;
+			g_Hweel = 100.0f * 100;
 		}
 
 		break;
@@ -176,8 +181,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	default:
 		break;
 	}
-	GetCursorPos(&CursorPos2D);
-	ScreenToClient(hWnd,&CursorPos2D);
+	GetCursorPos(&g_CursorPos2D);
+	ScreenToClient(hWnd,&g_CursorPos2D);
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
@@ -185,25 +190,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 float GetMouseX()
 {
-	return CursorPos.x - lastMousePos.x;
+	return g_CursorPos.x - g_LastMousePos.x;
 }
 
 float GetMouseY()
 {
-	return CursorPos.y - lastMousePos.y;
+	return g_CursorPos.y - g_LastMousePos.y;
 }
 
 float GetMouse2DX()
 {
-	return CursorPos2D.x;
+	return g_CursorPos2D.x;
 }
 
 float GetMouse2DY()
 {
-	return CursorPos2D.y;
+	return g_CursorPos2D.y;
 }
 
 float GetMouseHwheel()
 {
-	return hweel;
+	return g_Hweel;
+}
+
+void SetFrame(int frame)
+{
+	g_Frame = frame;
 }

@@ -98,6 +98,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,6 +116,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,6 +136,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +157,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -258,7 +264,6 @@
     <ClCompile Include="resultLogo.cpp" />
     <ClCompile Include="rightVertical.cpp" />
     <ClCompile Include="rightWing.cpp" />
-    <ClCompile Include="score.cpp" />
     <ClCompile Include="smoke.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="spritefield.cpp" />
@@ -328,7 +333,6 @@
     <ClInclude Include="rightVertical.h" />
     <ClInclude Include="rightWing.h" />
     <ClInclude Include="scene.h" />
-    <ClInclude Include="score.h" />
     <ClInclude Include="smoke.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="spritefield.h" />

@@ -3,6 +3,13 @@
 #include "model.h"
 #include "gameObject.h"
 
+#define ROLL_SPEED			0.025
+#define PITCH_SPEED			0.015
+#define YAW_SPEED			0.005
+
+#define SPEED_UP			0.02
+#define SPEED_DOWN			0.005
+
 #define FRARE_TIME			30
 #define MIN_SPEED			0.4
 
@@ -12,7 +19,7 @@
 
 #define STEALTH_DOWN_SPEED	0.1
 #define STEALTH_UP_SPEED	0.15
-
+#define STEALTH_MAX			100
 
 
 class Player : public GameObject
@@ -35,6 +42,8 @@ private:
 	class Audio* m_MissileSE{};
 	class Audio* m_LockOnSE{};
 	class Audio* m_LockSetSE{};
+	class Audio* m_StealthSE{};
+	class Audio* m_MissileAlertSE{};
 
 
 	class Scene* m_Scene{};
@@ -69,6 +78,7 @@ private:
 	bool m_MissileSetFlg00{};	//ミサイル装着フラグ
 	bool m_MissileSetFlg01{};
 	bool m_LockOnFlg{};			//ロックオン開始フラグ
+	bool m_EnemyDeathLockFlg{};
 public:
 	void Init();
 	void Uninit();
@@ -79,41 +89,15 @@ public:
 	void SwitchTarget();
 	void ShotFlare();
 
-	int GetLockEnemy()
-	{
-		return m_EnemyID;
-	}
 
-	int GetMisLockID()
-	{
-		return m_MissileLockID;
-	}
+	int GetLockEnemy() { return m_EnemyID; }
+	int GetMisLockID() { return m_MissileLockID; }
+	float GetSpeed() { return m_fVec; }
+	bool GetDeath() { return m_DeathFlg; }
+	Audio* GetMissileAlertSE() { return m_MissileAlertSE; }
+	LockOn* GetLockOn() { return m_LockOn; }
 
-	float GetSpeed()
-	{
-		return m_fVec;
-	}
-
-	bool GetDeath()
-	{
-		return m_DeathFlg;
-	}
-
-	int GetMissileAmount()
-	{
-		return m_MissileAmount;
-	}
-
-	int GetFlareAmount()
-	{
-		return m_FlareAmount;
-	}
-
-	float GetStealthAmount()
-	{
-		return m_StealthAmount;
-	}
-
-	//テスト
-
+	int GetMissileAmount() { return m_MissileAmount; }
+	int GetFlareAmount() { return m_FlareAmount; }
+	float GetStealthAmount() { return m_StealthAmount; }
 };

@@ -5,6 +5,7 @@
 #include <string>
 
 #define ROTATION_AMOUNT		0.05 //機体の回転量 ※小さくしすぎるとnanになる0.015
+#define ROTATION_FRAME		3
 #define MISSILE_COOLDOWN	6	 //ミサイルのクールダウン
 #define MAX_HEALTH			100	 //最大体力
 
@@ -30,7 +31,9 @@ private:
 	D3DXVECTOR3 m_RiskPoint = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 m_RandomSeachPoint = D3DXVECTOR3(0.0f,0.0f,0.0f);
 
-	Model* m_Model{};
+	static Model* m_Model;
+
+	class Audio* m_KillSE{};
 
 	class Scene* m_Scene{};
 	class Lock* m_Lock{};
@@ -53,6 +56,9 @@ private:
 	bool m_MissileShot = true;		// ミサイル発射フラグ
 	bool m_PlayerStealth = false;
 public:
+	static void Load();
+	static void Unload();
+
 	void Init();
 	void Uninit();
 	void Update();
@@ -69,43 +75,14 @@ public:
 	void UpdateGroundRisk();
 
 
-	Lock* GetAddLock()
-	{
-		return m_Lock;
-	}
+	Lock* GetAddLock() { return m_Lock; }
+	int GetMaxEnemy() { return m_EnemyCount; }
+	int GetEnemyID() { return m_EnemyID; }
 
-	int GetMaxEnemy()
-	{
-		return m_EnemyCount;
-	}
+	bool GetCrash() { return m_CrashFlg; }
+	void SetCrash(bool crash) { m_CrashFlg = crash; }
 
-	int GetEnemyID()
-	{
-		return m_EnemyID;
-	}
-
-	void SetCrash(bool crash)
-	{
-		m_CrashFlg = crash;
-	}
-
-	bool GetCrash()
-	{
-		return m_CrashFlg;
-	}
-
-	void SetPlayerStealth(bool stealth)
-	{
-		m_PlayerStealth = stealth;
-	}
-
-	void HealthMinus(int minus)
-	{
-		m_Health -= minus;
-	}
-
-	int GetHealth()
-	{
-		return m_Health;
-	}
+	void SetPlayerStealth(bool stealth) { m_PlayerStealth = stealth; }
+	int GetHealth() { return m_Health; }
+	void HealthMinus(int minus) { m_Health -= minus; }
 };

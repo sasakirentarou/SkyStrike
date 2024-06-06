@@ -9,7 +9,7 @@ void Field::Init()
 	Renderer::CreatePixelShader(&m_PixelShader, "shader\\DepthShadowFogMappingPS.cso");
 
 	//AddComponet<SpriteField>()->Init(-25000.0f, 50000.0f, 0.0f, 0.0f, 25000.0f, -50000.0f, 0.0f, 1.0f, 0.0f, 100.0f , "asset/texture/water.jpg");
-	AddComponet<SpriteField>()->Init(-30000.0f, 60000.0f, 0.0f, 0.0f, 30000.0f, -60000.0f, 0.0f, 1.0f, 0.0f, 10.0f, "asset/texture/mapn.png");
+	AddComponet<SpriteField>()->Init(-30000.0f, 60000.0f, 0.0f, 0.0f, 30000.0f, -60000.0f, 0.0f, 1.0f, 0.0f, 5.0f, "asset/texture/mapn.png");
 
 	m_DepthEnable = true;
 	m_ReflectEnable = true;

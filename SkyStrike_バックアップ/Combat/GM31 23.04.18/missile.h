@@ -16,8 +16,9 @@ private:
 	D3DXVECTOR3 m_EnemyPos{};
 
 	class Scene* m_Scene{};
+	class Camera* m_Camera{};
+	class HpGauge* m_PlayerHp{};
 	static class Player* m_Player;
-
 	static Model* m_Model;
 
 	int m_Count{};
@@ -40,48 +41,16 @@ public:
 
 	void MisiileBom();
 
-	void SetFlare(bool flare)
-	{
-		m_FlareFlg = flare;
-	}
+	void SetFlare(bool flare) { m_FlareFlg = flare; }
 
-	void SetPlayerTrack(bool tracking)
-	{
-		m_PlayerTrackingFlg = tracking;
-	}
+	void SetPlayerTrack(bool tracking) { m_PlayerTrackingFlg = tracking; }
+	void SetEnemyTrack(bool tracking) { m_EnemyTrackingFlg = tracking; }
+	bool GetPlayerTrack() { return m_PlayerTrackingFlg; }
+	bool GetEnemyTrack() { return m_EnemyTrackingFlg; }
 
-	bool GetPlayerTrack()
-	{
-		return m_PlayerTrackingFlg;
-	}
+	void SetShot(bool shot) { m_ShotFlg = shot; }
+	bool GetShot() { return m_ShotFlg; }
 
-	void SetEnemyTrack(bool tracking)
-	{
-		m_EnemyTrackingFlg = tracking;
-	}
-
-	bool GetEnemyTrack()
-	{
-		return m_EnemyTrackingFlg;
-	}
-
-	void SetShot(bool shot)
-	{
-		m_ShotFlg = shot;
-	}
-
-	bool GetShot()
-	{
-		return m_ShotFlg;
-	}
-
-	void SetEnemyMissile(bool enemy)
-	{
-		m_EnemyMissile = enemy;
-	}
-
-	bool GetEnemyMissile()
-	{
-		return m_EnemyMissile;
-	}
+	void SetEnemyMissile(bool enemy) { m_EnemyMissile = enemy; }
+	bool GetEnemyMissile() { return m_EnemyMissile; }
 };

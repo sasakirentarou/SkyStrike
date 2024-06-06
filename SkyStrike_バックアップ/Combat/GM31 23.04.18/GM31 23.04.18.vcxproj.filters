@@ -168,9 +168,6 @@
     <ClCompile Include="resultLogo.cpp">
       <Filter>ソース ファイル\Polygon\2D</Filter>
     </ClCompile>
-    <ClCompile Include="score.cpp">
-      <Filter>ソース ファイル\Polygon\2D</Filter>
-    </ClCompile>
     <ClCompile Include="smoke.cpp">
       <Filter>ソース ファイル\Polygon\3D</Filter>
     </ClCompile>
@@ -415,9 +412,6 @@
     </ClInclude>
     <ClInclude Include="smoke.h">
       <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="score.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
       <Filter>ヘッダー ファイル\Scene</Filter>

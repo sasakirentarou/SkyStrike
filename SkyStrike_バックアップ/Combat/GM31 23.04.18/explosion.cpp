@@ -6,13 +6,13 @@
 #include "explosion.h"
 #include "spritefield.h"
 #include "audio.h"
+#include "player.h"
 
-void Explosion::Init()
+ID3D11Buffer* Explosion::m_VertexBuffer{};
+ID3D11ShaderResourceView* Explosion::m_Texture{};
+
+void Explosion::Load()
 {
-	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\unlitTextureVS.cso");
-
-	Renderer::CreatePixelShader(&m_PixelShader, "shader\\unlitTexturePS.cso");
-
 	VERTEX_3D vertex[4];
 
 	vertex[0].Position = D3DXVECTOR3(-5.0f, 5.0f, 0.0f);
@@ -54,6 +54,21 @@ void Explosion::Init()
 	D3DX11CreateShaderResourceViewFromFile(Renderer::GetDevice(), "asset/texture/explosion.png",
 		NULL, NULL, &m_Texture, NULL);
 	assert(m_Texture);
+}
+
+void Explosion::Unload()
+{
+	m_VertexBuffer->Release();
+	m_Texture->Release();
+}
+
+void Explosion::Init()
+{
+	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\unlitTextureVS.cso");
+	Renderer::CreatePixelShader(&m_PixelShader, "shader\\unlitTexturePS.cso");
+
+	m_Scene = Manager::GetScene();
+	m_Camera = m_Scene->GetGameObject<Camera>();
 
 	m_Bom = AddComponet<Audio>();
 	m_Bom->Load("asset\\audio\\bom.wav");
@@ -65,9 +80,6 @@ void Explosion::Init()
 
 void Explosion::Uninit()
 {
-	m_VertexBuffer->Release();
-	m_Texture->Release();
-
 	m_VertexLayout->Release();
 	m_VertexShader->Release();
 	m_PixelShader->Release();
@@ -77,9 +89,8 @@ void Explosion::Uninit()
 
 void Explosion::Update()
 {
-	m_TimeCount++;
-
 	//描画速度調整
+	m_TimeCount++;
 	if (m_TimeCount > m_Time)
 	{
 		m_Count++;
@@ -139,9 +150,7 @@ void Explosion::Draw()
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
 	// カメラのビューマトリクス取得
-	Scene* scene = Manager::GetScene();
-	Camera* camera = scene->GetGameObject<Camera>();
-	D3DXMATRIX view = camera->GetViewMatrix();
+	D3DXMATRIX view = m_Camera->GetViewMatrix();
 
 	// ビューの逆行列
 	D3DXMATRIX invView;

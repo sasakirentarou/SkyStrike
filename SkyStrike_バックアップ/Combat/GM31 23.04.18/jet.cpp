@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "manager.h"
 #include "trail.h"
+#include "audio.h"
 
 Model* Jet::m_Model{};
 
@@ -29,6 +30,12 @@ void Jet::Init()
 	//ƒgƒŒƒCƒ‹¶¬
 	m_Trail01 = scene->AddGameObject<Trail>(1);
 	m_Trail02 = scene->AddGameObject<Trail>(1);
+	
+	//SE
+	m_PassSE = AddComponet<Audio>();
+	m_PassSE->Load("asset\\audio\\pass.wav");
+	m_PassSE->Volume(0.1f);
+	
 	//’¸“_Žæ“¾
 	m_Model->GetModelVertex("asset\\model\\F-35\\F-35.obj", m_Top);
 
@@ -88,6 +95,11 @@ void Jet::Update()
 	case 3:
 
 		m_Velocity += GetForward() * 0.3f;
+
+		if (m_Count == 0)
+		{
+			m_PassSE->Play();
+		}
 
 		m_Count++;
 		if (m_Count > 60 * 10)

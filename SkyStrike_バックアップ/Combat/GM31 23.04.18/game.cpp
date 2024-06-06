@@ -11,7 +11,6 @@
 #include "explosion.h"
 #include "cylinder.h"
 #include "box.h"
-#include "score.h"
 #include "input.h"
 #include "result.h"
 #include "audio.h"
@@ -63,6 +62,8 @@ void Game::Load()
 	Missile::Load();
 	Smoke::Load();
 	Flare::Load();
+	Enemy::Load();
+	Explosion::Load();
 
 	m_LoadFinish = true;
 }
@@ -75,6 +76,8 @@ void Game::Unload()
 	Missile::Unload();
 	Smoke::Unload();
 	Flare::Unload();
+	Enemy::Unload();
+	Explosion::Unload();
 }
 
 
@@ -158,10 +161,6 @@ void Game::Init()
 	EnemyDistance* distance = AddGameObject<EnemyDistance>(1);
 
 	Arrow* arrow = AddGameObject<Arrow>(1);
-
-	//速度と高さ
-	Score* score01 = AddGameObject<Score>(2);
-	Score* score02 = AddGameObject<Score>(2);
 	
 	//HPバー
 	g_Hp = AddGameObject<HpGauge>(2);
@@ -176,16 +175,28 @@ void Game::Init()
 	JetUI* jetUI;
 	jetUI = AddGameObject<JetUI>(2);
 
-	//残量UI
+	//texture
 	TextureManager* texture = AddGameObject<TextureManager>(2);
 	texture->SetGame(true);
 
+	//fade
 	m_Fade = AddGameObject<Fade>(2);
 
 	//BGM再生
-	//m_BGM = AddGameObject<GameObject>(0)->AddComponet<Audio>();
-	//m_BGM->Load("asset\\audio\\bgm.wav");
-	//m_BGM->Play(true);
+	m_Wind0 = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_Wind0->Load("asset\\audio\\wind0.wav");
+	m_Wind0->Volume(0.05f);
+	m_Wind0->Play(true);
+
+	m_Wind1 = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_Wind1->Load("asset\\audio\\wind1.wav");
+	m_Wind1->Volume(0.05f);
+	m_Wind1->Play(true);
+
+	m_Engine = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_Engine->Load("asset\\audio\\jetengine.wav");
+	m_Engine->Volume(0.01f);
+	m_Engine->Play(true);
 }
 
 void Game::Uninit()

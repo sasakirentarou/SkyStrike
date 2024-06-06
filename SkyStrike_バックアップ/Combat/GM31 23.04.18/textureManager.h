@@ -4,6 +4,8 @@
 class TextureManager :public GameObject
 {
 private:
+	class Scene* m_Scene{};
+
 	bool m_LogoFlg{};
 	bool m_MenuFlg{};
 	bool m_WeaponFlg{};
@@ -12,10 +14,12 @@ private:
 	bool m_DesReportFlg{};
 	bool m_MissReportFlg{};
 	bool m_HitReportFlg{};
+	bool m_MissileAlertFlg{};
 
 	int m_DestroyCount{};
 	int m_MissCount{};
 	int m_HitCount{};
+	int m_EnemyNumber{};
 
 	float m_SelectPos = -100.0f;
 public:
@@ -24,18 +28,9 @@ public:
 	void Update();
 	void Draw();
 
-	void SetLogo(bool logo)
-	{
-		m_LogoFlg = logo;
-	}
-	void SetMenu(bool menu)
-	{
-		m_MenuFlg = menu;
-	}
-	void SetGame(bool game)
-	{
-		m_GameFlg = game;
-	}
+	void SetLogo(bool logo){m_LogoFlg = logo;}
+	void SetMenu(bool menu){m_MenuFlg = menu;}
+	void SetGame(bool game){m_GameFlg = game;}
 
 	void SetSelectUpDown(bool select)
 	{
@@ -51,22 +46,12 @@ public:
 		}
 	}
 
-	float GetSelectPos()
-	{
-		return m_SelectPos;
-	}
+	float GetSelectPos(){return m_SelectPos;}
 
-	void SetDesReportFlg(bool flg)
-	{
-		m_DesReportFlg = flg;
-	}
-	void SetMissReportFlg(bool flg)
-	{
-		m_MissReportFlg = flg;
-	}
-	void SetHitReportFlg(bool flg)
-	{
-		m_HitReportFlg = flg;
-	}
+	void SetDesReportFlg(bool flg){m_DesReportFlg = flg;}
+	void SetMissReportFlg(bool flg){m_MissReportFlg = flg;}
+	void SetHitReportFlg(bool flg){m_HitReportFlg = flg;}
+	void SetMissileAlertFlg(bool flg){m_MissileAlertFlg = flg;}
 
+	void SetEnemyMinus() { m_EnemyNumber--; }
 };

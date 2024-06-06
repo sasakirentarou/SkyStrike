@@ -6,11 +6,10 @@
 #include "enemy.h"
 #include "explosion.h"
 #include "player.h"
-#include "score.h"
 #include "enemy.h"
-
 #include "camera.h"
 #include "cross.h"
+#include "textureManager.h"
 
 Model* Bullet::m_Model{};
 
@@ -56,6 +55,7 @@ void Bullet::Update()
 	auto player = scene->GetGameObject<Player>();
 	auto camera = scene->GetGameObject<Camera>();
 	auto cross = scene->GetGameObject<Cross>();
+	auto texture = scene->GetGameObject<TextureManager>();
 
 	//マトリックス取得
 	D3DXMATRIX screenMatrix = camera->GetScreenMatrix();
@@ -145,8 +145,8 @@ void Bullet::Update()
 		if (length < 10.0f)
 		{
 			SetDestroy();
-			enemy->HealthMinus(3);//敵の体力を減らす
-
+			enemy->HealthMinus(5);//敵の体力を減らす
+			texture->SetHitReportFlg(true);
 			return;
 		}
 	}

@@ -40,7 +40,7 @@ void Arrow::Draw()
 	auto enemys = scene->GetGameObjects<Enemy>();
 	m_Position = player->GetPosition() + player->GetTopQuaternion() * 4.0f;
 
-	if(!player->PlayerView(60,5000) && !enemys.empty())
+	if(!player->PlayerView(60,10000) && !enemys.empty())
 	{
 		for (Enemy* enemy : enemys)
 		{

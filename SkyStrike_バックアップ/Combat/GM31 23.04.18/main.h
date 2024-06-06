@@ -55,3 +55,5 @@ float GetMouseY();
 float GetMouse2DX();
 float GetMouse2DY();
 float GetMouseHwheel();
+
+void SetFrame(int frame);

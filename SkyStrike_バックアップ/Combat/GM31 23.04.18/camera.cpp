@@ -90,15 +90,15 @@ void Camera::Update()
 					m_Rotation.y = atan2f(length.x, length.z);
 
 					//注視点は敵
-					m_Target = enemy->GetPosition();
-					//D3DXVECTOR3 goal = enemy->GetPosition();
-					//enemypos = enemy->GetPosition();
-					//D3DXVec3Lerp(&m_Target, &m_Target, &goal, 0.01f);
+					//m_Target = enemy->GetPosition();
+					D3DXVECTOR3 goal = enemy->GetPosition();
+					enemypos = enemy->GetPosition();
+					D3DXVec3Lerp(&m_Target, &m_Target, &goal, 0.1f);
 
 					//ポジションはプレイヤー
 					m_Position = player->GetPosition() - GetForward() * 20.0f + D3DXVECTOR3(0.0f, 2.0f, 0.0f);
 
-					m_UpMode = true;
+					m_UpMode = false;
 				}
 			}
 		}
@@ -141,6 +141,22 @@ void Camera::Update()
 		m_ShakeTime++;
 		m_ShakeAmplitude *= 0.9f;
 
+		if (Input::GetKeyPress('B'))
+		{
+			m_FogHeight += 100.0f;
+		}
+		if (Input::GetKeyPress('N'))
+		{
+			m_FogHeight -= 100.0f;
+		}
+		if (Input::GetKeyPress('C'))
+		{
+			m_FogStart += 100.0f;
+		}
+		if (Input::GetKeyPress('V'))
+		{
+			m_FogStart -= 100.0f;
+		}
 	}
 	else
 	{
@@ -201,10 +217,10 @@ void Camera::Update()
 	}
 
 	//ImGui表示
-	ImGui::Begin("CAMERA");
-	ImGui::InputFloat3("Target", m_Target);
-	ImGui::InputFloat3("enemypos", enemypos);
-	ImGui::End();
+	//ImGui::Begin("CAMERA");
+	//ImGui::InputFloat3("Target", m_Target);
+	//ImGui::InputFloat3("enemypos", enemypos);
+	//ImGui::End();
 
 	// ファーストパーソンビュー(valorant)
 	//m_Position = player->GetPosition() + D3DXVECTOR3(0.0f, 1.5f, 0.0f);
@@ -213,19 +229,21 @@ void Camera::Update()
 
 void Camera::Draw()
 {
-	auto player = m_Scene->GetGameObject<Player>();
+	m_Player = m_Scene->GetGameObject<Player>();
 
-	D3DXVECTOR3 position = m_Position + player->GetRightQuaternion() * m_ShakeOffsetX + player->GetTopQuaternion() * m_ShakeOffsetY;
-	D3DXVECTOR3 target = m_Target + player->GetRightQuaternion() * m_ShakeOffsetX + player->GetTopQuaternion() * m_ShakeOffsetY;
+	D3DXVECTOR3 position = m_Position + m_Player->GetRightQuaternion() * m_ShakeOffsetX + m_Player->GetTopQuaternion() * m_ShakeOffsetY;
+	D3DXVECTOR3 target = m_Target + m_Player->GetRightQuaternion() * m_ShakeOffsetX + m_Player->GetTopQuaternion() * m_ShakeOffsetY;
 
 	//カメラの上方向ベクトル
 	if (m_UpMode)
 	{
-		m_UpCamera = (D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+		D3DXVECTOR3 goal = (D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+		D3DXVec3Lerp(&m_UpCamera, &m_UpCamera, &goal, 0.1f);
 	}
 	else
 	{
-		m_UpCamera = player->GetTopQuaternion();
+		D3DXVECTOR3 goal = m_Player->GetTopQuaternion();
+		D3DXVec3Lerp(&m_UpCamera, &m_UpCamera, &goal, 0.3f);
 	}
 
 	//ビュー行列作成
@@ -253,4 +271,20 @@ void Camera::Draw()
 	camera.GroundFogColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	camera.SkyColor = D3DXCOLOR(0.2f, 0.3f, 0.4f, 1.0f);
 	Renderer::SetCameraPosition(camera);
+}
+
+void Camera::SetBomShake(D3DXVECTOR3 pos)
+{
+	//距離計算
+	D3DXVECTOR3 direction = m_Player->GetPosition() - pos;
+	float length = D3DXVec3Length(&direction);
+
+	if (length < 200.0f)
+	{
+		Shake(0.3f, 1.0f);
+	}
+	else if (length < 500.0f && length > 200.0f)
+	{
+		Shake(0.2f, 1.0f);
+	}
 }

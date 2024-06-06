@@ -486,9 +486,9 @@ void Renderer::Begin()
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, clearColor);
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	ImGui::Begin("Renderer");
-	ImGui::Text("%.3f ms/frame (%.1f FPS)", 100.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
+	//ImGui::Begin("Renderer");
+	//ImGui::Text("%.3f ms/frame (%.1f FPS)", 100.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	//ImGui::End();
 }
 
 //reflect

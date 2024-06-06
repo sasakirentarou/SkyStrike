@@ -84,20 +84,22 @@ void Trail::Draw()
 	Scene* scene = Manager::GetScene();
 	Player* player = scene->GetGameObject<Player>();
 
-
+	//頂点数が最大に達したらpopで削除
 	if (m_TopVertexArray.size() >= VERTEX_NUMBER / 2)
 	{
 		m_TopVertexArray.pop();
 		m_BottomVertexArray.pop();
 	}
 
+	//座標をpush
 	m_TopVertexArray.push(m_Top);
 	m_BottomVertexArray.push(m_Bottom);
 
+	//頂点情報をコピー
 	m_Topcopy = m_TopVertexArray;
 	m_Bottomcopy = m_BottomVertexArray;
 
-	//// 頂点データ書き換え// ここにメンバ変数で保存した頂点データを変える
+	// 頂点データ書き換え // ここにメンバ変数で保存した頂点データを変える
 	D3D11_MAPPED_SUBRESOURCE msr;
 	Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
@@ -155,7 +157,7 @@ void Trail::Draw()
 	// マテリアル設定
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	material.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_Alpha);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 

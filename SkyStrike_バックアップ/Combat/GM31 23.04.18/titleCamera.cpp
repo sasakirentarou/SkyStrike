@@ -69,11 +69,11 @@ void TitleCamera::Update()
 		m_FogStart -= 10.0f;
 	}
 
-	ImGui::SetNextWindowSize(ImVec2(500, 250));
-	ImGui::Begin("Camera");
-	ImGui::InputFloat3("Pos", m_Position);
-	ImGui::InputFloat3("Target", m_Target);
-	ImGui::End();
+	//ImGui::SetNextWindowSize(ImVec2(500, 250));
+	//ImGui::Begin("Camera");
+	//ImGui::InputFloat3("Pos", m_Position);
+	//ImGui::InputFloat3("Target", m_Target);
+	//ImGui::End();
 }
 
 void TitleCamera::Draw()

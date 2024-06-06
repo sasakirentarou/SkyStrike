@@ -13,6 +13,7 @@ private:
 	D3DXMATRIX m_ScreenMatrix{};
 
 	class Scene* m_Scene{};
+	class Player* m_Player{};
 
 	float m_ShakeOffsetX{};
 	float m_ShakeOffsetY{};
@@ -39,6 +40,8 @@ public:
 	void Init();
 	void Update();
 	void Draw();
+
+	void SetBomShake(D3DXVECTOR3 pos);
 
 	D3DXMATRIX GetViewMatrix()
 	{

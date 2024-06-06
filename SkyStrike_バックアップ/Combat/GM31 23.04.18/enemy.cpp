@@ -11,9 +11,24 @@
 #include "smoke.h"
 #include "trail.h"
 #include "enemyDistance.h"
-#include "D3DX_DXGIFormatConvert.inl"
+#include "textureManager.h"
+#include "audio.h"
+#include "camera.h"
 
 int Enemy::m_EnemyCount = 0;
+Model* Enemy::m_Model{};
+
+void Enemy::Load()
+{
+	m_Model = new Model();
+	m_Model->Load("asset\\model\\F-15\\F-15.obj");
+}
+
+void Enemy::Unload()
+{
+	m_Model->Unload();
+	delete m_Model;
+}
 
 void Enemy::Init()
 {
@@ -23,8 +38,10 @@ void Enemy::Init()
 	m_DepthEnable = true;
 	m_ReflectEnable = true;
 
-	m_Model = new Model();
-	m_Model->Load("asset\\model\\F-15\\F-15.obj");
+
+	m_KillSE = AddComponet<Audio>();
+	m_KillSE->Load("asset\\audio\\kill01.wav");
+	m_KillSE->Volume(0.2f);
 
 	m_Scene = Manager::GetScene();
 	m_Player = m_Scene->GetGameObject<Player>();
@@ -53,7 +70,6 @@ void Enemy::Init()
 
 void Enemy::Uninit()
 {
-	m_Model->Unload();
 	m_VertexLayout->Release();
 	m_VertexShader->Release();
 	m_PixelShader->Release();
@@ -63,6 +79,10 @@ void Enemy::Uninit()
 
 void Enemy::Update()
 {
+	auto camera = m_Scene->GetGameObject<Camera>();
+	auto texture = m_Scene->GetGameObject<TextureManager>();
+
+
 	//‘Ì—Í‚ªs‚«‚½‚ç
 	if (m_Health <= 0)
 	{
@@ -72,6 +92,13 @@ void Enemy::Update()
 			m_Lock->SetDestroy();
 			m_CrashFlg = true;
 			m_Player->SwitchTarget();
+			m_Player->GetLockOn()->SetAlpha(0.0f);
+			texture->SetDesReportFlg(true);
+			texture->SetEnemyMinus();
+			m_KillSE->Play(false);
+
+			//ƒJƒƒ‰‚Ì—h‚ê
+			camera->SetBomShake(m_Position);
 
 			auto explosion = m_Scene->AddGameObject<Explosion>(1);
 			explosion->SetScale(D3DXVECTOR3(6.0f, 6.0f, 0.0f));
@@ -107,6 +134,9 @@ void Enemy::Update()
 			explosion->SetScale(D3DXVECTOR3(6.0f, 6.0f, 0.0f));
 			explosion->SetPosition(m_Position);
 			explosion->BomTime(1);
+
+			//ƒJƒƒ‰‚Ì—h‚ê
+			camera->SetBomShake(m_Position);
 
 			SetDestroy();
 		}
@@ -173,12 +203,12 @@ void Enemy::Update()
 	m_Position += m_Velocity;
 
 	//ImGui•\¦
-	ImGui::Begin("Enemy");
-	ImGui::InputFloat3("pos", m_Position);
-	ImGui::InputFloat4("qua", m_Quaternion);
-	ImGui::InputFloat3("vel", m_Velocity);
-	ImGui::InputInt("HP", &m_Health);
-	ImGui::End();
+	//ImGui::Begin("Enemy");
+	//ImGui::InputFloat3("pos", m_Position);
+	//ImGui::InputFloat4("qua", m_Quaternion);
+	//ImGui::InputFloat3("vel", m_Velocity);
+	//ImGui::InputInt("HP", &m_Health);
+	//ImGui::End();
 
 	GameObject::Update();
 }
@@ -230,7 +260,7 @@ bool Enemy::EnemyView(D3DXVECTOR3 forward,float fieldOfViewRadians, float viewDi
 void Enemy::EnemyHoming(D3DXVECTOR3 target, bool reverse)
 {
 	m_QuaAmountCount++;
-	if(m_QuaAmountCount > 2)
+	if(m_QuaAmountCount > ROTATION_FRAME)
 	{
 		//—U“±ŒvZ
 		D3DXVECTOR3 gaiseki;
@@ -346,12 +376,6 @@ void Enemy::UpdateEscape()
 	{
 		m_EnemyState = ENEMY_SEACH;
 	}
-
-	//ImGui•\¦
-	ImGui::Begin("EnemyPlayerLength");
-	ImGui::InputFloat("Length", &length);
-	ImGui::End();
-
 }
 
 // ’Tõ
@@ -366,8 +390,11 @@ void Enemy::UpdateSeach()
 		m_RandomSeachPoint.z = rand() % (4001) - 2000;
 		m_SeachCount = 0;
 	}
+	D3DXVECTOR3 targetPos = m_Position + m_RandomSeachPoint;
 
-	EnemyHoming(m_Position + m_RandomSeachPoint,false);
+	//if(targetPos.x >)
+
+	EnemyHoming(targetPos, false);
 
 	//”­Œ©
 	if (EnemyView(GetForwardQuaternion(), 90.0f, 3000.0f) && !m_PlayerStealth)

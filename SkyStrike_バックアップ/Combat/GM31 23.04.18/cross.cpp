@@ -5,6 +5,7 @@
 #include "camera.h"
 #include "cross.h"
 #include "spritefield.h"
+#include "player.h"
 
 void Cross::Init()
 {
@@ -73,6 +74,12 @@ void Cross::Uninit()
 
 void Cross::Update()
 {
+	auto scene = Manager::GetScene();
+	auto player = scene->GetGameObject<Player>();
+	D3DXVECTOR3 playerPos = player->GetPosition();
+
+	D3DXVec3Lerp(&m_Position, &m_Position, &playerPos, 0.25f);
+	m_Position += player->GetForwardQuaternion() * 15.0f + player->GetTopQuaternion() * 0.5f;
 
 	GameObject::Update();
 }

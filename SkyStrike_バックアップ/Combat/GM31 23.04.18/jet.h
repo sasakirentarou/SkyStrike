@@ -12,6 +12,7 @@ private:
 	ID3D11PixelShader* m_PixelShader = nullptr;
 	ID3D11InputLayout* m_VertexLayout = nullptr;
 
+	class Audio* m_PassSE{};
 	class Trail* m_Trail01{};
 	class Trail* m_Trail02{};
 
