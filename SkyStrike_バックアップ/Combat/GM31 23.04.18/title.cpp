@@ -4,6 +4,7 @@
 #include "title.h"
 #include "titleLogo.h"
 #include "input.h"
+#include "inputx.h"
 #include "fade.h"
 #include "loading.h"
 #include "startButton.h"
@@ -12,7 +13,7 @@
 #include "meshField.h"
 #include "titleCamera.h"
 #include "airport.h"
-#include "jet.h"
+#include "teamJet.h"
 #include "leftWing.h"
 #include "rightWing.h"
 #include "backLeftWing.h"
@@ -21,11 +22,24 @@
 #include "rightVertical.h"
 #include "player.h"
 #include "textureManager.h"
+#include "audio.h"
+#include "enemyJet.h"
+#include "fire.h"
+
+//初期化
+SceneState Scene::m_SceneState = SCENE_NONE;
 
 void Title::Init()
 {
+	Scene::m_SceneState = SCENE_TITLE;
+
 	//load
-	Jet::Load();
+	TeamJet::Load();
+	Fire::Load();
+
+	//setloading
+	Loading::SetGameLoad(false);
+	Loading::SetTutorialLoad(false);
 
 	//camera
 	m_Camera = AddGameObject<TitleCamera>(0);
@@ -61,13 +75,13 @@ void Title::Init()
 	//jet
 	for(int i = 0; i < 3; i++)
 	{
-		Jet* jet_start = AddGameObject<Jet>(1);
+		TeamJet* jet_start = AddGameObject<TeamJet>(1);
 		jet_start->SetPosition(D3DXVECTOR3(300.0f * i - 300.0f, 1050.0f, -500.0f));
 		jet_start->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		jet_start->SetScale(D3DXVECTOR3(10.0f, 10.0f, 10.0f));
 		jet_start->SetPatern(3);
 
-		Jet* jet_takeoff = AddGameObject<Jet>(1);
+		TeamJet* jet_takeoff = AddGameObject<TeamJet>(1);
 		jet_takeoff->SetPosition(D3DXVECTOR3(-550.0f, 30.0f, 0.0f));
 		jet_takeoff->SetScale(D3DXVECTOR3(10.0f, 10.0f, 10.0f));
 		jet_takeoff->SetPatern(i);
@@ -75,14 +89,35 @@ void Title::Init()
 
 	// polygon
 	m_Texture = AddGameObject<TextureManager>(2);
-	m_Texture->SetLogo(true);
+	m_Texture->SetSceneTexture(TEXTURE_LOGO);
 
 	m_Fade = AddGameObject<Fade>(2);
+
+	//SE
+	m_SelectSE = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_SelectSE->Load("asset\\audio\\select.wav");
+
+	m_ConfirmSE = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_ConfirmSE->Load("asset\\audio\\confirm.wav");
+
+	m_StartSE = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_StartSE->Load("asset\\audio\\start.wav");
+
+	m_ErrorSE = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_ErrorSE->Load("asset\\audio\\miss.wav");
+
+	//BGM
+	m_BGM = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_BGM->Load("asset\\audio\\title_bgm.wav");
+	m_BGM->Volume(0.0f);
+
+	SetPause(true);
 }
 
 void Title::Uninit()
 {
-	Jet::Unload();
+	TeamJet::Unload();
+	Fire::Unload();
 	Scene::Uninit();
 }
 
@@ -90,47 +125,182 @@ void Title::Update()
 {
 	Scene::Update();
 
-	m_MousePos.x = GetMouse2DX();
-	m_MousePos.y = GetMouse2DY();
+	//マウス座標取得
+	//m_MousePos.x = GetMouse2DX();
+	//m_MousePos.y = GetMouse2DY();
 
-	if (Input::GetKeyTrigger(VK_SPACE))
+	//BGMボリューム
+	if(m_Start)
+		m_BGM->Volume(Scene::m_BGMVolume * (0.08f * 2));
+
+	//SEボリューム
+	m_SelectSE->Volume(Scene::m_SEVolume * (0.3f * 2));
+	m_ConfirmSE->Volume(Scene::m_SEVolume * (0.3f * 2));
+	m_StartSE->Volume(Scene::m_SEVolume * (0.3f * 2));
+	m_ErrorSE->Volume(Scene::m_SEVolume * (0.3f * 2));
+
+
+
+	if (Input::GetKeyTrigger(VK_UP) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_UP) && m_Start)
 	{
-		m_Camera->SetStart(true);
-		m_Texture->SetLogo(false);
-		m_Texture->SetMenu(true);
-		m_Start = true;
+		m_SelectSE->Play(false);
+		m_Texture->SetSelectUpDown(false, m_SelectDownMax);
+	}
+	else if (Input::GetKeyTrigger(VK_DOWN) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_DOWN) && m_Start)
+	{
+		m_SelectSE->Play(false);
+		m_Texture->SetSelectUpDown(true, m_SelectDownMax);
 	}
 
-	if (Input::GetKeyTrigger(VK_UP))
+
+
+	switch (m_SelectMode)
 	{
-		m_Texture->SetSelectUpDown(false);
-	}
-	else if (Input::GetKeyTrigger(VK_DOWN))
-	{
-		m_Texture->SetSelectUpDown(true);
+	case SELECT_NONE:
+		if (Input::GetKeyTrigger(VK_SPACE) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_B))
+		{		
+			m_StartSE->Play(false);
+			m_BGM->Play(true);
+			m_Camera->SetStart(true);
+			m_Texture->SetSceneTexture(TEXTURE_MENU);
+			m_SelectMode = SELECT_MENU;
+			m_Start = true;
+		}
+		break;
+
+	case SELECT_MENU: //Menu
+		m_SelectDownMax = MENU_DOWN_MAX;
+
+		if (Input::GetKeyTrigger(VK_RETURN) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_A) && m_Start)
+		{
+			m_ConfirmSE->Play(false);
+
+			if (m_Texture->GetSelectPos() == -100.0f)//Mission
+			{
+				m_Texture->SetSelectPos(-100.0f);
+				m_Texture->SetSceneTexture(TEXTURE_MISSION);
+				m_SelectMode = SELECT_MISSION;
+			}
+			if (m_Texture->GetSelectPos() == -40.0f)//Weapon 開発中
+			{
+				m_ErrorSE->Play(false);
+
+				//m_Camera->SetStart(false);
+				//m_Texture->SetSelectPos(-100.0f);
+				//m_Texture->SetSceneTexture(SCENE_WEAPON);
+				//m_Camera->SetWeapon(true);
+				//m_SelectMode = SELECT_WEAPON;
+			}
+			if (m_Texture->GetSelectPos() == 20.0f)//Option
+			{
+				m_Texture->SetSelectPos(-100.0f);
+				m_Texture->SetSceneTexture(TEXTURE_OPTION);
+				m_SelectMode = SELECT_OPTION;
+			}
+			if (m_Texture->GetSelectPos() == 80.0f)//Exit
+			{
+				DestroyWindow(GetWindow());
+			}
+		}
+		break;
+
+	case SELECT_MISSION: //Mission
+		m_SelectDownMax = MISSION_DOWN_MAX;
+
+		if (Input::GetKeyTrigger(VK_RETURN) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_A) && m_Start)
+		{
+			m_ConfirmSE->Play(false);
+
+			if (m_Texture->GetSelectPos() == -100.0f)//Tutorial
+			{
+				Loading::SetTutorialLoad(true);
+				m_Fade->FadeOut();
+			}
+			if (m_Texture->GetSelectPos() == -40.0f)//Mission01
+			{
+				Loading::SetGameLoad(true);
+				m_Fade->FadeOut();
+			}
+			if (m_Texture->GetSelectPos() == 20.0f)//Back
+			{
+				m_Texture->SetSelectPos(-100.0f);
+				m_Texture->SetSceneTexture(TEXTURE_MENU);
+				m_SelectMode = SELECT_MENU;
+			}
+		}
+
+		break;
+
+	case SELECT_WEAPON: //Weapon
+
+		break;
+
+	case SELECT_OPTION: //Option
+		m_SelectDownMax = OPTION_DOWN_MAX;
+
+		if (m_Texture->GetSelectPos() == -100.0f)//BGM
+		{
+			m_Texture->SetSEPinRGB(1.0f, 1.0f, 1.0f);
+			m_Texture->SetBGMPinRGB(1.0f, 0.6f, 0.0f);
+
+			if (Input::GetKeyPress(VK_RIGHT) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				m_ConfirmSE->Play(false);
+				m_Texture->SetBGMPinMinus();
+			}
+			if (Input::GetKeyPress(VK_LEFT) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				m_ConfirmSE->Play(false);
+				m_Texture->SetBGMPinPlus();
+			}
+		}
+		if (m_Texture->GetSelectPos() == -40.0f)//SE
+		{
+			m_Texture->SetBGMPinRGB(1.0f, 1.0f, 1.0f);
+			m_Texture->SetSEPinRGB(1.0f, 0.6f, 0.0f);
+			m_Texture->SetPitchFlipCheckRGB(1.0f, 1.0f, 1.0f);
+
+			if (Input::GetKeyPress(VK_RIGHT) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				m_ConfirmSE->Play(false);
+				m_Texture->SetSEPinMinus();
+			}
+			if (Input::GetKeyPress(VK_LEFT) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				m_ConfirmSE->Play(false);
+				m_Texture->SetSEPinPlus();
+			}
+		}
+		if (m_Texture->GetSelectPos() == 20.0f)//Flip
+		{
+			m_Texture->SetSEPinRGB(1.0f, 1.0f, 1.0f);
+			m_Texture->SetPitchFlipCheckRGB(1.0f, 0.6f, 0.0f);
+
+			if (Input::GetKeyTrigger(VK_RETURN) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_A) && m_Start)
+			{
+				m_ConfirmSE->Play(false);
+				m_Texture->SetPitchFlipCheck();
+			}
+		}
+		if (m_Texture->GetSelectPos() == 80.0f)//Back
+		{
+			m_Texture->SetBGMPinRGB(1.0f, 1.0f, 1.0f);
+			m_Texture->SetPitchFlipCheckRGB(1.0f, 1.0f, 1.0f);
+
+			if (Input::GetKeyTrigger(VK_RETURN) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_A) && m_Start)
+			{
+				m_ConfirmSE->Play(false);
+				m_Texture->SetSelectPos(-100.0f);
+				m_Texture->SetSceneTexture(TEXTURE_MENU);
+				m_SelectMode = SELECT_MENU;
+			}
+		}
+		break;
+
+	default:
+		break;
 	}
 
-	if (Input::GetKeyTrigger(VK_RETURN) && m_Start)
-	{
-		if (m_Texture->GetSelectPos() == -100.0f)
-		{
-			m_Fade->FadeOut();
-		}
-		if (m_Texture->GetSelectPos() == 0.0f)
-		{
-			m_Camera->SetStart(false);
-			m_Texture->SetMenu(false);
-			m_Camera->SetWeapon(true);
-		}
-		if (m_Texture->GetSelectPos() == 100.0f)
-		{
-
-		}
-		if (m_Texture->GetSelectPos() == 200.0f)
-		{
-			DestroyWindow(GetWindow());
-		}
-	}
 	if (m_Fade->GetFadeFinish())
 	{
 		Manager::SetScene<Loading>();

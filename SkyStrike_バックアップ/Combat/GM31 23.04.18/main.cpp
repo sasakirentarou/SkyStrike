@@ -19,7 +19,6 @@ short g_Rot;//マウスホイール回転量
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-
 HWND g_Window;
 
 HWND GetWindow()
@@ -109,16 +108,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 				if (!g_Pause) {
 					SetCursorPos(g_LastMousePos.x, g_LastMousePos.y);
+					ShowCursor(false);
 				}
-				if (Input::GetKeyTrigger('O'))
+				else
 				{
-					g_Pause = true;
 					ShowCursor(true);
 				}
-				if (Input::GetKeyTrigger('I'))
+
+				if (Input::GetKeyTrigger('O'))
 				{
-					g_Pause = false;
-					ShowCursor(false);
+					g_Pause = !g_Pause;
 				}
 
 				Manager::Update();
@@ -136,10 +135,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	return (int)msg.wParam;
 }
 
-
 //ImGUIのウィンドウ処理をプロシージャに追加
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -216,4 +213,9 @@ float GetMouseHwheel()
 void SetFrame(int frame)
 {
 	g_Frame = frame;
+}
+
+void SetPause(bool pause)
+{
+	g_Pause = pause;
 }

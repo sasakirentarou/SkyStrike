@@ -6,6 +6,8 @@
 #include "scene.h"
 #include "manager.h"
 #include "jetUI.h"
+#include "smoke.h"
+#include "player.h"
 
 void HpGauge::Init()
 {
@@ -69,9 +71,8 @@ void HpGauge::Init()
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\gaugeVS.cso");
 	Renderer::CreatePixelShader(&m_PixelShader, "shader\\gaugePS.cso");
 
-	m_hpMax = 100.0f;
-	m_hp = 100.0f;
-	m_beforhp = 100.0f;
+	m_Hp = HP_MAX;
+	m_Beforhp = 100.0f;
 
 	GameObject::Init();
 }
@@ -94,31 +95,42 @@ void HpGauge::Update()
 
 	Scene* scene = Manager::GetScene();
 	auto jetui = scene->GetGameObject<JetUI>();
+	auto player = scene->GetGameObject<Player>();
 
-	if (m_hp > 60)
+	if (m_Hp > 60.0f)
 	{
 		jetui->SetColor(0);
 	}
-	else if(m_hp <= 60 && m_hp > 20)
+	else if(m_Hp <= 60.0f && m_Hp > 20.0f)
 	{
 		jetui->SetColor(1);
 	}
 	else
 	{
+		m_Count++;
+		if(m_Count > 6)
+		{
+			auto smoke = scene->AddGameObject<Smoke>(1);
+			smoke->SetPosition(player->GetPosition() - player->GetForwardQuaternion() * 8.0f);
+			smoke->SetScale(D3DXVECTOR3(0.2f, 0.2f, 0.0f));
+			smoke->SetColor(0.0f);
+			m_Count = 0;
+		}
+
 		jetui->SetColor(2);
 	}
 
 
 	//ê‘ÇíxÇÍÇƒå∏ÇÁÇ∑
-	if (m_hp != m_beforhp)
+	if (m_Hp != m_Beforhp)
 	{
-		m_beforhp -= 0.5f;
+		m_Beforhp -= 0.5f;
 	}
 
 	//ÉeÉXÉg
 	if (Input::GetKeyTrigger('5'))
 	{
-		m_hp -= 10.0f;
+		m_Hp -= 10.0f;
 	}
 }
 
@@ -146,9 +158,9 @@ void HpGauge::Draw()
 	Renderer::SetMaterial(material);
 
 	PARAMETER param;
-	param.hitpoint.x = m_hp;	//åªç›ÇÃHP
-	param.hitpoint.y = m_hpMax;	//ç≈ëÂHP
-	param.hitpoint.z = m_beforhp;
+	param.hitpoint.x = m_Hp;	//åªç›ÇÃHP
+	param.hitpoint.y = HP_MAX;	//ç≈ëÂHP
+	param.hitpoint.z = m_Beforhp;
 	param.baseColor = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f); //óŒ
 	param.lostColor = D3DXCOLOR(0.3f, 0.3f, 0.3f, 0.8f); //äD:0.2f, 0.2f, 0.2f
 	param.diffColor = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f); //ê‘

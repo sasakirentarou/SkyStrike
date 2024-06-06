@@ -64,7 +64,7 @@ void JetUI::Init()
 
 	m_Green = 1.0f;
 
-	m_Position = D3DXVECTOR3(SCREEN_WIDTH - 340.0f, SCREEN_HEIGHT - 150.0f, 0.0f);
+	m_Position = D3DXVECTOR3(SCREEN_WIDTH - 380.0f, SCREEN_HEIGHT - 150.0f, 0.0f);
 
 	GameObject::Init();
 }

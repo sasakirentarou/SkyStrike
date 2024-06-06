@@ -3,15 +3,15 @@
 #include "renderer.h"
 #include "game.h"
 
-#include "polygon2D.h"
 #include "field.h"
 #include "camera.h"
 #include "player.h"
-#include "enemy.h"
+#include "enemyJet.h"
 #include "explosion.h"
 #include "cylinder.h"
 #include "box.h"
 #include "input.h"
+#include "inputx.h"
 #include "result.h"
 #include "audio.h"
 #include "dome.h"
@@ -36,34 +36,32 @@
 #include "enemyDistance.h"
 #include "textureManager.h"
 #include "arrow.h"
-
-GameObject* g_Player;
-GameObject* g_Dome;
-GameObject* g_Field;
-GameObject* g_Camera;
-GameObject* g_Enemy0;
-GameObject* g_Enemy1;
-GameObject* g_Enemy2;
-GameObject* g_Enemy3;
-GameObject* g_Enemy4;
-GameObject* g_Enemy5;
-GameObject* g_Enemy6;
-GameObject* g_Enemy7;
-GameObject* g_Enemy8;
-GameObject* g_Hp;
-GameObject* g_CollisionBox;
+#include "fire.h"
+#include "engineFire.h"
+#include "timer.h"
+#include "hitBullet.h"
+#include "missileFire.h"
+#include "longMissile.h"
+#include "lockon2D.h"
+#include "longMissileUI.h"
+#include "debug.h"
 
 bool Game::m_LoadFinish = false;
 
 void Game::Load()
 {
 	//まとめてロード
+	CollisionBox::Load();
 	Bullet::Load();
 	Missile::Load();
 	Smoke::Load();
 	Flare::Load();
-	Enemy::Load();
+	EnemyJet::Load();
 	Explosion::Load();
+	Fire::Load();
+	HitBullet::Load();
+	MissileFire::Load();
+	LongMissile::Load();
 
 	m_LoadFinish = true;
 }
@@ -72,28 +70,42 @@ void Game::Unload()
 {
 	m_LoadFinish = false;
 
+	CollisionBox::Unload();
 	Bullet::Unload();
 	Missile::Unload();
 	Smoke::Unload();
 	Flare::Unload();
-	Enemy::Unload();
+	EnemyJet::Unload();
 	Explosion::Unload();
+	Fire::Unload();
+	HitBullet::Unload();
+	MissileFire::Unload();
+	LongMissile::Unload();
 }
 
 
 void Game::Init()
 {
+	SetPause(false);
+	Scene::m_SceneState = SCENE_GAME;
+
 	// camera
-	g_Camera = AddGameObject<Camera>(0);
-	g_Camera->SetGameEnable(true);
+	Camera* camera = AddGameObject<Camera>(0);
+	camera->SetGameEnable(true);
+	//砂色：0.9f, 0.8f, 0.5f
+	camera->SetFog(3000.0f, 20000.0f, 2000.0f,
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+		D3DXCOLOR(0.2f, 0.3f, 0.6f, 1.0f));
+	
 
 	//dome
-	g_Dome = AddGameObject<Dome>(1);
-	g_Dome->SetScale(D3DXVECTOR3(15000.0f, 15000.0f, 15000.0f));
-	g_Dome->SetGameEnable(true);
+	GameObject* dome = AddGameObject<Dome>(1);
+	dome->SetScale(D3DXVECTOR3(15000.0f, 15000.0f, 15000.0f));
+	dome->SetGameEnable(true);
 
 	// field
-	g_Field = AddGameObject<Field>(1);
+	GameObject* field = AddGameObject<Field>(1);
 
 	//parts
 	AddGameObject<RightWing>(1);//主翼
@@ -103,104 +115,128 @@ void Game::Init()
 	AddGameObject<LeftVertical>(1);//垂直尾翼
 	AddGameObject<RightVertical>(1);//垂直尾翼
 
+	Fire* fire = AddGameObject<Fire>(1);
+	fire->SetPlayerFire();
+	Arrow* arrow = AddGameObject<Arrow>(1);
+
 	// player
-	g_Player = AddGameObject<Player>(1);
-	g_Player->SetPosition(D3DXVECTOR3(1000.0f, 1000.0f, 0.0f));
-	g_Player->SetGameEnable(true);
-	g_Player->Init();
+	m_Player = AddGameObject<Player>(1);
+	m_Player->SetPosition(D3DXVECTOR3(1000.0f, 1000.0f, 0.0f));
+	m_Player->SetGameEnable(true);
+	m_Player->Init();
 
 	//enemy
-	g_Enemy0 = AddGameObject<Enemy>(1);
-	g_Enemy1 = AddGameObject<Enemy>(1);
-	g_Enemy2 = AddGameObject<Enemy>(1);
-	g_Enemy3 = AddGameObject<Enemy>(1);
-	g_Enemy4 = AddGameObject<Enemy>(1);
-	g_Enemy5 = AddGameObject<Enemy>(1);
-	g_Enemy6 = AddGameObject<Enemy>(1);
-	//g_Enemy7 = AddGameObject<Enemy>(1);
-	//g_Enemy8 = AddGameObject<Enemy>(1);
+	GameObject* enemy0 = AddGameObject<EnemyJet>(1);
+	GameObject* enemy1 = AddGameObject<EnemyJet>(1);
+	GameObject* enemy2 = AddGameObject<EnemyJet>(1);
+	//GameObject* enemy4 = AddGameObject<EnemyJet>(1);
+	//GameObject* enemy3 = AddGameObject<EnemyJet>(1);
+	GameObject* enemy5 = AddGameObject<EnemyJet>(1);
+	//GameObject* enemy6 = AddGameObject<EnemyJet>(1);
+	//GameObject* enemy7 = AddGameObject<EnemyJet>(1);
+	//GameObject* enemy8 = AddGameObject<EnemyJet>(1);
 
-	g_Enemy0->SetPosition(D3DXVECTOR3(1400.0f, 800.0f, 3000.0f));
-	g_Enemy0->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy0->SetPosition(D3DXVECTOR3(1400.0f, 800.0f, 3000.0f));
+	enemy0->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy0->SetQuaternionRotation(D3DXVECTOR3(0.0f, 1.0f, 0.0f), 180.0f);
 
-	g_Enemy1->SetPosition(D3DXVECTOR3(1000.0f, 800.0f, 3500.0f));
-	g_Enemy1->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy1->SetPosition(D3DXVECTOR3(1000.0f, 800.0f, 3500.0f));
+	enemy1->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy1->SetQuaternionRotation(D3DXVECTOR3(0.0f, 1.0f, 0.0f), 180.0f);
 
-	g_Enemy2->SetPosition(D3DXVECTOR3(800.0f, 800.0f, 4800.0f));
-	g_Enemy2->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy2->SetPosition(D3DXVECTOR3(800.0f, 800.0f, 4800.0f));
+	enemy2->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy2->SetQuaternionRotation(D3DXVECTOR3(0.0f, 1.0f, 0.0f), 180.0f);
 
-	g_Enemy3->SetPosition(D3DXVECTOR3(1200.0f, 900.0f, 2400.0f));
-	g_Enemy3->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	//enemy3->SetPosition(D3DXVECTOR3(1200.0f, 900.0f, 2400.0f));
+	//enemy3->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
 
-	g_Enemy4->SetPosition(D3DXVECTOR3(1100.0f, 900.0f, 2000.0f));
-	g_Enemy4->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	//enemy4->SetPosition(D3DXVECTOR3(1100.0f, 900.0f, 2000.0f));
+	//enemy4->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
 
-	g_Enemy5->SetPosition(D3DXVECTOR3(900.0f, 900.0f, 4000.0f));
-	g_Enemy5->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy5->SetPosition(D3DXVECTOR3(900.0f, 900.0f, 4000.0f));
+	enemy5->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	enemy5->SetQuaternionRotation(D3DXVECTOR3(0.0f, 1.0f, 0.0f), 180.0f);
 
-	g_Enemy6->SetPosition(D3DXVECTOR3(1000.0f, 900.0f, 2100.0f));
-	g_Enemy6->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	//enemy6->SetPosition(D3DXVECTOR3(1000.0f, 900.0f, 2100.0f));
+	//enemy6->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
 
-	//g_Enemy7->SetPosition(D3DXVECTOR3(-1600.0f, 900.0f, 1900.0f));
-	//g_Enemy7->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	//enemy7->SetPosition(D3DXVECTOR3(-1600.0f, 900.0f, 1900.0f));
+	//enemy7->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
 
-	//g_Enemy8->SetPosition(D3DXVECTOR3(-1000.0f, 900.0f, 1800.0f));
-	//g_Enemy8->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	//enemy8->SetPosition(D3DXVECTOR3(-1000.0f, 900.0f, 1800.0f));
+	//enemy8->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
 
 
-	// polygon
-	//AddGameObject<Polygon2D>(2);
+	//////Polygon//////
 
 	//3DUI
 	LockOn* lockon = AddGameObject<LockOn>(1);
 	lockon->SetAlpha(0.0f);
 
-	Cross* cross = AddGameObject<Cross>(1);
+	GameObject* cross = AddGameObject<Cross>(1);
 	cross->SetScale(D3DXVECTOR3(1.6f, 1.2f, 0.0f));
 
-	EnemyDistance* distance = AddGameObject<EnemyDistance>(1);
+	//EnemyDistance* distance = AddGameObject<EnemyDistance>(1);
 
-	Arrow* arrow = AddGameObject<Arrow>(1);
-	
+	//enginefire
+	GameObject* enginefire = AddGameObject<EngineFire>(1);
+
 	//HPバー
-	g_Hp = AddGameObject<HpGauge>(2);
+	GameObject* hp = AddGameObject<HpGauge>(2);
 
 	//ミサイルUI
-	MissileUI* missileUI_0;
-	MissileUI* missileUI_1;
+	GameObject* missileUI_0;
+	GameObject* missileUI_1;
+	//GameObject* longMissileUI_0;
+	//GameObject* longMissileUI_1;
 	missileUI_0 = AddGameObject<MissileUI>(2);
 	missileUI_1 = AddGameObject<MissileUI>(2);
+	//longMissileUI_0 = AddGameObject<LongMissileUI>(2);
+	//longMissileUI_1 = AddGameObject<LongMissileUI>(2);
 
 	//機体UI
-	JetUI* jetUI;
+	GameObject* jetUI;
 	jetUI = AddGameObject<JetUI>(2);
 
+	//lockon2D
+	GameObject* lockon2D;
+	lockon2D = AddGameObject<Lockon2D>(2);
+
 	//texture
-	TextureManager* texture = AddGameObject<TextureManager>(2);
-	texture->SetGame(true);
+	m_Texture = AddGameObject<TextureManager>(2);
+	m_Texture->SetSceneTexture(TEXTURE_GAME);
+
+	//timer
+	m_Timer = AddGameObject<Timer>(2);
 
 	//fade
 	m_Fade = AddGameObject<Fade>(2);
 
-	//BGM再生
+	//SE再生
 	m_Wind0 = AddGameObject<GameObject>(0)->AddComponet<Audio>();
 	m_Wind0->Load("asset\\audio\\wind0.wav");
-	m_Wind0->Volume(0.05f);
 	m_Wind0->Play(true);
 
 	m_Wind1 = AddGameObject<GameObject>(0)->AddComponet<Audio>();
 	m_Wind1->Load("asset\\audio\\wind1.wav");
-	m_Wind1->Volume(0.05f);
 	m_Wind1->Play(true);
 
-	m_Engine = AddGameObject<GameObject>(0)->AddComponet<Audio>();
-	m_Engine->Load("asset\\audio\\jetengine.wav");
-	m_Engine->Volume(0.01f);
-	m_Engine->Play(true);
+	//BGM再生
+#if 0
+	m_BGM = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_BGM->Load("asset\\audio\\bgm_out.wav");
+	m_BGM->Play(true);
+#else
+	m_BGM = AddGameObject<GameObject>(0)->AddComponet<Audio>();
+	m_BGM->Load("asset\\audio\\bgm01.wav");
+	m_BGM->Play(true);
+#endif // 0
 }
 
 void Game::Uninit()
 {
+	InputX::StopVibration(0);
 	Scene::Uninit();
 
 	Unload();
@@ -209,22 +245,27 @@ void Game::Uninit()
 void Game::Update()
 {
 	Scene::Update();
+	auto enemys = GetGameObjects<EnemyJet>();
 
-	Player* player = GetGameObject<Player>();
-	auto enemys = GetGameObjects<Enemy>();
+	//ボリューム
+	m_BGM->Volume(Scene::m_BGMVolume * (0.04f * 2));
+	m_Wind1->Volume(Scene::m_SEVolume * (0.5f * 2));
+	m_Wind0->Volume(Scene::m_SEVolume * (0.5f * 2));
 
-	if (enemys.empty())
+	if (m_Texture->GetMissionClear())
 	{
 		m_Fade->FadeOut();
 	}
 
-	if (player->GetDeath())
+	if (m_Player->GetDeath())
 	{
+		m_Texture->SetGameOverFlg(true);
 		m_Fade->FadeOut();
 	}
 	
 	if (m_Fade->GetFadeFinish())
 	{
+		m_Texture->SetResultTimer(m_Timer->GetTime());
 		Manager::SetScene<Result>();
 	}
 }
@@ -277,7 +318,7 @@ void Game::Draw()
 	D3DXVECTOR3 lookat;
 	D3DXVECTOR3 up;
 	D3DXMATRIX viewMatrixArray[6];
-	D3DXVECTOR3 vPlayerPos = g_Player->GetPosition();
+	D3DXVECTOR3 vPlayerPos = m_Player->GetPosition();
 	for (int i = 0; i < 6; i++)
 	{
 		eye = vPlayerPos;

@@ -72,7 +72,7 @@ void LockOn::Uninit()
 
 void LockOn::Update()
 {
-	m_Rotation.z += 0.01f;
+	//m_Rotation.z += 0.01f;
 	GameObject::Update();
 }
 

@@ -6,9 +6,12 @@ class Game : public Scene
 private:
 	class Audio* m_Wind0{};
 	class Audio* m_Wind1{};
-	class Audio* m_Engine{};
+	class Audio* m_BGM{};
 
 	class Fade* m_Fade{};
+	class TextureManager* m_Texture{};
+	class Timer* m_Timer{};
+	class Player* m_Player{};
 
 	static bool m_LoadFinish;
 public:

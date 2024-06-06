@@ -1,7 +1,7 @@
 #include "main.h"
 #include "renderer.h"
 #include "arrow.h"
-#include "enemy.h"
+#include "enemyJet.h"
 #include "player.h"
 #include "scene.h"
 #include "manager.h"
@@ -37,12 +37,12 @@ void Arrow::Draw()
 {
 	Scene* scene = Manager::GetScene();
 	auto player = scene->GetGameObject<Player>();
-	auto enemys = scene->GetGameObjects<Enemy>();
+	auto enemys = scene->GetGameObjects<EnemyJet>();
 	m_Position = player->GetPosition() + player->GetTopQuaternion() * 4.0f;
 
 	if(!player->PlayerView(60,10000) && !enemys.empty())
 	{
-		for (Enemy* enemy : enemys)
+		for (EnemyJet* enemy : enemys)
 		{
 			if (enemy->GetEnemyID() == player->GetLockEnemy())
 			{
@@ -54,6 +54,7 @@ void Arrow::Draw()
 		D3DXVECTOR3 gaiseki;
 
 		D3DXVECTOR3 direction = m_Target - m_Position;//法線ベクトル
+		float vec = D3DXVec3Length(&direction);
 		D3DXVec3Normalize(&direction, &direction);//法線を正規化
 
 		D3DXVec3Cross(&gaiseki, &direction, &forward);//法線と前ベクトルの外積を求める
@@ -67,6 +68,17 @@ void Arrow::Draw()
 		D3DXQUATERNION q = m_Quaternion * quat;
 		D3DXQuaternionSlerp(&m_Quaternion, &m_Quaternion, &q, 1.0f);
 
+		vec /= 1000;
+		if (vec < 0.3f)
+		{
+			vec = 0.3f;
+		}
+		else if (vec > 1.3f)
+		{
+			vec = 1.3f;
+		}
+
+
 		Renderer::SetDepthEnable(false);
 
 		// 入力レイアウト設定
@@ -79,11 +91,10 @@ void Arrow::Draw()
 		// マトリクス設定
 		m_Pearent = player->GetMatrix();
 		D3DXMATRIX world, scale, rot, trans;
-		D3DXMatrixScaling(&scale, m_Scale.x * 0.4f, m_Scale.y * 0.4f, m_Scale.z * 0.5f);
-		//D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
+		D3DXMatrixScaling(&scale, m_Scale.x * 0.4f, m_Scale.y * 0.4f, m_Scale.z * vec);
 		D3DXMatrixRotationQuaternion(&rot, &m_Quaternion);
 		D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y, m_Position.z);
-		world = scale * rot * trans /** m_Pearent*/;
+		world = scale * rot * trans;
 		Renderer::SetWorldMatrix(&world);
 
 		PARAMETER param;

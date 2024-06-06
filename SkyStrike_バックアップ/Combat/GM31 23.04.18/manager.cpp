@@ -7,6 +7,8 @@
 #include "title.h"
 #include "result.h"
 #include "audio.h"
+#include "inputx.h"
+#include "debug.h"
 
 // 静的メンバ変数は再宣言が必要
 Scene* Manager::m_Scene{};
@@ -17,6 +19,7 @@ void Manager::Init()
 {
 	Renderer::Init();
 	Input::Init();
+	InputX::Init();
 	Audio::InitMaster();
 
 	//m_Scene = new Game();
@@ -29,7 +32,7 @@ void Manager::Init()
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
@@ -56,17 +59,19 @@ void Manager::Uninit()
 
 	Audio::UninitMaster();
 	Input::Uninit();
+	InputX::Uninit();
 	Renderer::Uninit();
 
 	//ImGUI終了処理
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();;
+	ImGui::DestroyContext();
 }
 
 void Manager::Update()
 {
 	Input::Update();
+	InputX::Update();
 
 	if(m_NextScene)
 	{
@@ -87,6 +92,7 @@ void Manager::Update()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	Debug::Update();
 	m_Scene->Update();
 }
 

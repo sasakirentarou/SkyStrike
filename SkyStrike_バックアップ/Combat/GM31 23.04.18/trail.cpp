@@ -99,6 +99,7 @@ void Trail::Draw()
 	m_Topcopy = m_TopVertexArray;
 	m_Bottomcopy = m_BottomVertexArray;
 
+	m_Alpha = 0.0f;
 	// 頂点データ書き換え // ここにメンバ変数で保存した頂点データを変える
 	D3D11_MAPPED_SUBRESOURCE msr;
 	Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -110,7 +111,7 @@ void Trail::Draw()
 		if (!m_Topcopy.empty())
 		{ 
 			vertex[i * 2].Position = m_Topcopy.front();
-			vertex[i * 2].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertex[i * 2].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, m_Alpha);
 			vertex[i * 2].Normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			vertex[i * 2].TexCoord = D3DXVECTOR2(i * 1.0f, 0.0f);
 			m_Topcopy.pop();
@@ -119,12 +120,32 @@ void Trail::Draw()
 		if (!m_Bottomcopy.empty())
 		{
 			vertex[i * 2 + 1].Position = m_Bottomcopy.front();
-			vertex[i * 2 + 1].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+			vertex[i * 2 + 1].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, m_Alpha);
 			vertex[i * 2 + 1].Normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			vertex[i * 2 + 1].TexCoord = D3DXVECTOR2(i * 1.0f, 1.0f);
 			m_Bottomcopy.pop();
-		}
 
+			// 透明度
+			{
+				//末端
+				if (i < 50) //50を超えたら少しずつ透明度を上げる
+					m_Alpha += 1.2f / (50 * 2);
+
+				if (m_Alpha > 1.0f)
+				{
+					m_Alpha = 1.0f;
+				}
+
+				//先端
+				if (i > (VERTEX_NUMBER / 2) - 13) //先端から13離れた位置から透明度を下げる
+					m_Alpha -= 1.5f / (12.0f * 2);
+
+				if (m_Alpha < 0.0f)
+				{
+					m_Alpha = 0.0f;
+				}
+			}
+		}
 	}
 	
 	Renderer::GetDeviceContext()->Unmap(m_VertexBuffer, 0);
@@ -157,7 +178,7 @@ void Trail::Draw()
 	// マテリアル設定
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_Alpha);
+	material.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	material.TextureEnable = true;
 	Renderer::SetMaterial(material);
 

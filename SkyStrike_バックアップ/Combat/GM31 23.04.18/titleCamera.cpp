@@ -6,6 +6,7 @@
 #include"scene.h"
 #include "input.h"
 #include "jet.h"
+#include "inputx.h"
 
 void TitleCamera::Init()
 {
@@ -24,6 +25,7 @@ void TitleCamera::Update()
 	m_ShakeCount++;
 	if (m_ShakeCount == 45)
 	{
+		InputX::SetVibration(0,10);
 		m_ShakeAmplitude = 50.0f;
 		m_ShakeSpeed = 0.6f;
 	}
@@ -82,6 +84,11 @@ void TitleCamera::Draw()
 	m_ShakeOffsetY = sinf(m_ShakeTime * m_ShakeSpeed) * m_ShakeAmplitude;
 	m_ShakeTime++;
 	m_ShakeAmplitude *= 0.9f;
+
+	if (m_ShakeAmplitude < 0.01f)
+	{
+		InputX::StopVibration(0);
+	}
 
 	D3DXVECTOR3 position = m_Position + GetRight() * m_ShakeOffsetX + GetTop() * m_ShakeOffsetY;
 	D3DXVECTOR3 target = m_Target + GetRight() * m_ShakeOffsetX + GetTop() * m_ShakeOffsetY;

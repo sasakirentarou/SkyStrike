@@ -1,9 +1,9 @@
 #pragma once
 
-#include "gameObject.h"
+#include "weaponManager.h"
 #include "model.h"
 
-#define AUTO_RANGE 50
+#define AUTO_RANGE 20 //ÉIÅ[ÉgîÕàÕ
 
 class Bullet : public GameObject
 {

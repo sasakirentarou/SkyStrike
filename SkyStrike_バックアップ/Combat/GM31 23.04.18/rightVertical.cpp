@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "manager.h"
 #include "input.h"
+#include "inputx.h"
 
 void RightVertical::Init()
 {
@@ -33,11 +34,11 @@ void RightVertical::Uninit()
 void RightVertical::Update()
 {
 	float angle = 0;
-	if (Input::GetKeyPress('Q'))
+	if (Input::GetKeyPress('Q') || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_LEFT_SHOULDER))
 	{
 		angle = -0.1;
 	}
-	else if (Input::GetKeyPress('E'))
+	else if (Input::GetKeyPress('E') || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_RIGHT_SHOULDER))
 	{
 		angle = 0.1;
 	}

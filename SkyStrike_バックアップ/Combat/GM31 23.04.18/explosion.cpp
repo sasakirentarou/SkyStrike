@@ -65,7 +65,7 @@ void Explosion::Unload()
 void Explosion::Init()
 {
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\unlitTextureVS.cso");
-	Renderer::CreatePixelShader(&m_PixelShader, "shader\\unlitTexturePS.cso");
+	Renderer::CreatePixelShader(&m_PixelShader, "shader\\smokeTexturePS.cso");
 
 	m_Scene = Manager::GetScene();
 	m_Camera = m_Scene->GetGameObject<Camera>();
@@ -73,7 +73,6 @@ void Explosion::Init()
 	m_Bom = AddComponet<Audio>();
 	m_Bom->Load("asset\\audio\\bom.wav");
 	m_Bom->Play();
-	m_Bom->Volume(0.5f);
 
 	GameObject::Init();
 }
@@ -89,16 +88,19 @@ void Explosion::Uninit()
 
 void Explosion::Update()
 {
+	//ボリューム
+	m_Bom->Volume(Scene::m_SEVolume * (0.5f * 2));
+
 	//描画速度調整
 	m_TimeCount++;
-	if (m_TimeCount > m_Time)
+	if (m_TimeCount > m_ShiftTime)
 	{
-		m_Count++;
+		m_AnimCount++;
 		m_TimeCount = 0;
 	}
 
 	//全部描画したら消す
-	if (m_Count >= 15)//画像枚数
+	if (m_AnimCount >= IMAGE_SHEETS)//画像枚数
 	{
 		SetDestroy();
 		return;
@@ -110,8 +112,8 @@ void Explosion::Update()
 void Explosion::Draw()
 {
 	// テクスチャ座標算出
-	float x = m_Count % 10 * (1.0f / 10);
-	float y = m_Count / 6 * (1.0f / 3);
+	float x = m_AnimCount % IMAGE_SHEETS_X * (1.0f / IMAGE_SHEETS_X);
+	float y = m_AnimCount / (IMAGE_SHEETS_Y * 2) * (1.0f / IMAGE_SHEETS_Y);
 
 	// 頂点データ書き換え
 	D3D11_MAPPED_SUBRESOURCE msr;
@@ -163,7 +165,7 @@ void Explosion::Draw()
 	D3DXMATRIX world, scale, rot, trans;
 	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);
 	D3DXMatrixRotationYawPitchRoll(&rot, m_Rotation.y, m_Rotation.x, m_Rotation.z);
-	D3DXMatrixTranslation(&trans, m_Position.x, m_Position.y + 1.0f, m_Position.z);
+	D3DXMatrixTranslation(&trans, m_Position.x + m_RandomPos.x, m_Position.y + m_RandomPos.y, m_Position.z + m_RandomPos.z);
 	world = scale * invView * trans;
 	Renderer::SetWorldMatrix(&world);
 
@@ -190,3 +192,20 @@ void Explosion::Draw()
 
 	GameObject::Draw();
 }
+
+void Explosion::Spawn(D3DXVECTOR3 position, D3DXVECTOR2 scale, int time)
+{
+	m_Position = position;
+	m_Scale = D3DXVECTOR3(scale.x, scale.y, 0.0f);
+	m_ShiftTime = time;
+	m_Camera->SetBomShake(m_Position, 200.0f, 500.0f);
+}
+
+void Explosion::RandomShiftPos(int range)
+{
+	m_RandomPos.x = RandomInt(range, true);
+	m_RandomPos.y = RandomInt(range, true);
+	m_RandomPos.z = RandomInt(range, true);
+}
+
+

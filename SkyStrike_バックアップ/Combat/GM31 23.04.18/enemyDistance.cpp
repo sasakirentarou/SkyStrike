@@ -10,7 +10,6 @@
 void EnemyDistance::Init()
 {
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\unlitTextureVS.cso");
-
 	Renderer::CreatePixelShader(&m_PixelShader, "shader\\unlitTexturePS.cso");
 
 	VERTEX_3D vertex[4];
@@ -132,10 +131,12 @@ void EnemyDistance::Draw()
 	for (int i = 0; i < 4; i++)
 	{
 		//頂点座標算出
-		float vx = PosX - i * 40.0f;
-		float vy = PosY;
-		float height = 400.0f;
-		float width = 300.0f;
+		//float vx = PosX - i * 40.0f;
+		//float vy = PosY;
+		float vx = 1.0f - i * 20.0f;
+		float vy = 1.0f;
+		float height = 10.0f;
+		float width = 10.0f;
 
 		// テクスチャ座標算出
 		int number = count % 10;
@@ -144,28 +145,48 @@ void EnemyDistance::Draw()
 		float x = number % 5/*横*/ * (1.0f / 5/*横*/);
 		float y = number / 5/*横*/ * (1.0f / 2/*縦*/);
 
-		// 頂点データ書き換え
+		//頂点データ書き換え
 		D3D11_MAPPED_SUBRESOURCE msr;
 		Renderer::GetDeviceContext()->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 		VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
-		vertex[0].Position = D3DXVECTOR3(vx, vy, 0.0f);
+		//vertex[0].Position = D3DXVECTOR3(vx, vy, 0.0f);
+		//vertex[0].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		//vertex[0].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[0].TexCoord = D3DXVECTOR2(x, y);
+
+		//vertex[1].Position = D3DXVECTOR3(vx + width, vy, 0.0f);
+		//vertex[1].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		//vertex[1].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[1].TexCoord = D3DXVECTOR2(x + 0.2f, y);
+
+		//vertex[2].Position = D3DXVECTOR3(vx, vy + height, 0.0f);
+		//vertex[2].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		//vertex[2].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[2].TexCoord = D3DXVECTOR2(x, y + 0.5f);
+
+		//vertex[3].Position = D3DXVECTOR3(vx + width, vy + height, 0.0f);
+		//vertex[3].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		//vertex[3].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+		//vertex[3].TexCoord = D3DXVECTOR2(x + 0.2f, y + 0.5f);
+
+		vertex[0].Position = D3DXVECTOR3(-vx, vy, 0.0f);
 		vertex[0].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 		vertex[0].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[0].TexCoord = D3DXVECTOR2(x, y);
 
-		vertex[1].Position = D3DXVECTOR3(vx + width, vy, 0.0f);
+		vertex[1].Position = D3DXVECTOR3(vx, vy, 0.0f);
 		vertex[1].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 		vertex[1].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[1].TexCoord = D3DXVECTOR2(x + 0.2f, y);
 
-		vertex[2].Position = D3DXVECTOR3(vx, vy + height, 0.0f);
+		vertex[2].Position = D3DXVECTOR3(-vx, -vy, 0.0f);
 		vertex[2].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 		vertex[2].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[2].TexCoord = D3DXVECTOR2(x, y + 0.5f);
 
-		vertex[3].Position = D3DXVECTOR3(vx + width, vy + height, 0.0f);
+		vertex[3].Position = D3DXVECTOR3(vx, -vy, 0.0f);
 		vertex[3].Normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 		vertex[3].Diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 		vertex[3].TexCoord = D3DXVECTOR2(x + 0.2f, y + 0.5f);
@@ -175,6 +196,7 @@ void EnemyDistance::Draw()
 		// ポリゴン描画
 		Renderer::GetDeviceContext()->Draw(4, 0);
 	}
+
 	//手前(深度オン)
 	Renderer::SetDepthEnable(true);
 }

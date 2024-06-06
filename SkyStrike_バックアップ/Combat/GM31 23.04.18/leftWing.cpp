@@ -5,6 +5,8 @@
 #include "scene.h"
 #include "manager.h"
 #include "input.h"
+#include "inputx.h"
+#include "textureManager.h"
 
 void LeftWing::Init()
 {
@@ -16,6 +18,7 @@ void LeftWing::Init()
 	m_Model = new Model();
 	m_Model->Load("asset\\model\\F-35\\rightwing_new.obj");
 
+	m_Scene = Manager::GetScene();
 
 	GameObject::Init();
 }
@@ -32,16 +35,34 @@ void LeftWing::Uninit()
 
 void LeftWing::Update()
 {
-	//ピッチ
+	auto texture = m_Scene->GetGameObject<TextureManager>();
+
 	float angle = 0;
-	if (Input::GetKeyPress(VK_SHIFT))
+
+	//ピッチ
+	if (texture->GetPitchFlipCheck())
 	{
-		angle = D3DX_PI / 18;
+		if (Input::GetKeyPress(VK_SHIFT))
+		{
+			angle = -D3DX_PI / 18;
+		}
+		if (Input::GetKeyPress(VK_CONTROL))
+		{
+			angle = D3DX_PI / 18;
+		}
 	}
-	if (Input::GetKeyPress(VK_CONTROL))
+	else
 	{
-		angle = -D3DX_PI / 18;
+		if (Input::GetKeyPress(VK_SHIFT))
+		{
+			angle = D3DX_PI / 18;
+		}
+		if (Input::GetKeyPress(VK_CONTROL))
+		{
+			angle = -D3DX_PI / 18;
+		}
 	}
+
 	//ロール
 	if (Input::GetKeyPress('A'))
 	{
@@ -52,6 +73,20 @@ void LeftWing::Update()
 		angle = -D3DX_PI / 18;
 	}
 
+	//コントローラー
+	if (InputX::GetThumbLeftX(0) != 0 || InputX::GetThumbLeftY(0) != 0)
+	{
+		if (texture->GetPitchFlipCheck())
+		{
+			float stick = -InputX::GetThumbLeftX(0) + -InputX::GetThumbLeftY(0);
+			angle = (D3DX_PI / 15) * stick;
+		}
+		else
+		{
+			float stick = -InputX::GetThumbLeftX(0) + InputX::GetThumbLeftY(0);
+			angle = (D3DX_PI / 15) * stick;
+		}
+	}
 
 	D3DXVECTOR3 axis = GetRightQuaternion();
 	D3DXQUATERNION quat;
@@ -63,8 +98,7 @@ void LeftWing::Update()
 
 void LeftWing::Draw()
 {
-	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	auto player = m_Scene->GetGameObject<Player>();
 
 	// 入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);

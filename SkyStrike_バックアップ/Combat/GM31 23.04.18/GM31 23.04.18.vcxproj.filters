@@ -91,9 +91,6 @@
     <Filter Include="ヘッダー ファイル\Polygon\3D\Effect">
       <UniqueIdentifier>{04c5c6d9-d0db-4712-8cc7-746b77572b8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\System">
-      <UniqueIdentifier>{851d0c8b-f89d-4938-b6c3-9a7b31580f5b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\System">
       <UniqueIdentifier>{93777287-668e-4d0f-8c45-06ba6aac3760}</UniqueIdentifier>
     </Filter>
@@ -102,6 +99,27 @@
     </Filter>
     <Filter Include="ソース ファイル\Component">
       <UniqueIdentifier>{04c5f7cb-5596-4ea4-a360-1f94a3114fc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System">
+      <UniqueIdentifier>{851d0c8b-f89d-4938-b6c3-9a7b31580f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Polygon\3D\Field">
+      <UniqueIdentifier>{ac3fd2c1-11b8-439b-8209-8ecbabc53f4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\Enemy">
+      <UniqueIdentifier>{e7ecf76a-bd09-4c61-95aa-8670e702a551}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\Enemy">
+      <UniqueIdentifier>{bbbe8e70-ff2a-49fd-9ae8-7ea117ef6924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Polygon\3D\Field">
+      <UniqueIdentifier>{41a75535-7215-4b21-8cbd-66df430cab35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\Weapon\Missile">
+      <UniqueIdentifier>{2027c5a3-0c53-4987-bdbd-47638b00c4be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\Weapon\Missile">
+      <UniqueIdentifier>{c4f03fe0-3db5-429c-bc53-b84634d6d5d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +153,6 @@
     <ClCompile Include="fade.cpp">
       <Filter>ソース ファイル\Polygon\2D</Filter>
     </ClCompile>
-    <ClCompile Include="field.cpp">
-      <Filter>ソース ファイル\Polygon\3D</Filter>
-    </ClCompile>
     <ClCompile Include="hpGauge.cpp">
       <Filter>ソース ファイル\Polygon\2D</Filter>
     </ClCompile>
@@ -156,16 +171,7 @@
     <ClCompile Include="lockOn.cpp">
       <Filter>ソース ファイル\Polygon\3D</Filter>
     </ClCompile>
-    <ClCompile Include="meshField.cpp">
-      <Filter>ソース ファイル\Polygon\3D</Filter>
-    </ClCompile>
     <ClCompile Include="missileUI.cpp">
-      <Filter>ソース ファイル\Polygon\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="polygon2D.cpp">
-      <Filter>ソース ファイル\Polygon\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="resultLogo.cpp">
       <Filter>ソース ファイル\Polygon\2D</Filter>
     </ClCompile>
     <ClCompile Include="smoke.cpp">
@@ -176,9 +182,6 @@
     </ClCompile>
     <ClCompile Include="titleLogo.cpp">
       <Filter>ソース ファイル\Polygon\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="trail.cpp">
-      <Filter>ソース ファイル\Polygon\3D</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
       <Filter>ソース ファイル\Scene</Filter>
@@ -216,9 +219,6 @@
     <ClCompile Include="flare.cpp">
       <Filter>ソース ファイル\Model\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="missile.cpp">
-      <Filter>ソース ファイル\Model\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="bullet.cpp">
       <Filter>ソース ファイル\Model\Weapon</Filter>
     </ClCompile>
@@ -231,9 +231,6 @@
     <ClCompile Include="cylinder.cpp">
       <Filter>ソース ファイル\Model\Object</Filter>
     </ClCompile>
-    <ClCompile Include="enemy.cpp">
-      <Filter>ソース ファイル\Model\Object</Filter>
-    </ClCompile>
     <ClCompile Include="dome.cpp">
       <Filter>ソース ファイル\Model\Object</Filter>
     </ClCompile>
@@ -243,7 +240,7 @@
     <ClCompile Include="titleCamera.cpp">
       <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="jet.cpp">
+    <ClCompile Include="teamJet.cpp">
       <Filter>ソース ファイル\Model\Object</Filter>
     </ClCompile>
     <ClCompile Include="collisionBox.cpp">
@@ -263,9 +260,6 @@
     </ClCompile>
     <ClCompile Include="effectManager.cpp">
       <Filter>ソース ファイル\Polygon\3D\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="arrow.cpp">
-      <Filter>ソース ファイル\Model\Object</Filter>
     </ClCompile>
     <ClCompile Include="input.cpp">
       <Filter>ソース ファイル\System</Filter>
@@ -288,13 +282,85 @@
     <ClCompile Include="audio.cpp">
       <Filter>ソース ファイル\Component</Filter>
     </ClCompile>
-    <ClCompile Include="titleField.cpp">
-      <Filter>ソース ファイル\Polygon\3D</Filter>
-    </ClCompile>
     <ClCompile Include="spritefield.cpp">
       <Filter>ソース ファイル\Component</Filter>
     </ClCompile>
     <ClCompile Include="model.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="inputx.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="fire.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="engineFire.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="trail.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="tutorial.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="field.cpp">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="titleField.cpp">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="meshField.cpp">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyJet.cpp">
+      <Filter>ソース ファイル\Model\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="arrow.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="sundome.cpp">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="seaField.cpp">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="hitBullet.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="desertField.cpp">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="longMissile.cpp">
+      <Filter>ソース ファイル\Model\Weapon\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>ソース ファイル\Model\Weapon\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="missileFire.cpp">
+      <Filter>ソース ファイル\Model\Weapon\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="lockon2D.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="tgt.cpp">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="longMissileUI.cpp">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="jet.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyManager.cpp">
+      <Filter>ソース ファイル\Model\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="weaponManager.cpp">
+      <Filter>ソース ファイル\Model\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -347,9 +413,6 @@
     <ClInclude Include="explosion.h">
       <Filter>ヘッダー ファイル\Polygon\3D</Filter>
     </ClInclude>
-    <ClInclude Include="field.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
     <ClInclude Include="hpGauge.h">
       <Filter>ヘッダー ファイル\Polygon\2D</Filter>
     </ClInclude>
@@ -389,23 +452,11 @@
     <ClInclude Include="lockOn.h">
       <Filter>ヘッダー ファイル\Polygon\3D</Filter>
     </ClInclude>
-    <ClInclude Include="meshField.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="polygon2D.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="resultLogo.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
     <ClInclude Include="startButton.h">
       <Filter>ヘッダー ファイル\Polygon\2D</Filter>
     </ClInclude>
     <ClInclude Include="titleLogo.h">
       <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="titleField.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
     </ClInclude>
     <ClInclude Include="trail.h">
       <Filter>ヘッダー ファイル\Polygon\3D</Filter>
@@ -425,9 +476,6 @@
     <ClInclude Include="title.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="missile.h">
-      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="player.h">
       <Filter>ヘッダー ファイル\Model\Player</Filter>
     </ClInclude>
@@ -440,7 +488,7 @@
     <ClInclude Include="titleCamera.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="jet.h">
+    <ClInclude Include="teamJet.h">
       <Filter>ヘッダー ファイル\Model\Object</Filter>
     </ClInclude>
     <ClInclude Include="collisionBox.h">
@@ -460,12 +508,6 @@
     </ClInclude>
     <ClInclude Include="effectManager.h">
       <Filter>ヘッダー ファイル\Polygon\3D\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="enemy.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="arrow.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
     </ClInclude>
     <ClInclude Include="gameObject.h">
       <Filter>ヘッダー ファイル\System</Filter>
@@ -499,6 +541,78 @@
     </ClInclude>
     <ClInclude Include="spritefield.h">
       <Filter>ヘッダー ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="inputx.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="fire.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="engineFire.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorial.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="arrow.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyJet.h">
+      <Filter>ヘッダー ファイル\Model\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="meshField.h">
+      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="titleField.h">
+      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="field.h">
+      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="sundome.h">
+      <Filter>ヘッダー ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="seaField.h">
+      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="hitBullet.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="desertField.h">
+      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
+      <Filter>ヘッダー ファイル\Model\Weapon\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="longMissile.h">
+      <Filter>ヘッダー ファイル\Model\Weapon\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="missileFire.h">
+      <Filter>ヘッダー ファイル\Model\Weapon\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="tgt.h">
+      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="lockon2D.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="longMissileUI.h">
+      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="jet.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyManager.h">
+      <Filter>ヘッダー ファイル\Model\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponManager.h">
+      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -551,6 +665,15 @@
       <Filter>hlsl\VS</Filter>
     </FxCompile>
     <FxCompile Include="shader\boxTexturePS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthNormalMappingPS.hlsl">
+      <Filter>hlsl\PS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DepthNormalMappingVS.hlsl">
+      <Filter>hlsl\VS</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\smokeTexturePS.hlsl">
       <Filter>hlsl\PS</Filter>
     </FxCompile>
   </ItemGroup>

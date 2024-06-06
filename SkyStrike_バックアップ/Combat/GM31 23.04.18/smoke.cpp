@@ -65,7 +65,7 @@ void Smoke::Unload()
 void Smoke::Init()
 {
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\unlitTextureVS.cso");
-	Renderer::CreatePixelShader(&m_PixelShader, "shader\\unlitTexturePS.cso");
+	Renderer::CreatePixelShader(&m_PixelShader, "shader\\smokeTexturePS.cso");
 
 	//ƒ‰ƒ“ƒ_ƒ€
 	m_RandomRot = float(rand()) / RAND_MAX * (D3DX_PI * 2) - D3DX_PI;

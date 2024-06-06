@@ -12,15 +12,23 @@
 #include "explosion.h"
 #include "lockOn.h"
 #include "lock.h"
-#include "enemy.h"
+#include "enemyJet.h"
 #include "camera.h"
 #include "cross.h"
 #include "trail.h"
 #include "missileUI.h"
+#include "longMissileUI.h"
 #include "hpGauge.h"
 #include "flare.h"
 #include "enemyDistance.h"
 #include "effectManager.h"
+#include "textureManager.h"
+#include "inputx.h"
+#include "longMissile.h"
+#include "lockon2D.h"
+#include "collisionBox.h"
+
+SpecialWeapon Player::m_SpecialWeapon = WEAPON_LONG_MISSILE;
 
 void Player::Init()
 {
@@ -36,6 +44,7 @@ void Player::Init()
 	else
 		m_Model->Load("asset\\model\\F-35\\F-35B-On.obj");
 
+	m_Scene = Manager::GetScene();
 
 	if (m_GameEnable)
 	{
@@ -44,10 +53,33 @@ void Player::Init()
 		//テスト
 		m_MissileSetFlg00 = true;
 		m_MissileSetFlg01 = true;
-		missile00 = m_Scene->AddGameObject<Missile>(1);
-		missile01 = m_Scene->AddGameObject<Missile>(1);
-		missile00->SetShot(false);
-		missile01->SetShot(false);
+		m_Missile00 = m_Scene->AddGameObject<Missile>(1);
+		m_Missile01 = m_Scene->AddGameObject<Missile>(1);
+		m_Missile00->SetShot(false);
+		m_Missile01->SetShot(false);
+
+		m_SpecialMissileSetFlg00 = true;
+		m_SpecialMissileSetFlg01 = true;
+
+		//特殊兵装
+		switch (m_SpecialWeapon)
+		{
+		case WEAPON_LONG_MISSILE:
+			m_LongUI_0 = m_Scene->AddGameObject<LongMissileUI>(2);
+			m_LongUI_1 = m_Scene->AddGameObject<LongMissileUI>(2);
+			
+			m_LongMissile00 = m_Scene->AddGameObject<LongMissile>(1);
+			m_LongMissile01 = m_Scene->AddGameObject<LongMissile>(1);
+			
+			m_SpecialMissileAmount = MAX_LONG;
+			break;
+		case WEAPON_SHORT_MISSILE:
+			break;
+		case WEAPON_RAIL_GUN:
+			break;
+		default:
+			break;
+		}
 
 		//頂点取得
 		m_Model->GetModelVertex("asset\\model\\F-35\\F-35B-Off.obj", m_Top);
@@ -55,34 +87,27 @@ void Player::Init()
 		//トレイル生成
 		m_Trail01 = m_Scene->AddGameObject<Trail>(1);
 		m_Trail02 = m_Scene->AddGameObject<Trail>(1);
-	}
 
-	m_Scene = Manager::GetScene();
+		//collision
+		m_Collision = m_Scene->AddGameObject<CollisionBox>(1);
+		m_Collision->SetScale(D3DXVECTOR3(6.0f, 1.0f, 8.0f));
+	}
 
 	//SE
 	m_MinigunSE = AddComponet<Audio>();
 	m_MinigunSE->Load("asset\\audio\\minigun.wav");
-	m_MinigunSE->Volume(0.05f);
-
-	m_MissileSE = AddComponet<Audio>();
-	m_MissileSE->Load("asset\\audio\\missile.wav");
-	m_MissileSE->Volume(0.3f);
 
 	m_LockOnSE = AddComponet<Audio>();
 	m_LockOnSE->Load("asset\\audio\\lockon.wav");
-	m_LockOnSE->Volume(0.01f);
 
 	m_LockSetSE = AddComponet<Audio>();
 	m_LockSetSE->Load("asset\\audio\\lockonset.wav");
-	m_LockSetSE->Volume(0.01f);
 
 	m_StealthSE = AddComponet<Audio>();
 	m_StealthSE->Load("asset\\audio\\stealth.wav");
-	m_StealthSE->Volume(0.05f);
 
 	m_MissileAlertSE = AddComponet<Audio>();
 	m_MissileAlertSE->Load("asset\\audio\\alert.wav");
-	m_MissileAlertSE->Volume(0.01f);
 
 	m_MissileAmount = MAX_MISSILE;
 	m_FlareAmount = MAX_FLARE;
@@ -105,7 +130,12 @@ void Player::Uninit()
 	m_Model->Unload();
 
 	if(m_GameEnable)
-	m_DissolveTexture->Release();
+	{
+		m_DissolveTexture->Release();
+		m_Trail01->SetDestroy();
+		m_Trail02->SetDestroy();
+		m_Collision->SetDestroy();
+	}
 
 	m_VertexLayout->Release();
 	m_VertexShader->Release();
@@ -116,23 +146,32 @@ void Player::Uninit()
 
 void Player::Update()
 {
-	auto enemys = m_Scene->GetGameObjects<Enemy>();
-	auto missileuis = m_Scene->GetGameObjects<MissileUI>();
-	auto camera = m_Scene->GetGameObject<Camera>();
-	auto hp = m_Scene->GetGameObject<HpGauge>();
-	auto distance = m_Scene->GetGameObject<EnemyDistance>();
-	auto missiles = m_Scene->GetGameObjects<Missile>();
+	//ボリューム
+	m_MinigunSE->Volume(Scene::m_SEVolume * (0.05f * 2));
+	m_LockOnSE->Volume(Scene::m_SEVolume * (0.03f * 2));
+	m_LockSetSE->Volume(Scene::m_SEVolume * (0.03f * 2));
+	m_StealthSE->Volume(Scene::m_SEVolume * (0.1f * 2));
+	m_MissileAlertSE->Volume(Scene::m_SEVolume * (0.03f * 2));
 
 	if(m_GameEnable)
 	{
-		m_fVec = D3DXVec3Length(&m_Velocity);
-
-		//ロックオンUI
+		auto enemys = m_Scene->GetGameObjects<EnemyJet>();
+		auto missileuis = m_Scene->GetGameObjects<MissileUI>();
+		auto lmissileuis = m_Scene->GetGameObjects<LongMissileUI>();
+		auto camera = m_Scene->GetGameObject<Camera>();
+		auto hp = m_Scene->GetGameObject<HpGauge>();
+		auto distance = m_Scene->GetGameObject<EnemyDistance>();
+		auto missiles = m_Scene->GetGameObjects<Missile>();
+		auto texture = m_Scene->GetGameObject<TextureManager>();
+		
+		m_Lockon2D = m_Scene->GetGameObject<Lockon2D>();
 		m_LockOn = m_Scene->GetGameObject<LockOn>();
-		//クロスヘアUI
 		//m_Cross = m_Scene->GetGameObject<Cross>();
 
+		m_fVec = D3DXVec3Length(&m_Velocity);
+
 		//ロール
+		if(!m_RoleLock)
 		{
 			float angle = 0.0f;
 
@@ -145,6 +184,11 @@ void Player::Update()
 				angle = -ROLL_SPEED;
 			}
 
+			if (InputX::GetThumbLeftX(0) != 0)
+			{
+				angle = -ROLL_SPEED * InputX::GetThumbLeftX(0);
+			}
+
 			//ロール回転
 			D3DXVECTOR3 axis = GetForwardQuaternion();
 			D3DXQUATERNION quat;
@@ -154,6 +198,7 @@ void Player::Update()
 		}
 
 		//ピッチ
+		if(!m_PitchLock)
 		{
 			float angle = 0.0f;
 
@@ -161,22 +206,46 @@ void Player::Update()
 			if (m_fVec <= MIN_SPEED)
 			{
 				m_Velocity += GetForwardQuaternion() * 0.01f;
-				//angle = 0.01f;
-				//D3DXVECTOR3 axis = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-				//D3DXQUATERNION quat;
-				//D3DXQuaternionRotationAxis(&quat, &axis, angle);
-				//m_Endquat = m_Endquat * quat;
-				//D3DXQuaternionSlerp(&m_Quaternion, &m_Quaternion, &m_Endquat, 0.1f);
 			}
-			else
+			else  
 			{
-				if (Input::GetKeyPress(VK_SHIFT))
+				if (texture->GetPitchFlipCheck())//ピッチ反転
 				{
-					angle = -PITCH_SPEED;
+					if (Input::GetKeyPress(VK_SHIFT))
+					{
+						angle = PITCH_SPEED;
+						//m_Velocity += GetForwardQuaternion() * SPEED_UP / 1.5f;
+					}
+					else if (Input::GetKeyPress(VK_CONTROL))
+					{
+						angle = -PITCH_SPEED;
+						//m_Velocity += GetForwardQuaternion() * SPEED_UP / 1.5f;
+					}
+
+					if (InputX::GetThumbLeftY(0) != 0)
+					{
+						angle = PITCH_SPEED * InputX::GetThumbLeftY(0);
+						//m_Velocity += GetForwardQuaternion() * SPEED_UP / 1.5f;
+					}
 				}
-				else if (Input::GetKeyPress(VK_CONTROL))
+				else
 				{
-					angle = PITCH_SPEED;
+					if (Input::GetKeyPress(VK_SHIFT))
+					{
+						angle = -PITCH_SPEED;
+						//m_Velocity += GetForwardQuaternion() * SPEED_UP / 1.5f;
+					}
+					else if (Input::GetKeyPress(VK_CONTROL))
+					{
+						angle = PITCH_SPEED;
+						//m_Velocity += GetForwardQuaternion() * SPEED_UP / 1.5f;
+					}
+
+					if (InputX::GetThumbLeftY(0) != 0)
+					{
+						angle = -PITCH_SPEED * InputX::GetThumbLeftY(0);
+						//m_Velocity += GetForwardQuaternion() * SPEED_UP / 1.5f;
+					}
 				}
 
 				D3DXVECTOR3 axis = GetRightQuaternion();
@@ -188,15 +257,16 @@ void Player::Update()
 		}
 
 		//ヨー
+		if(!m_YawLock)
 		{
 			float angle = 0.0f;
 
-			if (Input::GetKeyPress('E'))
+			if (Input::GetKeyPress('E') || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_RIGHT_SHOULDER))
 			{
 				m_Velocity += GetRightQuaternion() * YAW_SPEED;
 				angle = YAW_SPEED;
 			}
-			else if (Input::GetKeyPress('Q'))
+			else if (Input::GetKeyPress('Q') || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_LEFT_SHOULDER))
 			{
 				m_Velocity -= GetRightQuaternion() * YAW_SPEED;
 				angle = -YAW_SPEED;
@@ -210,7 +280,7 @@ void Player::Update()
 			D3DXQuaternionSlerp(&m_Quaternion, &m_Quaternion, &m_Endquat, 0.1f);
 		}
 
-		//ミサイルSE
+		//ミサイルアラートSE
 		for (Missile* missile : missiles)
 		{
 			if (missile->GetPlayerTrack())
@@ -222,104 +292,112 @@ void Player::Update()
 			}
 		}
 
-		//ミサイル装着時
-		if (m_MissileSetFlg00)
+		//兵装切り替え
+		if (Input::GetKeyTrigger('C') || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_X))
 		{
-			missile00->SetPosition(m_Position + GetForwardQuaternion() * -0.8f + GetRightQuaternion() * 5.0f + GetTopQuaternion() * -0.6f);
-			missile00->SetQuaternion(m_Quaternion);
-			missile00->SetVelocity(m_Velocity);
-		}
-		if (m_MissileSetFlg01)
-		{
-			missile01->SetPosition(m_Position + GetForwardQuaternion() * -0.8f + GetRightQuaternion() * -5.0f + GetTopQuaternion() * -0.6f);
-			missile01->SetQuaternion(m_Quaternion);
-			missile01->SetVelocity(m_Velocity);
+			m_SpecialWeaponMode = !m_SpecialWeaponMode;
 		}
 
-		//ミサイルクールタイム
-		if (missileuis[0]->GetGauge() == 100)
-		{
-			missile00 = m_Scene->AddGameObject<Missile>(1);
 
-			m_MissileSetFlg00 = true;
+		if (!m_SpecialWeaponMode)
+		{
+			missileuis[0]->SetDrawFlg(true);
+			missileuis[1]->SetDrawFlg(true);
+			lmissileuis[0]->SetDrawFlg(false);
+			lmissileuis[1]->SetDrawFlg(false);
+
+			ShotMissile();
 		}
-		if (missileuis[1]->GetGauge() == 100)
+		else
 		{
-			missile01 = m_Scene->AddGameObject<Missile>(1);
+			missileuis[0]->SetDrawFlg(false);
+			missileuis[1]->SetDrawFlg(false);
 
-			m_MissileSetFlg01 = true;
-		}
-
-		// ミサイル発射
-		if (Input::GetKeyTrigger(VK_LBUTTON))
-		{
-			//ミサイルを撃った対象のID取得
-			if(!enemys.empty())
+			//特殊兵装ステートマシン
+			switch (m_SpecialWeapon)
 			{
-				m_MissileLockID = m_EnemyID;
-			}
-
-			if (m_MissilePosChange == 0 && m_MissileSetFlg00 && m_MissileAmount > 0)
-			{
-
-				missile00->SetVelocity(GetForwardQuaternion() * 2.0f + m_Velocity);
-				missile00->SetShot(true);
-
-				if (m_LockSetFlg)
-				{
-					missile00->SetEnemyTrack(true);
-				}
-
-				missileuis[0]->SetGauge(0);
-
-				m_MissileSE->Play(false);
-				m_MissileSetFlg00 = false;
-				m_MissilePosChange++;
-				m_MissileAmount--;
-			}
-			else if (m_MissileSetFlg01 && m_MissileAmount > 0)
-			{
-
-				missile01->SetVelocity(GetForwardQuaternion() * 2.0f + m_Velocity);
-				missile01->SetShot(true);
-
-				if (m_LockSetFlg)
-				{
-					missile01->SetEnemyTrack(true);
-				}
-
-				missileuis[1]->SetGauge(0);
-
-				m_MissileSE->Play(false);
-				m_MissileSetFlg01 = false;
-				m_MissilePosChange = 0;
-				m_MissileAmount--;
+			case WEAPON_LONG_MISSILE:
+				ShotLong();
+				lmissileuis[0]->SetDrawFlg(true);
+				lmissileuis[1]->SetDrawFlg(true);
+				break;
+			case WEAPON_SHORT_MISSILE:
+				ShotShort();
+				break;
+			case WEAPON_RAIL_GUN:
+				ShotRail();
+				break;
+			default:
+				break;
 			}
 		}
 
 
-		//加速
-		if (Input::GetKeyPress('W'))
+		//Update処理
 		{
-			m_Velocity += GetForwardQuaternion() * SPEED_UP;
-		}
-		else if (Input::GetKeyPress('S')) //減速
-		{
-			m_Velocity -= GetForwardQuaternion() * SPEED_DOWN;
+			//特殊兵装ステートマシン
+			switch (m_SpecialWeapon)
+			{
+			case WEAPON_LONG_MISSILE:
+				UpdateLong();
+				break;
+			case WEAPON_SHORT_MISSILE:
+				UpdateShort();
+				break;
+			case WEAPON_RAIL_GUN:
+				UpdateRail();
+				break;
+			default:
+				break;
+			}
+			UpdateMissile();
 		}
 
-		if (Input::GetKeyTrigger(VK_RBUTTON))
+
+
+		if(!m_EngineLock)
+		{
+			//キーボード
+			if (Input::GetKeyPress('W'))//加速
+			{
+				m_Velocity += GetForwardQuaternion() * SPEED_UP;
+			}
+			else if (Input::GetKeyPress('S')) //減速
+			{
+				m_Velocity -= GetForwardQuaternion() * SPEED_DOWN;
+			}
+			//コントローラー
+			if (InputX::GetRightTrigger(0) > 0)
+			{
+				//正規化
+				float trigger = InputX::GetRightTrigger(0) / 255;
+
+				m_Velocity += (GetForwardQuaternion() * SPEED_UP) * trigger;
+			}
+			else if (InputX::GetLeftTrigger(0) > 0) //減速
+			{
+				//正規化
+				float trigger = InputX::GetLeftTrigger(0) / 255;
+
+				m_Velocity -= (GetForwardQuaternion() * SPEED_DOWN) * trigger;
+			}
+		}
+
+
+		if (Input::GetKeyTrigger(VK_RBUTTON) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_A))
 		{
 			m_MinigunSE->Play(true);
 		}
 
 		// マシンガン発射
-		if (Input::GetKeyPress(VK_RBUTTON))
+		if (Input::GetKeyPress(VK_RBUTTON) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_A))
 		{
 			Bullet* bullet = m_Scene->AddGameObject<Bullet>(1);
 			bullet->SetPosition(m_Position + GetTopQuaternion() * -1.6f);
 			bullet->SetVelocity(m_Velocity + GetForwardQuaternion() * 5.0f);
 			bullet->SetQuaternion(m_Quaternion);
+			InputX::SetVibration(0, 5);
+
 			//EffectManager* effect = m_Scene->AddGameObject<EffectManager>(1);
 			//effect->LoadSelect(MUZZLE_FLASH);
 		}
@@ -328,11 +406,12 @@ void Player::Update()
 			if (m_MinigunSE->GetPlay())
 			{
 				m_MinigunSE->Stop();
+				InputX::StopVibration(0);
 			}
 		}
 
 		//ステルスモード
-		if (Input::GetKeyTrigger('T'))
+		if (Input::GetKeyTrigger('T') || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_RIGHT_THUMB))
 		{
 			m_StealthSE->Play(false);
 			//フラグ切り替え
@@ -353,11 +432,6 @@ void Player::Update()
 				m_Threshold = 1.1f;
 			}
 
-			for (Enemy* enemy : enemys)
-			{
-				enemy->SetPlayerStealth(true);
-			}
-
 			if (m_StealthAmount > 0)
 			{
 				m_StealthAmount -= STEALTH_DOWN_SPEED;
@@ -376,11 +450,6 @@ void Player::Update()
 				m_Threshold = 0.0f;
 			}
 
-			for (Enemy* enemy : enemys)
-			{
-				enemy->SetPlayerStealth(false);
-			}
-
 			if (m_StealthAmount < STEALTH_MAX)
 			{
 				m_StealthAmount += STEALTH_UP_SPEED;
@@ -388,7 +457,7 @@ void Player::Update()
 		}
 
 		//フレア発射
-		if (Input::GetKeyTrigger('G') && m_FlareAmount != 0)
+		if (Input::GetKeyTrigger('G') || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_LEFT_THUMB) && m_FlareAmount != 0)
 		{
 			if (!m_FlareFlg)
 			{
@@ -425,29 +494,24 @@ void Player::Update()
 
 
 		//ターゲット変更
-		if (Input::GetKeyTrigger('R'))
+		if (Input::GetKeyTrigger('R') || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_Y) && !enemys.empty())
 		{
 			SwitchTarget();
 
+			m_Lockon2D->LockMoveReset();
 			m_LockSetSE->Stop();
-			if (m_OldEnemyID != m_EnemyID)
-			{
-				m_LockOnType = 50.0f;
-
-				m_OldEnemyID = m_EnemyID;
-				m_LockOnSE->Play(true);
-			}
+			m_LockSeFlg = true;
 		}
 
 		//ロックオン処理
-		for (Enemy* enemy : enemys)
+		for (EnemyJet* enemy : enemys)
 		{
 			//UI処理
 			auto length = enemy->GetPosition() - m_Position;
 			float vecs = D3DXVec3Length(&length);
 
 			//distance
-			distance->PrintCount(D3DXVECTOR2(enemy->GetPosition().x, enemy->GetPosition().y),vecs);
+			//distance->PrintCount(D3DXVECTOR2(0.0f, 0.0f),vecs);
 
 			vecs /= 50.0f;//サイズ調整
 
@@ -462,31 +526,27 @@ void Player::Update()
 			enemy->GetAddLock()->SetScale(D3DXVECTOR3(vecs, vecs, 0.0f));
 			
 			//distance
-			distance->SetScale(D3DXVECTOR3(vecs, vecs, 0.0f));
+			//distance->SetPosition(enemy->GetPosition());
+			//distance->SetScale(D3DXVECTOR3(vecs, vecs, 0.0f));
+
 
 			//ロックオン処理
-			if (enemy->GetEnemyID() == m_EnemyID && !enemys.empty())
+			if (enemy->GetEnemyID() == m_EnemyID && !enemys.empty() && !enemy->GetCrash())
 			{
 				m_EnemyPos = enemy->GetPosition();//lockされている敵のpos保存
 
 				//lockon
 				if (m_LockOnFlg == true)
 				{
-					if (m_LockOnType > 0)
-					{
-						m_LockOnType -= 0.5f;
-					}
-
-					//lockOnセット
-					m_LockOn->SetPosition(D3DXVECTOR3(enemy->GetPosition().x, enemy->GetPosition().y, enemy->GetPosition().z) + m_LockOn->GetRight() * m_LockOnType + m_LockOn->GetTop() * m_LockOnType);
-					m_LockOn->SetAlpha(1.0f);
-					m_LockOn->SetScale(D3DXVECTOR3(vecs, vecs, 0.0f));
-
 					enemy->GetAddLock()->SetLockColor(true);//カラー赤
 
 					//ロックオン完了時
-					if (m_LockOn->GetPosition() == enemy->GetPosition())
+					if (m_Lockon2D->GetLockFinish())
 					{
+						m_LockOn->SetPosition(enemy->GetPosition());
+						m_LockOn->SetAlpha(1.0f);
+						m_LockOn->SetScale(D3DXVECTOR3(vecs, vecs, 0.0f));
+
 						enemy->GetAddLock()->BlinkingFlg(false);//lock
 						m_LockSetFlg = true;
 						m_LockOnSE->Stop();
@@ -501,6 +561,7 @@ void Player::Update()
 					else
 					{
 						enemy->GetAddLock()->BlinkingFlg(true);//lock点滅
+						m_LockOn->SetAlpha(0.0f); //lockOnのalpha非表示
 						m_LockSetFlg = false;
 					}
 				}
@@ -523,7 +584,9 @@ void Player::Update()
 			//enemy破壊時
 			if (enemy->GetCrash())
 			{
-				//m_LockOn->SetAlpha(0.0f);
+				if(enemys.size() <= 1)
+					m_LockOn->SetAlpha(0.0f);
+
 				m_OldEnemyID = m_EnemyID;
 			}
 		}
@@ -533,12 +596,14 @@ void Player::Update()
 		{
 			m_LockOn->SetAlpha(0.0f);//lockOnが残らないように非表示
 			m_LockSetSE->Stop();
+			m_LockOnSE->Stop();
 		}
+
 
 		//プレイヤーの視界内に入ったらロックオン
 		if (PlayerView(80.0f, 2000.0f))
 		{
-			for (Enemy* enemy : enemys)
+			for (EnemyJet* enemy : enemys)
 			{
 				//lock中の敵をロックオン
 				if (enemy->GetEnemyID() == m_EnemyID)
@@ -546,10 +611,18 @@ void Player::Update()
 					m_LockOnFlg = true;
 				}
 			}
+
+			if(m_LockSeFlg)
+			{
+				m_LockOnSE->Play(true);
+				m_LockSeFlg = false;
+			}
+			
+			m_Lockon2D->LockonMove();
 		}
 		else
 		{
-			for (Enemy* enemy : enemys)
+			for (EnemyJet* enemy : enemys)
 			{
 				//lock中の敵をロックオフ
 				if (enemy->GetEnemyID() == m_EnemyID)
@@ -561,6 +634,9 @@ void Player::Update()
 					m_LockSetSeFlg = true;//SE再生用
 				}
 			}
+			m_LockSeFlg = true;
+			m_Lockon2D->LockMoveReset();
+			m_Lockon2D->SetDraw(false);
 		}
 
 		//空気抵抗
@@ -578,11 +654,11 @@ void Player::Update()
 			if (m_DeathCount == 0)
 			{
 				auto explosion = m_Scene->AddGameObject<Explosion>(1);
-				explosion->SetScale(D3DXVECTOR3(5.5f, 5.5f, 0.0f));
-				explosion->SetPosition(m_Position);
-				explosion->BomTime(5);
+				explosion->Spawn(m_Position, D3DXVECTOR2(5.5, 5.5), 5);
+
 				m_Velocity *= 0;
 				m_DeathFlg = true;
+				
 				m_DeathCount++;
 			}
 		}
@@ -598,35 +674,17 @@ void Player::Update()
 		if(speed > 1300.0f)
 		{
 			//トレイル設定
-			m_Trail01->SetVertexPos(OldPosition + GetRightQuaternion() * m_Top.x + GetForwardQuaternion() * -2.0f,
-									OldPosition + GetRightQuaternion() * (m_Top.x * 0.98f) + GetForwardQuaternion() * -2.0f);
+			m_Trail01->SetVertexPos(OldPosition + GetRightQuaternion() * m_Top.x + GetForwardQuaternion() * -2.5f,
+									OldPosition + GetRightQuaternion() * (m_Top.x * 0.98f) + GetForwardQuaternion() * -2.5f);
 
-			m_Trail02->SetVertexPos(OldPosition - GetRightQuaternion() * m_Top.x + GetForwardQuaternion() * -2.0f,
-									OldPosition - GetRightQuaternion() * (m_Top.x * 0.98f) + GetForwardQuaternion() * -2.0f);
+			m_Trail02->SetVertexPos(OldPosition - GetRightQuaternion() * m_Top.x + GetForwardQuaternion() * -2.5f,
+									OldPosition - GetRightQuaternion() * (m_Top.x * 0.98f) + GetForwardQuaternion() * -2.5f);
 		}
-
-		//auto camera = m_Scene->GetGameObject<Camera>();
-		//D3DXMATRIX screenMatrix = camera->GetScreenMatrix();//マトリックス取得
-
-		//D3DXVECTOR3 crosspos = m_Cross->GetPosition();
-		//D3DXVECTOR3 screenCameraCross;//スクリーン上の敵の位置
-		//D3DXVec3TransformCoord(&screenCameraCross, &crosspos, &screenMatrix);//スクリーン上の敵位置を取得
-
-		//D3DXVECTOR3 enemypos;
-		//D3DXVECTOR3 screenCameraEnemy;//スクリーン上の敵の位置
-		//for (Enemy* enemy : enemys)
-		//{
-		//	if (enemy->GetEnemyID() == GetMisLockID())
-		//	{
-		//		enemypos = enemy->GetPosition();
-		//		D3DXVec3TransformCoord(&screenCameraEnemy, &enemypos, &screenMatrix);//スクリーン上の敵位置を取得
-		//	}
-		//}
 
 		//ImGui表示
 		//ImGui::Begin("PLAYER");
 		//ImGui::InputFloat3("Position", m_Position);
-		//ImGui::InputFloat3("PosVelocity", m_Velocity);
+		//ImGui::InputFloat3("Velocity", m_Velocity);
 		//ImGui::InputFloat4("Quaternion", m_Quaternion);
 		//ImGui::End();
 	}
@@ -654,6 +712,11 @@ void Player::Draw()
 	m_WorldMatrix = scale * rot * trans;
 	Renderer::SetWorldMatrix(&m_WorldMatrix);
 
+	if(m_GameEnable)
+	{
+		m_Collision->SetPearent(m_WorldMatrix);
+		SetCollider(m_Collision->GetMatrix());
+	}
 
 
 	// ディゾルブテクスチャ設定
@@ -671,6 +734,208 @@ void Player::Draw()
 	Renderer::SetATCEnable(false);
 
 	GameObject::Draw();
+}
+
+void Player::UpdateMissile()
+{
+	auto missileuis = m_Scene->GetGameObjects<MissileUI>();
+
+	//通常ミサイル
+	{
+		//ミサイル装着時
+		if (m_MissileSetFlg00)
+		{
+			m_Missile00->SetPosition(m_Position + GetForwardQuaternion() * -0.8f + GetRightQuaternion() * 5.0f + GetTopQuaternion() * -0.6f);
+			m_Missile00->SetQuaternion(m_Quaternion);
+			m_Missile00->SetVelocity(m_Velocity);
+		}
+		if (m_MissileSetFlg01)
+		{
+			m_Missile01->SetPosition(m_Position + GetForwardQuaternion() * -0.8f + GetRightQuaternion() * -5.0f + GetTopQuaternion() * -0.6f);
+			m_Missile01->SetQuaternion(m_Quaternion);
+			m_Missile01->SetVelocity(m_Velocity);
+		}
+
+		//ミサイルクールタイム
+		if (missileuis[0]->GetGauge() == 100)
+		{
+			m_Missile00 = m_Scene->AddGameObject<Missile>(1);
+
+			m_MissileSetFlg00 = true;
+		}
+		if (missileuis[1]->GetGauge() == 100)
+		{
+			m_Missile01 = m_Scene->AddGameObject<Missile>(1);
+
+			m_MissileSetFlg01 = true;
+		}
+	}
+}
+
+void Player::ShotMissile()
+{
+	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
+	auto missileuis = m_Scene->GetGameObjects<MissileUI>();
+
+	// ミサイル発射
+	if ((Input::GetKeyTrigger(VK_LBUTTON) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_B)))
+	{
+		//ミサイルを撃った対象のID取得
+		if (!enemys.empty())
+		{
+			m_MissileLockID = m_EnemyID;
+		}
+
+		if (m_MissilePosChange == 0 && m_MissileSetFlg00 && m_MissileAmount > 0)
+		{
+
+			m_Missile00->SetVelocity(GetForwardQuaternion() * 2.0f + m_Velocity);
+			m_Missile00->SetShot(true);
+
+			missileuis[0]->SetGauge(0);
+
+			InputX::SetVibration(0, 20);
+			m_MissileVibCount = 0;
+
+			m_MissileSetFlg00 = false;
+			m_MissilePosChange++;
+			m_MissileAmount--;
+		}
+		else if (m_MissileSetFlg01 && m_MissileAmount > 0)
+		{
+
+			m_Missile01->SetVelocity(GetForwardQuaternion() * 2.0f + m_Velocity);
+			m_Missile01->SetShot(true);
+
+			missileuis[1]->SetGauge(0);
+
+			InputX::SetVibration(0, 10);
+			m_MissileVibCount = 0;
+
+			m_MissileSetFlg01 = false;
+			m_MissilePosChange = 0;
+			m_MissileAmount--;
+		}
+	}
+	else
+	{
+		m_MissileVibCount++;
+		if (m_MissileVibCount > 60)
+		{
+			InputX::StopVibration(0);
+			m_MissileVibCount = 0;
+		}
+	}
+}
+
+void Player::UpdateLong()
+{
+	auto missileuis = m_Scene->GetGameObjects<LongMissileUI>();
+
+	{
+		//ミサイル装着
+		if (m_SpecialMissileSetFlg00 && m_SpecialMissileAmount > 0)
+		{
+			m_LongMissile00->SetPosition(m_Position + GetForwardQuaternion() * -0.8f + GetRightQuaternion() * 4.0f + GetTopQuaternion() * -0.8f);
+			m_LongMissile00->SetQuaternion(m_Quaternion);
+			m_LongMissile00->SetVelocity(m_Velocity);
+		}
+		if (m_SpecialMissileSetFlg01 && m_SpecialMissileAmount > 0)
+		{
+			m_LongMissile01->SetPosition(m_Position + GetForwardQuaternion() * -0.8f + GetRightQuaternion() * -4.0f + GetTopQuaternion() * -0.8f);
+			m_LongMissile01->SetQuaternion(m_Quaternion);
+			m_LongMissile01->SetVelocity(m_Velocity);
+		}
+
+		//ミサイルチャージ完了時
+		if (missileuis[0]->GetGauge() == 100)
+		{
+			m_LongMissile00 = m_Scene->AddGameObject<LongMissile>(1);
+
+			m_SpecialMissileSetFlg00 = true;
+		}
+		if (missileuis[1]->GetGauge() == 100)
+		{
+			m_LongMissile01 = m_Scene->AddGameObject<LongMissile>(1);
+
+			m_SpecialMissileSetFlg01 = true;
+		}
+	}
+}
+
+void Player::UpdateShort()
+{
+
+}
+
+void Player::UpdateRail()
+{
+
+}
+
+void Player::ShotLong()
+{
+	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
+	auto missileuis = m_Scene->GetGameObjects<LongMissileUI>();
+
+	// ミサイル発射
+	if ((Input::GetKeyTrigger(VK_LBUTTON) || InputX::IsButtonTriggered(0, XINPUT_GAMEPAD_B)))
+	{
+		//ミサイルを撃った対象のID取得
+		if (!enemys.empty())
+		{
+			m_MissileLockID = m_EnemyID;
+		}
+
+		//発射
+		if (m_SpecialMissilePosChange == 0 && m_SpecialMissileSetFlg00 && m_SpecialMissileAmount > 0)
+		{
+
+			m_LongMissile00->SetVelocity(m_Velocity - GetForwardQuaternion() * 0.02f);
+			m_LongMissile00->SetShot(true);
+
+			missileuis[0]->SetGauge(0);
+
+			InputX::SetVibration(0, 20);
+			m_MissileVibCount = 0;
+
+			m_SpecialMissileSetFlg00 = false;
+			m_SpecialMissilePosChange++;
+			m_SpecialMissileAmount--;
+		}
+		else if (m_SpecialMissileSetFlg01 && m_SpecialMissileAmount > 0)
+		{
+
+			m_LongMissile01->SetVelocity(m_Velocity - GetForwardQuaternion() * 0.02f);
+			m_LongMissile01->SetShot(true);
+
+			missileuis[1]->SetGauge(0);
+
+			InputX::SetVibration(0, 10);
+			m_MissileVibCount = 0;
+
+			m_SpecialMissileSetFlg01 = false;
+			m_SpecialMissilePosChange = 0;
+			m_SpecialMissileAmount--;
+		}
+	}
+	else
+	{
+		m_MissileVibCount++;
+		if (m_MissileVibCount > 60)
+		{
+			InputX::StopVibration(0);
+			m_MissileVibCount = 0;
+		}
+	}
+}
+
+void Player::ShotShort()
+{
+}
+
+void Player::ShotRail()
+{
 }
 
 //プレイヤーの視界
@@ -697,16 +962,17 @@ bool Player::PlayerView(float fieldOfViewRadians, float viewDistancee)
 //ターゲット切り替え関数
 void Player::SwitchTarget()
 {
-	auto enemys = m_Scene->GetGameObjects<Enemy>();
+	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
 	auto camera = m_Scene->GetGameObject<Camera>();
 
 	D3DXMATRIX screenMatrix = camera->GetScreenMatrix();//マトリックス取得
 	D3DXVECTOR3 screenCameraEnemy;//スクリーン上の敵の位置
-	float oldDistance = 1000.0f;
+	float oldDistance_1 = 1000.0f;
+	float oldDistance_2 = 1000.0f;
+	int keepEnemyID_1 = 0;
+	int keepEnemyID_2 = 0;
 
-	m_LockSetSeFlg = true;//SE再生用
-
-	for (Enemy* enemy : enemys)
+	for (EnemyJet* enemy : enemys)
 	{
 		if(!enemy->GetCrash())
 		{
@@ -717,11 +983,30 @@ void Player::SwitchTarget()
 			D3DXVECTOR2 screenEnemy = D3DXVECTOR2(screenCameraEnemy.x, screenCameraEnemy.y - 0.330f);
 			float distance = D3DXVec2LengthSq(&screenEnemy);
 
-			if (distance < oldDistance)//一番距離が近い敵IDを取得
+			if (distance < oldDistance_1)//一番距離が近い敵IDを取得
 			{
 				m_EnemyID = enemy->GetEnemyID();
-				oldDistance = distance;//距離を保存
+				oldDistance_1 = distance;//距離を保存
 			}
+
+			//if (distance < oldDistance_1)
+			//{
+			//	keepEnemyID_2 = keepEnemyID_1;
+			//	oldDistance_2 = oldDistance_1;
+			//	m_EnemyID = enemy->GetEnemyID();
+			//	oldDistance_1 = distance;
+			//}
+			//else if (distance < oldDistance_2)
+			//{
+			//	keepEnemyID_2 = enemy->GetEnemyID();
+			//	oldDistance_2 = distance;
+			//}
+		}
+		
+		//ロックオン中の敵が破壊された場合
+		if(enemy->GetEnemyID() == m_EnemyID && enemy->GetCrash())
+		{
+			m_Lockon2D->LockMoveReset();
 		}
 	}
 }
@@ -743,9 +1028,4 @@ void Player::ShotFlare()
 	}
 
 	auto missiles = m_Scene->GetGameObjects<Missile>();
-
-	for (Missile* missile : missiles)
-	{
-		missile->SetFlare(true);
-	}
 }

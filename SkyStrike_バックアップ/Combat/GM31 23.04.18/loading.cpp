@@ -4,27 +4,41 @@
 #include "loading.h"
 #include "loadingLogo.h"
 #include "loadingScreen.h"
-#include "titleLogo.h"
 #include "input.h"
 #include "fade.h"
 
 #include <thread>
+
+bool Loading::m_GameLoad = false;
+bool Loading::m_TutorialLoad = false;
 
 void Loading::Init()
 {
 	AddGameObject<LoadingScreen>(2);
 	AddGameObject<LoadingLogo>(2);
 
-	std::thread th(&Game::Load);
-	th.detach();
+	if(m_GameLoad)
+	{
+		std::thread th(&Game::Load);
+		th.detach();
+	}
+	else if (m_TutorialLoad)
+	{
+		std::thread th(&Tutorial::Load);
+		th.detach();
+	}
 }
 
 void Loading::Update()
 {
 	Scene::Update();
 
-	if (Game::GetLoadFinish)
+	if (Game::GetLoadFinish())
 	{
 		Manager::SetScene<Game>();
+	}
+	else if (Tutorial::GetLoadFinish())
+	{
+		Manager::SetScene<Tutorial>();
 	}
 }

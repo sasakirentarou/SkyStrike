@@ -2,6 +2,8 @@
 
 #include "gameObject.h"
 
+#define HP_MAX 100.0f
+
 class HpGauge : public GameObject
 {
 private:
@@ -12,9 +14,10 @@ private:
 	ID3D11Buffer* m_VertexBuffer = nullptr;
 	ID3D11ShaderResourceView* m_Texture = nullptr;
 
-	float m_hp;
-	float m_hpMax;
-	float m_beforhp;
+	int  m_Count{};
+
+	float m_Hp{};
+	float m_Beforhp{};
 
 	float x1{};
 	float y1{};
@@ -28,11 +31,11 @@ public:
 
 	void HPMinus(float hp)
 	{
-		m_hp -= hp;
+		m_Hp -= hp;
 	}
 
 	float GetHP()
 	{
-		return m_hp;
+		return m_Hp;
 	}
 };

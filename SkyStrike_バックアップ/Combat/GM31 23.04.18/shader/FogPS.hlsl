@@ -42,5 +42,4 @@ void main(in PS_IN In, out float4 outDiffuse : SV_Target)
     fog = saturate(fog);
     fog_color = GroundFogColor.rgb;
     outDiffuse.rgb = outDiffuse.rgb * fog + fog_color * (1.0 - fog);
-   
 }

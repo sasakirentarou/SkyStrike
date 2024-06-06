@@ -3,13 +3,13 @@
 #include "renderer.h"
 #include "scene.h"
 #include "bullet.h"
-#include "enemy.h"
+#include "enemyJet.h"
 #include "explosion.h"
 #include "player.h"
-#include "enemy.h"
 #include "camera.h"
 #include "cross.h"
 #include "textureManager.h"
+#include "hitBullet.h"
 
 Model* Bullet::m_Model{};
 
@@ -51,7 +51,7 @@ void Bullet::Uninit()
 void Bullet::Update()
 {
 	Scene* scene = Manager::GetScene();
-	auto enemys = scene->GetGameObjects<Enemy>();
+	auto enemys = scene->GetGameObjects<EnemyJet>();
 	auto player = scene->GetGameObject<Player>();
 	auto camera = scene->GetGameObject<Camera>();
 	auto cross = scene->GetGameObject<Cross>();
@@ -63,7 +63,7 @@ void Bullet::Update()
 	//敵のの2Dposを取得
 	D3DXVECTOR3 enemypos;
 	D3DXVECTOR3 screenCameraEnemy;//スクリーン上の敵の位置
-	for (Enemy* enemy : enemys)
+	for (EnemyJet* enemy : enemys)
 	{
 		if (enemy->GetEnemyID() == player->GetLockEnemy())
 		{
@@ -78,10 +78,10 @@ void Bullet::Update()
 	D3DXVec3TransformCoord(&screenCameraCross, &crosspos, &screenMatrix);
 	
 	//端の最大値が1なので端の値をスクリーン座標の半分の値に変換
-	float CEx = ((SCREEN_WIDTH  / 2) / 100) * (screenCameraEnemy.x * 100.0f);
-	float CEy = ((SCREEN_HEIGHT / 2) / 100) * (screenCameraEnemy.y * 100.0f);
-	float CCx = ((SCREEN_WIDTH  / 2) / 100) * (screenCameraCross.x * 100.0f);
-	float CCy = ((SCREEN_HEIGHT / 2) / 100) * (screenCameraCross.y * 100.0f);
+	float CEx = (SCREEN_WIDTH  / 2) * screenCameraEnemy.x;
+	float CEy = (SCREEN_HEIGHT / 2) * screenCameraEnemy.y;
+	float CCx = (SCREEN_WIDTH  / 2) * screenCameraCross.x;
+	float CCy = (SCREEN_HEIGHT / 2) * screenCameraCross.y;
 
 	//クロスヘアを起点にAUTO_RANGEの内の範囲を指定
 	if( CCx + AUTO_RANGE > CEx &&
@@ -136,7 +136,7 @@ void Bullet::Update()
 	m_Velocity += m_Velocity * -0.03f;
 	m_Position += m_Velocity;
 
-	for (Enemy* enemy : enemys)
+	for (EnemyJet* enemy : enemys)
 	{
 		D3DXVECTOR3 enemypos = enemy->GetPosition();
 		D3DXVECTOR3 direction = m_Position - enemypos;
@@ -144,9 +144,14 @@ void Bullet::Update()
 
 		if (length < 10.0f)
 		{
-			SetDestroy();
-			enemy->HealthMinus(5);//敵の体力を減らす
+			auto hit = scene->AddGameObject<HitBullet>(1);
+			hit->SetPosition(m_Position);
+			hit->SetScale(D3DXVECTOR3(2.0f, 2.0f,0.0f));
+			hit->AnimTime(1);
+
+			enemy->HealthDamage(5);//敵の体力を減らす
 			texture->SetHitReportFlg(true);
+			SetDestroy();
 			return;
 		}
 	}

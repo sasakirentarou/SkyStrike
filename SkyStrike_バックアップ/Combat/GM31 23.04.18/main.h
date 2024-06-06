@@ -57,3 +57,4 @@ float GetMouse2DY();
 float GetMouseHwheel();
 
 void SetFrame(int frame);
+void SetPause(bool pause);

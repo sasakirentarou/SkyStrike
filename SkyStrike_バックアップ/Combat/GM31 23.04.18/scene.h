@@ -5,13 +5,33 @@
 #include <typeinfo>
 #include <vector>
 
+//シーン状態
+enum SceneState
+{
+	SCENE_TITLE,
+	SCENE_TUTORIAL,
+	SCENE_GAME,
+	SCENE_RESULT,
+	SCENE_NONE,
+};
+
 class Scene
 {
 protected:
 	// STLのリスト構造
 	std::list<GameObject*> m_GameObject[3];
 
+	//static SceneState m_SceneState;
 public:
+	//ボリューム設定
+	static float m_BGMVolume;
+	static float m_SEVolume;
+
+	static SceneState m_SceneState;
+
+	//static SceneState GetSceneState() { return m_SceneState; }
+	//static void SetSceneState(SceneState state) { m_SceneState = state; }
+
 	virtual void Init() {}
 
 	virtual void Uninit()
@@ -89,7 +109,7 @@ public:
 	    T* gameObject = new T();
 		m_GameObject[Layer].push_back(gameObject);
 		gameObject->Init();
-
+		
 		return gameObject;
 	}
 
@@ -128,3 +148,5 @@ public:
 		return objects;
 	}
 };
+
+//SceneState Scene::m_SceneState = SCENE_NONE;

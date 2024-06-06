@@ -6,7 +6,9 @@
 #include "scene.h"
 #include "manager.h"
 
-float MissileUI::offsetx = 0;
+float MissileUI::m_OffsetCountx = 200.0f;
+float MissileUI::m_OffsetCounty{};
+int MissileUI::m_IDCount = 0;
 
 void MissileUI::Init()
 {
@@ -15,7 +17,7 @@ void MissileUI::Init()
 
 	//サイズ
 	x2 = 140.0f / 1.2;
-	y2 = 40.0f / 1.2;
+	y2 = 35.0f / 1.2;
 
 
 	VERTEX_3D vertex[4];
@@ -64,9 +66,6 @@ void MissileUI::Init()
 		NULL);
 	assert(m_Texture);
 
-	//Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\unlitTextureVS.cso");
-	//Renderer::CreatePixelShader(&m_PixelShader, "shader\\unlitTexturePS.cso");
-
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\gaugeVS.cso");
 	Renderer::CreatePixelShader(&m_PixelShader, "shader\\missileGaugePS.cso");
 
@@ -75,8 +74,22 @@ void MissileUI::Init()
 	m_GaugeMax = 101.0f;
 	m_Gauge = 101.0f;
 
-	offsetx += 250.0f;
-	m_Position = D3DXVECTOR3(SCREEN_WIDTH - offsetx + 90.0f, SCREEN_HEIGHT - 150.0f, 0.0f);
+	m_Offsetx = m_OffsetCountx;
+	m_Offsety = m_OffsetCounty;
+	m_Position = D3DXVECTOR3(SCREEN_WIDTH - (m_Offsetx + UI_PLUS_POS_X), SCREEN_HEIGHT - (m_Offsety + 150.0f), 0.0f);
+
+	m_MyID = m_IDCount;
+
+	if (m_MyID % 2 == 1)
+	{
+		m_OffsetCountx -= 200.0f + (30.0f * m_MyID);
+		m_OffsetCounty -= 10.0f;
+	}
+	else
+	{
+		m_OffsetCountx += 200.0f + (30.0f * m_MyID);
+	}
+	m_IDCount++;
 
 	GameObject::Init();
 }
@@ -90,7 +103,9 @@ void MissileUI::Uninit()
 	m_VertexShader->Release();
 	m_PixelShader->Release();
 
-	offsetx = 0;
+	m_OffsetCountx = 200.0f;
+	m_OffsetCounty = 0;
+	m_IDCount = 0;
 	GameObject::Uninit();
 }
 
@@ -104,7 +119,7 @@ void MissileUI::Update()
 		if (m_Gauge < m_GaugeMax)
 		{
 			//クールタイム
-			m_Gauge += 0.5f;
+			m_Gauge += MISSILE_COOLTIME_SPEED;
 		}
 		if (m_Gauge > m_GaugeMax)
 		{
@@ -160,7 +175,8 @@ void MissileUI::Draw()
 	Renderer::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	// ポリゴン描画
-	Renderer::GetDeviceContext()->Draw(4, 0);
+	if(m_DrawFlg)
+		Renderer::GetDeviceContext()->Draw(4, 0);
 
 	GameObject::Draw();
 }

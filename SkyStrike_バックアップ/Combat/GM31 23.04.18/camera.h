@@ -2,6 +2,10 @@
 
 #include "gameObject.h"
 
+#define MAX_FOV 1.3 //Å‘å‹–ì
+#define MIN_FOV 1.1 //Å¬‹–ì
+#define FOV_SPEED 0.002
+
 class Camera : public GameObject
 {
 private:
@@ -15,33 +19,40 @@ private:
 	class Scene* m_Scene{};
 	class Player* m_Player{};
 
+	//»FF0.9f, 0.8f, 0.5f
+	D3DXCOLOR m_FogColor = (1.0f, 1.0f, 1.0f, 1.0f);
+	D3DXCOLOR m_GroundFogColor = (1.0f, 1.0f, 1.0f, 1.0f);
+	D3DXCOLOR m_SkyColor = (0.2f, 0.3f, 0.4f, 1.0f);
+
+	float m_FogStart;
+	float m_FogEnd;
+	float m_FogHeight;
+
+
+	float m_ShakeAmplitude{};
+	float m_ShakeSpeed{};
 	float m_ShakeOffsetX{};
 	float m_ShakeOffsetY{};
 	int	  m_ShakeTime{};
 
+	float m_Count{};
 	float m_Hweel{};
 
-	float m_ShakeAmplitude{};
-	float m_ShakeSpeed{};
-
-	float m_Count{};
-
-	float m_MaxFov = 1.3f;//Å‘å‹–ìŠp
-	float m_MinFov = 1.1f;//Å¬‹–ìŠp
 	float m_FovSpeed = 0.002f;
-	float m_Fov = m_MinFov;//•Ï“®‹–ìŠp
-
-	float		m_FogStart;
-	float		m_FogEnd;
-	float		m_FogHeight;
+	float m_Fov = MIN_FOV;//•Ï“®‹–ìŠp
 
 	bool m_UpMode{};
+	bool m_StopVibFlg{};
 public:
 	void Init();
 	void Update();
 	void Draw();
 
-	void SetBomShake(D3DXVECTOR3 pos);
+	void DefaultCamera();
+
+	void SetBomShake(D3DXVECTOR3 pos, float shortDistance, float maxDistance);
+	void SetFog(float fogstart,float fogend,float fogheight,
+		D3DXCOLOR fog,D3DXCOLOR groundfog, D3DXCOLOR sky);
 
 	D3DXMATRIX GetViewMatrix()
 	{

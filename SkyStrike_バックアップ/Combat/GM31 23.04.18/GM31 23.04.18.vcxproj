@@ -23,7 +23,7 @@
     <ProjectGuid>{67C44D81-4E92-4E04-B636-F61E7808781C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GM31230418</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -178,16 +178,22 @@
     <ClCompile Include="collisionBox.cpp" />
     <ClCompile Include="cross.cpp" />
     <ClCompile Include="cylinder.cpp" />
+    <ClCompile Include="debug.cpp" />
+    <ClCompile Include="desertField.cpp" />
     <ClCompile Include="dome.cpp" />
     <ClCompile Include="effectLoad.cpp" />
     <ClCompile Include="effectManager.cpp" />
-    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemyJet.cpp" />
     <ClCompile Include="enemyDistance.cpp" />
+    <ClCompile Include="enemyManager.cpp" />
+    <ClCompile Include="engineFire.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
+    <ClCompile Include="fire.cpp" />
     <ClCompile Include="flare.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="hitBullet.cpp" />
     <ClCompile Include="hpGauge.cpp" />
     <ClCompile Include="imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -232,7 +238,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="inputx.cpp" />
     <ClCompile Include="jet.cpp" />
+    <ClCompile Include="teamJet.cpp" />
     <ClCompile Include="jetUI.cpp" />
     <ClCompile Include="leftVertical.cpp" />
     <ClCompile Include="leftWing.cpp" />
@@ -241,10 +249,14 @@
     <ClCompile Include="loadingScreen.cpp" />
     <ClCompile Include="lock.cpp" />
     <ClCompile Include="lockOn.cpp" />
+    <ClCompile Include="lockon2D.cpp" />
+    <ClCompile Include="longMissile.cpp" />
+    <ClCompile Include="longMissileUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="meshField.cpp" />
     <ClCompile Include="missile.cpp" />
+    <ClCompile Include="missileFire.cpp" />
     <ClCompile Include="missileUI.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="pch.cpp">
@@ -258,23 +270,27 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">main.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="polygon2D.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
-    <ClCompile Include="resultLogo.cpp" />
     <ClCompile Include="rightVertical.cpp" />
     <ClCompile Include="rightWing.cpp" />
+    <ClCompile Include="seaField.cpp" />
     <ClCompile Include="smoke.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="spritefield.cpp" />
     <ClCompile Include="startButton.cpp" />
+    <ClCompile Include="sundome.cpp" />
     <ClCompile Include="textureLoad.cpp" />
     <ClCompile Include="textureManager.cpp" />
+    <ClCompile Include="tgt.cpp" />
+    <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="titleCamera.cpp" />
     <ClCompile Include="titleField.cpp" />
     <ClCompile Include="titleLogo.cpp" />
     <ClCompile Include="trail.cpp" />
+    <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="weaponManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="airport.h" />
@@ -287,19 +303,25 @@
     <ClInclude Include="collisionBox.h" />
     <ClInclude Include="cross.h" />
     <ClInclude Include="cylinder.h" />
+    <ClInclude Include="debug.h" />
+    <ClInclude Include="desertField.h" />
     <ClInclude Include="dome.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="effectLoad.h" />
     <ClInclude Include="effectManager.h" />
-    <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemyJet.h" />
     <ClInclude Include="enemyDistance.h" />
+    <ClInclude Include="enemyManager.h" />
+    <ClInclude Include="engineFire.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
+    <ClInclude Include="fire.h" />
     <ClInclude Include="flare.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameObject.h" />
+    <ClInclude Include="hitBullet.h" />
     <ClInclude Include="hpGauge.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -310,7 +332,9 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="inputx.h" />
     <ClInclude Include="jet.h" />
+    <ClInclude Include="teamJet.h" />
     <ClInclude Include="jetUI.h" />
     <ClInclude Include="leftWing.h" />
     <ClInclude Include="loading.h" />
@@ -318,32 +342,42 @@
     <ClInclude Include="loadingScreen.h" />
     <ClInclude Include="lock.h" />
     <ClInclude Include="lockOn.h" />
+    <ClInclude Include="lockon2D.h" />
+    <ClInclude Include="longMissile.h" />
+    <ClInclude Include="longMissileUI.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="meshField.h" />
     <ClInclude Include="missile.h" />
+    <ClInclude Include="missileFire.h" />
     <ClInclude Include="missileUI.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="polygon2D.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
-    <ClInclude Include="resultLogo.h" />
     <ClInclude Include="leftVertical.h" />
     <ClInclude Include="rightVertical.h" />
     <ClInclude Include="rightWing.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="seaField.h" />
     <ClInclude Include="smoke.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="spritefield.h" />
     <ClInclude Include="startButton.h" />
+    <ClInclude Include="sundome.h" />
     <ClInclude Include="textureLoad.h" />
     <ClInclude Include="textureManager.h" />
+    <ClInclude Include="tgt.h" />
+    <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="titleCamera.h" />
     <ClInclude Include="titleField.h" />
-    <ClInclude Include="titleLogo.h" />
+    <ClInclude Include="titleLogo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="trail.h" />
+    <ClInclude Include="tutorial.h" />
+    <ClInclude Include="weaponManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\boxTexturePS.hlsl">
@@ -359,6 +393,20 @@
     <FxCompile Include="shader\common.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shader\DepthNormalMappingPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="shader\DepthNormalMappingVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="shader\DepthShadowEnvMappingPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -406,7 +454,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cso</ObjectFileOutput>
     </FxCompile>
@@ -416,7 +464,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).cso</ObjectFileOutput>
     </FxCompile>
@@ -469,6 +517,12 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="shader\smokeTexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shader\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="shader\unlitTexturePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

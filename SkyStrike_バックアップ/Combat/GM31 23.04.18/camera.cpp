@@ -5,13 +5,13 @@
 #include "player.h"
 #include "scene.h"
 #include "input.h"
-#include "enemy.h"
+#include "inputx.h"
+#include "enemyJet.h"
 #include "missile.h"
+#include "inputx.h"
 
 void Camera::Init()
 {
-	m_Scene = Manager::GetScene();
-
 	m_Position = D3DXVECTOR3(0.0f, 5.0f, -10.0f);
 	m_Target = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
@@ -21,31 +21,31 @@ void Camera::Init()
 
 	m_Hweel = 16.0f;
 
+	m_Scene = Manager::GetScene();
 }
 
 void Camera::Update()
 {
-	auto player = m_Scene->GetGameObject<Player>();
-	auto enemys = m_Scene->GetGameObjects<Enemy>();
-	auto enemy = m_Scene->GetGameObject<Enemy>();
+	m_Player = m_Scene->GetGameObject<Player>();
+	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
+	auto enemy = m_Scene->GetGameObject<EnemyJet>();
 	auto missiles = m_Scene->GetGameObjects<Missile>();
 
 	if (m_GameEnable)
 	{
 		//速度視野角変更
-		if (Input::GetKeyPress('W') && player->GetSpeed() * 1000.0f >= 2000.0f)
+		if (Input::GetKeyPress('W') || (InputX::GetRightTrigger(0) > 0) && m_Player->GetSpeed() * 1000.0f >= 2000.0f)
 		{
-			m_Fov += m_FovSpeed;
-			if (m_Fov >= m_MaxFov)
+			if (m_Fov <= MAX_FOV)
 			{
-				m_Fov = m_MaxFov;
+				m_Fov += FOV_SPEED;
 			}
 		}
 		else
 		{
-			if (m_Fov >= m_MinFov)
+			if (m_Fov >= MIN_FOV)
 			{
-				m_Fov -= m_FovSpeed;
+				m_Fov -= FOV_SPEED;
 			}
 		}
 
@@ -68,44 +68,51 @@ void Camera::Update()
 			}
 
 			// カメラの向きに基づいてビューマトリックスを更新
-			m_Target = player->GetPosition() + player->GetForwardQuaternion() * 2.0f;
-			m_Position = m_Target - GetForward() * m_Hweel + player->GetTopQuaternion() * 4.0f;
+			m_Target = m_Player->GetPosition() + m_Player->GetForwardQuaternion() * 2.0f;
+			m_Position = m_Target - GetForward() * m_Hweel + m_Player->GetTopQuaternion() * 4.0f;
 
 			m_UpMode = true;
 		}
-		else if (Input::GetKeyPress(VK_SPACE) && !enemys.empty())//ターゲットカメラ
-		{
-			//すべての敵をforで回す
-			for (Enemy* enemy : enemys)
-			{
-				//Lockされている敵を特定
-				if (enemy->GetEnemyID() == player->GetLockEnemy())
-				{
-					// カメラの位置から敵の位置を向くベクトルを計算
-					D3DXVECTOR3 length = m_Target - m_Position;
-					D3DXVec3Normalize(&length, &length);//正規化
-
-					// カメラの向きを設定
-					m_Rotation.x = asinf(length.y) * -1.0f;
-					m_Rotation.y = atan2f(length.x, length.z);
-
-					//注視点は敵
-					//m_Target = enemy->GetPosition();
-					D3DXVECTOR3 goal = enemy->GetPosition();
-					enemypos = enemy->GetPosition();
-					D3DXVec3Lerp(&m_Target, &m_Target, &goal, 0.1f);
-
-					//ポジションはプレイヤー
-					m_Position = player->GetPosition() - GetForward() * 20.0f + D3DXVECTOR3(0.0f, 2.0f, 0.0f);
-
-					m_UpMode = false;
-				}
-			}
-		}
-		else if (Input::GetKeyPress(VK_LBUTTON))//ミサイルカメラ
+		else if (Input::GetKeyPress(VK_SPACE) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_Y) && !enemys.empty())//ターゲットカメラ
 		{
 			m_Count++;
-			if (m_Count > 30 && !missiles.empty())
+			if(m_Count > 20)
+			{
+				//すべての敵をforで回す
+				for (EnemyJet* enemy : enemys)
+				{
+					//Lockされている敵を特定
+					if (enemy->GetEnemyID() == m_Player->GetLockEnemy())
+					{
+						// カメラの位置から敵の位置を向くベクトルを計算
+						D3DXVECTOR3 length = m_Target - m_Position;
+						D3DXVec3Normalize(&length, &length);//正規化
+
+						// カメラの向きを設定
+						m_Rotation.x = asinf(length.y) * -1.0f;
+						m_Rotation.y = atan2f(length.x, length.z);
+
+						//注視点は敵
+						D3DXVECTOR3 goal = enemy->GetPosition();
+						enemypos = enemy->GetPosition();
+						D3DXVec3Lerp(&m_Target, &m_Target, &goal, 0.1f);
+
+						//ポジションはプレイヤー
+						m_Position = m_Player->GetPosition() - GetForward() * 20.0f + D3DXVECTOR3(0.0f, 2.0f, 0.0f);
+
+						m_UpMode = false;
+					}
+				}
+			}
+			else
+			{
+				DefaultCamera();
+			}
+		}
+		else if (Input::GetKeyPress(VK_LBUTTON) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_B))//ミサイルカメラ
+		{
+			m_Count++;
+			if (m_Count > 20 && !missiles.empty())
 			{
 				for (Missile* missile : missiles)
 				{
@@ -119,43 +126,31 @@ void Camera::Update()
 			}
 			else
 			{
-				// サードパーソンビュー(通常)
-				m_Target = player->GetPosition();
-				m_Position = m_Target - player->GetForwardQuaternion() * 15.0f + player->GetTopQuaternion() * 4.0f;
-
-				m_UpMode = false;
+				DefaultCamera();
 			}
 		}
-		else
-		{
-			// サードパーソンビュー(通常)
-			m_Target = player->GetPosition();
-			m_Position = m_Target - player->GetForwardQuaternion() * 15.0f + player->GetTopQuaternion() * 4.0f;
+		//else if (InputX::GetThumbRightX(0) != 0 && InputX::GetThumbRightY(0) != 0)
+		//{
 
-			m_UpMode = false;
+		//	m_Count = 0;
+		//}
+		else //通常
+		{
+			DefaultCamera();
 			m_Count = 0;
 		}
+
 
 		m_ShakeOffsetX = sinf(m_ShakeTime * m_ShakeSpeed + 6.0f) * m_ShakeAmplitude;
 		m_ShakeOffsetY = sinf(m_ShakeTime * m_ShakeSpeed) * m_ShakeAmplitude;
 		m_ShakeTime++;
 		m_ShakeAmplitude *= 0.9f;
 
-		if (Input::GetKeyPress('B'))
+		//振動が収まったらパッドの振動ストップ
+		if (m_ShakeAmplitude < 0.01f && m_StopVibFlg)
 		{
-			m_FogHeight += 100.0f;
-		}
-		if (Input::GetKeyPress('N'))
-		{
-			m_FogHeight -= 100.0f;
-		}
-		if (Input::GetKeyPress('C'))
-		{
-			m_FogStart += 100.0f;
-		}
-		if (Input::GetKeyPress('V'))
-		{
-			m_FogStart -= 100.0f;
+			InputX::StopVibration(0);
+			m_StopVibFlg = false;
 		}
 	}
 	else
@@ -229,8 +224,6 @@ void Camera::Update()
 
 void Camera::Draw()
 {
-	m_Player = m_Scene->GetGameObject<Player>();
-
 	D3DXVECTOR3 position = m_Position + m_Player->GetRightQuaternion() * m_ShakeOffsetX + m_Player->GetTopQuaternion() * m_ShakeOffsetY;
 	D3DXVECTOR3 target = m_Target + m_Player->GetRightQuaternion() * m_ShakeOffsetX + m_Player->GetTopQuaternion() * m_ShakeOffsetY;
 
@@ -267,24 +260,89 @@ void Camera::Draw()
 	camera.FogParam.y = m_FogEnd;//FogEnd
 	camera.FogParam.z = m_FogHeight;//FogHeight
 	camera.FogParam.w = 0.0f;//temp
-	camera.FogColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f); //砂色：0.9f, 0.8f, 0.5f
-	camera.GroundFogColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	camera.SkyColor = D3DXCOLOR(0.2f, 0.3f, 0.4f, 1.0f);
+	camera.FogColor = m_FogColor; 
+	camera.GroundFogColor = m_GroundFogColor;
+	camera.SkyColor = m_SkyColor;
 	Renderer::SetCameraPosition(camera);
 }
 
-void Camera::SetBomShake(D3DXVECTOR3 pos)
+void Camera::DefaultCamera()
+{
+	m_Player = m_Scene->GetGameObject<Player>();
+
+	// サードパーソンビュー(通常)
+	//m_Target = m_Player->GetPosition();
+	//m_Position = m_Target - m_Player->GetForwardQuaternion() * 15.0f + m_Player->GetTopQuaternion() * 4.0f;
+
+
+	//フリーカメラテスト
+	float forwardplus;
+	float rightplus;
+	float topplus;
+
+	//右スティックの値を絶対値にする
+	forwardplus = abs((InputX::GetThumbRightX(0) + InputX::GetThumbRightY(0)) * 36.0f) - 18.0f;
+
+	//0.0が最小値0.5が最大値1.0が最小値になる
+	float rightdiff = -4 * pow(abs(InputX::GetThumbRightX(0)) - 0.5f, 2.0f) + 1;
+	float topdiff = -4 * pow(abs(InputX::GetThumbRightY(0)) - 0.5f, 2.0f) + 1;
+
+	if (InputX::GetThumbRightX(0) <= 0)
+		rightplus = (rightdiff * 20.0f) * -1;
+	else
+		rightplus = (rightdiff * 20.0f);
+
+	if (InputX::GetThumbRightY(0) <= 0)
+		topplus = (topdiff * 15.0f) * -1;
+	else
+		topplus = (topdiff * 10.0f);
+
+	//カメラの向きに基づいてビューマトリックスを更新
+	m_Position = m_Player->GetPosition()
+		- m_Player->GetForwardQuaternion() * -forwardplus
+		+ m_Player->GetRightQuaternion() * rightplus
+		+ m_Player->GetTopQuaternion() * (topplus + 4.0f);
+
+	m_Target = m_Player->GetPosition() + m_Player->GetForwardQuaternion() * 2.0f;
+
+
+	m_UpMode = false;
+
+	//ImGui::Begin("camera");
+	//ImGui::InputFloat("forward", &forwardplus);
+	//ImGui::InputFloat("right", &rightplus);
+	//ImGui::InputFloat("difference", &rightdiff);
+	//ImGui::End();
+}
+
+//爆発時カメラ振動  第一引数:position,第二引数:大きい爆発距離,第三引数:小さい爆発距離
+void Camera::SetBomShake(D3DXVECTOR3 pos,float shortDistance,float maxDistance)
 {
 	//距離計算
 	D3DXVECTOR3 direction = m_Player->GetPosition() - pos;
 	float length = D3DXVec3Length(&direction);
 
-	if (length < 200.0f)
+	if (length < shortDistance)
 	{
 		Shake(0.3f, 1.0f);
+		InputX::SetVibration(0, 100);
+		m_StopVibFlg = true;
 	}
-	else if (length < 500.0f && length > 200.0f)
+	else if (length < maxDistance && length > shortDistance)
 	{
 		Shake(0.2f, 1.0f);
+		InputX::SetVibration(0, 50);
+		m_StopVibFlg = true;
 	}
+}
+
+void Camera::SetFog(float fogstart, float fogend, float fogheight,
+					D3DXCOLOR fog, D3DXCOLOR groundfog, D3DXCOLOR sky)
+{
+	m_FogStart = fogstart;
+	m_FogEnd = fogend;
+	m_FogHeight = fogheight;
+	m_FogColor = fog;
+	m_GroundFogColor = groundfog;
+	m_SkyColor = sky;
 }
