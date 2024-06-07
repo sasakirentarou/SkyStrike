@@ -415,7 +415,7 @@ void Player::Update()
 		{
 			m_StealthSE->Play(false);
 			//ƒtƒ‰ƒOØ‚è‘Ö‚¦
-			if(m_StealthAmount >= STEALTH_MAX)
+			if(m_StealthAmount >= MAX_STEALTH)
 				m_StealthModeFlg = true;
 			else
 				m_StealthModeFlg = false;
@@ -450,7 +450,7 @@ void Player::Update()
 				m_Threshold = 0.0f;
 			}
 
-			if (m_StealthAmount < STEALTH_MAX)
+			if (m_StealthAmount < MAX_STEALTH)
 			{
 				m_StealthAmount += STEALTH_UP_SPEED;
 			}
