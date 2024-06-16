@@ -7,7 +7,7 @@
 #include "manager.h"
 #include "jetUI.h"
 #include "smoke.h"
-#include "player.h"
+#include "jet.h"
 
 void HpGauge::Init()
 {
@@ -95,7 +95,7 @@ void HpGauge::Update()
 
 	Scene* scene = Manager::GetScene();
 	auto jetui = scene->GetGameObject<JetUI>();
-	auto player = scene->GetGameObject<Player>();
+	auto jet = scene->GetGameObject<Jet>();
 
 	if (m_Hp > 60.0f)
 	{
@@ -111,7 +111,7 @@ void HpGauge::Update()
 		if(m_Count > 6)
 		{
 			auto smoke = scene->AddGameObject<Smoke>(1);
-			smoke->SetPosition(player->GetPosition() - player->GetForwardQuaternion() * 8.0f);
+			smoke->SetPosition(jet->GetPosition() - jet->GetForwardQuaternion() * 8.0f);
 			smoke->SetScale(D3DXVECTOR3(0.2f, 0.2f, 0.0f));
 			smoke->SetColor(0.0f);
 			m_Count = 0;

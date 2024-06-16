@@ -1,16 +1,11 @@
 #include "main.h"
 #include "renderer.h"
-#include "manager.h"
 #include "trail.h"
 #include "scene.h"
-#include"player.h"
 #include"input.h"
 
 void Trail::Init()
 {
-	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
-
 	// 頂点バッファ生成
 	{
 		for (int i = 0; i < VERTEX_NUMBER / 2; i++)
@@ -80,9 +75,6 @@ void Trail::Update()
 void Trail::Draw()
 {
 	Renderer::SetRasterizerEnable(true);
-
-	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
 
 	//頂点数が最大に達したらpopで削除
 	if (m_TopVertexArray.size() >= VERTEX_NUMBER / 2)

@@ -17,7 +17,7 @@ private:
 	ID3D11PixelShader* m_PixelShader = nullptr;
 	ID3D11InputLayout* m_VertexLayout = nullptr;
 
-	static class Player* m_Player;
+	static class Jet* m_Jet;
 	static Model* m_Model;
 
 	class Audio* m_ShotSE{};

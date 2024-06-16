@@ -11,7 +11,7 @@ private:
 	class Fade* m_Fade{};
 	class TextureManager* m_Texture{};
 	class Timer* m_Timer{};
-	class Player* m_Player{};
+	class Jet* m_Jet{};
 
 	static bool m_LoadFinish;
 public:

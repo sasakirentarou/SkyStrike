@@ -2,7 +2,7 @@
 #include "renderer.h"
 #include "arrow.h"
 #include "enemyJet.h"
-#include "player.h"
+#include "jet.h"
 #include "scene.h"
 #include "manager.h"
 #include "input.h"
@@ -36,19 +36,20 @@ void Arrow::Update()
 void Arrow::Draw()
 {
 	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	Jet* jet = scene->GetGameObject<Jet>();
 	auto enemys = scene->GetGameObjects<EnemyJet>();
-	m_Position = player->GetPosition() + player->GetTopQuaternion() * 4.0f;
+	m_Position = jet->GetPosition() + jet->GetTopQuaternion() * 4.0f;
 
-	if(!player->PlayerView(60,10000) && !enemys.empty())
+	for (EnemyJet* enemy : enemys)
 	{
-		for (EnemyJet* enemy : enemys)
+		if (enemy->GetEnemyID() == jet->GetLockOnSm()->GetLockEnemyID())
 		{
-			if (enemy->GetEnemyID() == player->GetLockEnemy())
-			{
-				m_Target = enemy->GetPosition();
-			}
+			m_Target = enemy->GetPosition();
 		}
+	}
+
+	if(!View(60,10000,jet->GetPosition(), m_Target, jet->GetForwardQuaternion()) && !enemys.empty())
+	{
 		//計算処理
 		D3DXVECTOR3 forward = GetForwardQuaternion();
 		D3DXVECTOR3 gaiseki;
@@ -70,13 +71,9 @@ void Arrow::Draw()
 
 		vec /= 1000;
 		if (vec < 0.3f)
-		{
 			vec = 0.3f;
-		}
 		else if (vec > 1.3f)
-		{
 			vec = 1.3f;
-		}
 
 
 		Renderer::SetDepthEnable(false);
@@ -89,7 +86,7 @@ void Arrow::Draw()
 		Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
 		// マトリクス設定
-		m_Pearent = player->GetMatrix();
+		m_Pearent = jet->GetMatrix();
 		D3DXMATRIX world, scale, rot, trans;
 		D3DXMatrixScaling(&scale, m_Scale.x * 0.4f, m_Scale.y * 0.4f, m_Scale.z * vec);
 		D3DXMatrixRotationQuaternion(&rot, &m_Quaternion);

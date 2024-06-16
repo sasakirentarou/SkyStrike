@@ -6,7 +6,7 @@
 #include "field.h"
 #include "desertField.h"
 #include "camera.h"
-#include "player.h"
+#include "jet.h"
 #include "enemyJet.h"
 #include "explosion.h"
 #include "cylinder.h"
@@ -27,12 +27,6 @@
 #include "lockOn.h"
 #include "jetUI.h"
 #include "flare.h"
-#include "leftWing.h"
-#include "rightWing.h"
-#include "backLeftWing.h"
-#include "backRightWing.h"
-#include "leftVertical.h"
-#include "rightVertical.h"
 #include "collisionBox.h"
 #include "enemyDistance.h"
 #include "textureManager.h"
@@ -105,61 +99,16 @@ void Tutorial::Init()
 	// field
 	GameObject* field = AddGameObject<DesertField>(1);
 
-	//parts
-	AddGameObject<RightWing>(1);//主翼
-	AddGameObject<LeftWing>(1);//主翼
-	AddGameObject<BackLeftWing>(1);//水平尾翼
-	AddGameObject<BackRightWing>(1);//水平尾翼
-	AddGameObject<LeftVertical>(1);//垂直尾翼
-	AddGameObject<RightVertical>(1);//垂直尾翼
 
 	Fire* fire = AddGameObject<Fire>(1);
 	fire->SetPlayerFire();
 	Arrow* arrow = AddGameObject<Arrow>(1);
 
 	// player
-	m_Player = AddGameObject<Player>(1);
-	m_Player->SetPosition(D3DXVECTOR3(1000.0f, 2000.0f, 0.0f));
-	m_Player->SetGameEnable(true);
-	m_Player->Init();
-
-	//enemy
-	//GameObject* enemy0 = AddGameObject<Enemy>(1);
-	//GameObject* enemy1 = AddGameObject<Enemy>(1);
-	//GameObject* enemy2 = AddGameObject<Enemy>(1);
-	//GameObject* enemy3 = AddGameObject<Enemy>(1);
-	//GameObject* enemy4 = AddGameObject<Enemy>(1);
-	//GameObject* enemy5 = AddGameObject<Enemy>(1);
-	//GameObject* enemy6 = AddGameObject<Enemy>(1);
-	//GameObject* enemy7 = AddGameObject<Enemy>(1);
-	//GameObject* enemy8 = AddGameObject<Enemy>(1);
-
-	//enemy0->SetPosition(D3DXVECTOR3(1400.0f, 800.0f, 3000.0f));
-	//enemy0->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy1->SetPosition(D3DXVECTOR3(1000.0f, 800.0f, 3500.0f));
-	//enemy1->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy2->SetPosition(D3DXVECTOR3(800.0f, 800.0f, 4800.0f));
-	//enemy2->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy3->SetPosition(D3DXVECTOR3(1200.0f, 900.0f, 2400.0f));
-	//enemy3->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy4->SetPosition(D3DXVECTOR3(1100.0f, 900.0f, 2000.0f));
-	//enemy4->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy5->SetPosition(D3DXVECTOR3(900.0f, 900.0f, 4000.0f));
-	//enemy5->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy6->SetPosition(D3DXVECTOR3(1000.0f, 900.0f, 2100.0f));
-	//enemy6->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy7->SetPosition(D3DXVECTOR3(-1600.0f, 900.0f, 1900.0f));
-	//enemy7->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
-
-	//enemy8->SetPosition(D3DXVECTOR3(-1000.0f, 900.0f, 1800.0f));
-	//enemy8->SetScale(D3DXVECTOR3(1.5f, 1.5f, 1.5f));
+	m_Jet = AddGameObject<Jet>(1);
+	m_Jet->SetPosition(D3DXVECTOR3(1000.0f, 2000.0f, 0.0f));
+	m_Jet->SetGameEnable(true);
+	m_Jet->Init();
 
 
 	//////Polygon//////
@@ -179,11 +128,6 @@ void Tutorial::Init()
 	//HPバー
 	GameObject* hp = AddGameObject<HpGauge>(2);
 
-	//ミサイルUI
-	GameObject* missileUI_0;
-	GameObject* missileUI_1;
-	missileUI_0 = AddGameObject<MissileUI>(2);
-	missileUI_1 = AddGameObject<MissileUI>(2);
 
 	//機体UI
 	GameObject* jetUI;
@@ -247,7 +191,7 @@ void Tutorial::Update()
 		m_Fade->FadeOut();
 	}
 
-	if (m_Player->GetDeath())
+	if (m_Jet->GetDeath())
 	{
 		m_Texture->SetGameOverFlg(true);
 		m_Fade->FadeOut();
@@ -308,7 +252,7 @@ void Tutorial::Draw()
 	D3DXVECTOR3 lookat;
 	D3DXVECTOR3 up;
 	D3DXMATRIX viewMatrixArray[6];
-	D3DXVECTOR3 vPlayerPos = m_Player->GetPosition();
+	D3DXVECTOR3 vPlayerPos = m_Jet->GetPosition();
 	for (int i = 0; i < 6; i++)
 	{
 		eye = vPlayerPos;

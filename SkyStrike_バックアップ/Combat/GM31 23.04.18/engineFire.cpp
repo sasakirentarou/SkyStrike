@@ -2,7 +2,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "scene.h"
-#include "player.h"
+#include "jet.h"
 #include "engineFire.h"
 #include "spritefield.h"
 #include "fire.h"
@@ -94,7 +94,7 @@ void EngineFire::Draw()
 
 	// カメラのビューマトリクス取得
 	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	auto jet = scene->GetGameObject<Jet>();
 	auto fire = scene->GetGameObject<Fire>();
 
 
@@ -103,7 +103,7 @@ void EngineFire::Draw()
 	else if(m_Alpha > 0.0f)
 		m_Alpha -= 0.1f;
 
-	D3DXMATRIX pearent = player->GetMatrix();
+	D3DXMATRIX pearent = jet->GetMatrix();
 
 	// マトリクス設定
 	D3DXMATRIX world, scale, rot, trans;

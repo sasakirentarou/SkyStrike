@@ -170,12 +170,11 @@
     <ClCompile Include="airport.cpp" />
     <ClCompile Include="arrow.cpp" />
     <ClCompile Include="audio.cpp" />
-    <ClCompile Include="backLeftWing.cpp" />
-    <ClCompile Include="backRightWing.cpp" />
     <ClCompile Include="box.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collisionBox.cpp" />
+    <ClCompile Include="controlStick.cpp" />
     <ClCompile Include="cross.cpp" />
     <ClCompile Include="cylinder.cpp" />
     <ClCompile Include="debug.cpp" />
@@ -186,12 +185,14 @@
     <ClCompile Include="enemyJet.cpp" />
     <ClCompile Include="enemyDistance.cpp" />
     <ClCompile Include="enemyManager.cpp" />
+    <ClCompile Include="engine.cpp" />
     <ClCompile Include="engineFire.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="flare.cpp" />
+    <ClCompile Include="flareSystem.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hitBullet.cpp" />
     <ClCompile Include="hpGauge.cpp" />
@@ -240,10 +241,10 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputx.cpp" />
     <ClCompile Include="jet.cpp" />
+    <ClCompile Include="lockOnSystem.cpp" />
+    <ClCompile Include="stealthSystem.cpp" />
     <ClCompile Include="teamJet.cpp" />
     <ClCompile Include="jetUI.cpp" />
-    <ClCompile Include="leftVertical.cpp" />
-    <ClCompile Include="leftWing.cpp" />
     <ClCompile Include="loading.cpp" />
     <ClCompile Include="loadingLogo.cpp" />
     <ClCompile Include="loadingScreen.cpp" />
@@ -272,8 +273,6 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
-    <ClCompile Include="rightVertical.cpp" />
-    <ClCompile Include="rightWing.cpp" />
     <ClCompile Include="seaField.cpp" />
     <ClCompile Include="smoke.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -291,16 +290,17 @@
     <ClCompile Include="trail.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="weaponManager.cpp" />
+    <ClCompile Include="weaponSystem.cpp" />
+    <ClCompile Include="wing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="airport.h" />
     <ClInclude Include="arrow.h" />
     <ClInclude Include="audio.h" />
-    <ClInclude Include="backLeftWing.h" />
-    <ClInclude Include="backRightWing.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="collisionBox.h" />
+    <ClInclude Include="controlStick.h" />
     <ClInclude Include="cross.h" />
     <ClInclude Include="cylinder.h" />
     <ClInclude Include="debug.h" />
@@ -313,12 +313,14 @@
     <ClInclude Include="enemyJet.h" />
     <ClInclude Include="enemyDistance.h" />
     <ClInclude Include="enemyManager.h" />
+    <ClInclude Include="engine.h" />
     <ClInclude Include="engineFire.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="fire.h" />
     <ClInclude Include="flare.h" />
+    <ClInclude Include="flareSystem.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="hitBullet.h" />
@@ -334,9 +336,10 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="inputx.h" />
     <ClInclude Include="jet.h" />
+    <ClInclude Include="lockOnSystem.h" />
+    <ClInclude Include="stealthSystem.h" />
     <ClInclude Include="teamJet.h" />
     <ClInclude Include="jetUI.h" />
-    <ClInclude Include="leftWing.h" />
     <ClInclude Include="loading.h" />
     <ClInclude Include="loadingLogo.h" />
     <ClInclude Include="loadingScreen.h" />
@@ -355,9 +358,6 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
-    <ClInclude Include="leftVertical.h" />
-    <ClInclude Include="rightVertical.h" />
-    <ClInclude Include="rightWing.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="seaField.h" />
     <ClInclude Include="smoke.h" />
@@ -378,6 +378,8 @@
     <ClInclude Include="trail.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="weaponManager.h" />
+    <ClInclude Include="weaponSystem.h" />
+    <ClInclude Include="wing.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\boxTexturePS.hlsl">

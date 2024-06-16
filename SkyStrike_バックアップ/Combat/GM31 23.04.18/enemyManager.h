@@ -1,14 +1,6 @@
 #pragma once
 #include "gameObject.h"
 
-enum ENEMY_STATE
-{
-	ENEMY_ATTACK,		// UŒ‚
-	ENEMY_ESCAPE,		// ‘Ş”ğ
-	ENEMY_SEACH,		// ’Tõ
-	ENAMY_GROUNDRISK,	// ’Ä—‰ñ”ğ
-	ENEMY_OUT_OF_RANGE	// ”ÍˆÍŠO
-};
 
 class EnemyManager : public GameObject
 {
@@ -22,11 +14,7 @@ protected:
 	bool m_Shot = true;			// ”­Ëƒtƒ‰ƒO
 public:
 	virtual void Attack(){};	//UŒ‚
-	virtual void Escape(){};	//“P‘Ş
 	virtual void Seach(){};		//‘{õ
-	virtual void GroundRisk(){};//’n–Ê‰ñ”ğ
-	virtual void OutOfRange(){};//”òs”ÍˆÍ
-
 
 	int GetMaxEnemy() { return m_EnemyCount; }
 	int GetEnemyID() { return m_EnemyID; }

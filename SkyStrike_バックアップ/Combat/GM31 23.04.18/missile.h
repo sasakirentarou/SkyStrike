@@ -17,7 +17,7 @@ private:
 	ID3D11InputLayout* m_VertexLayout = nullptr;
 	
 	static Model* m_Model;
-	static class Player* m_Player;
+	static class Jet* m_Jet;
 
 	class Audio* m_ShotSE{};
 	class Scene* m_Scene{};

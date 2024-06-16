@@ -113,8 +113,11 @@ void Audio::Uninit()
 
 
 
-void Audio::Play(bool Loop)
+void Audio::Play(bool Loop,bool Update)
 {
+	if (m_PlayFlug && Update)
+		return;
+
 	m_SourceVoice->Stop();
 	m_SourceVoice->FlushSourceBuffers();
 

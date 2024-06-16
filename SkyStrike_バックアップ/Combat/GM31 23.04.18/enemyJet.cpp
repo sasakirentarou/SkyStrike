@@ -5,7 +5,7 @@
 #include "lockOn.h"
 #include "scene.h"
 #include "manager.h"
-#include "player.h"
+#include "jet.h"
 #include "explosion.h"
 #include "missile.h"
 #include "smoke.h"
@@ -46,7 +46,7 @@ void EnemyJet::Init()
 	m_KillSE->Load("asset\\audio\\kill01.wav");
 
 	m_Scene = Manager::GetScene();
-	m_Player = m_Scene->GetGameObject<Player>();
+	m_Jet = m_Scene->GetGameObject<Jet>();
 
 	//UI表示
 	m_Lock = m_Scene->AddGameObject<Lock>(1);
@@ -114,8 +114,8 @@ void EnemyJet::Update()
 		{
 
 			//設定変更
-			m_Player->SwitchTarget();
-			m_Player->GetLockOn()->SetAlpha(0.0f);
+			m_Jet->GetLockOnSm()->SwitchTarget();
+			m_Jet->GetLockOnSm()->GetLockOn()->SetAlpha(0.0f);
 			texture->SetDesReportFlg(true);
 			texture->SetEnemyMinus();
 			m_KillSE->Play(false);
@@ -216,7 +216,7 @@ void EnemyJet::Update()
 		}
 
 		//移動範囲制限
-		D3DXVECTOR3 distance = m_Player->GetPosition() - m_Position;
+		D3DXVECTOR3 distance = m_Jet->GetPosition() - m_Position;
 		m_PlayerLength = D3DXVec3Length(&distance);
 		if (m_PlayerLength > 1800.0f)
 		{
@@ -293,26 +293,27 @@ void EnemyJet::Draw()
 	GameObject::Draw();
 }
 
-//視界関数
-bool EnemyJet::EnemyView(D3DXVECTOR3 forward, float fieldOfViewRadians, float viewDistancee)
-{
-	// 視野範囲内かどうかの判定
-	D3DXVECTOR3 normalizedDirection;
-	D3DXVECTOR3 direction = m_Player->GetPosition() - m_Position;
-	D3DXVec3Normalize(&normalizedDirection, &direction);
-	D3DXVECTOR3 houkou = forward;
-	float dotProduct = D3DXVec3Dot(&houkou, &normalizedDirection);
-	float angle = acos(dotProduct);
-	fieldOfViewRadians = D3DXToRadian(fieldOfViewRadians);
-	bool isInFieldOfView = angle <= fieldOfViewRadians / 2.0f;
+////視界関数
+//bool EnemyJet::EnemyView(D3DXVECTOR3 forward, float fieldOfViewRadians, float viewDistancee)
+//{
+//	// 視野範囲内かどうかの判定
+//	D3DXVECTOR3 normalizedDirection;
+//	D3DXVECTOR3 direction = m_Jet->GetPosition() - m_Position;
+//	D3DXVec3Normalize(&normalizedDirection, &direction);
+//	D3DXVECTOR3 houkou = forward;
+//	float dotProduct = D3DXVec3Dot(&houkou, &normalizedDirection);
+//	float angle = acos(dotProduct);
+//	fieldOfViewRadians = D3DXToRadian(fieldOfViewRadians);
+//	bool isInFieldOfView = angle <= fieldOfViewRadians / 2.0f;
+//
+//	// 視野距離内かどうかの判定
+//	D3DXVECTOR3 dice = m_Position - m_Player->GetPosition();
+//	float distance = D3DXVec3Length(&dice);
+//	bool isInViewDistance = distance <= viewDistancee;
+//
+//	return isInFieldOfView && isInViewDistance;
+//}
 
-	// 視野距離内かどうかの判定
-	D3DXVECTOR3 dice = m_Position - m_Player->GetPosition();
-	float distance = D3DXVec3Length(&dice);
-	bool isInViewDistance = distance <= viewDistancee;
-
-	return isInFieldOfView && isInViewDistance;
-}
 
 //誘導関数
 void EnemyJet::MoveHoming(D3DXVECTOR3 target, bool reverse)
@@ -381,10 +382,10 @@ void EnemyJet::EnemyStateChange(int number)
 void EnemyJet::Attack()
 {
 	//プレイヤーの後ろに回る
-	MoveHoming(m_Player->GetPosition() + m_Player->GetForwardQuaternion() * -m_RandomTracking, false);
+	MoveHoming(m_Jet->GetPosition() + m_Jet->GetForwardQuaternion() * -m_RandomTracking, false);
 
 	//ミサイル発射
-	if (EnemyView(GetForwardQuaternion(), 60.0f, MAX_VIEW_LENGTH))
+	if (View(60.0f, MAX_VIEW_LENGTH,m_Position,m_Jet->GetPosition(),GetForwardQuaternion()))
 	{
 		if (m_Shot)
 		{
@@ -408,7 +409,7 @@ void EnemyJet::Attack()
 	}
 
 	//プレイヤーがステルスになると探索
-	if (m_Player->GetStealthFlg())
+	if (m_Jet->GetStealthFlg())
 	{
 		m_EnemyState = ENEMY_SEACH;
 	}
@@ -424,12 +425,12 @@ void EnemyJet::Attack()
 // 退避
 void EnemyJet::Escape()
 {
-	MoveHoming(m_Player->GetPosition() + m_Player->GetForwardQuaternion() * -m_RandomTracking, true);
+	MoveHoming(m_Jet->GetPosition() + m_Jet->GetForwardQuaternion() * -m_RandomTracking, true);
 
 	//速度
 	m_Velocity -= GetForwardQuaternion() * 0.02f;
 
-	D3DXVECTOR3 direction = m_Player->GetPosition() - m_Position;
+	D3DXVECTOR3 direction = m_Jet->GetPosition() - m_Position;
 	float length = D3DXVec3Length(&direction);
 
 	if (length > MAX_ESCAPE)
@@ -454,7 +455,7 @@ void EnemyJet::Seach()
 	MoveHoming(targetPos, false);
 
 	//発見
-	if (EnemyView(GetForwardQuaternion(), 90.0f, 2000.0f) && !m_Player->GetStealthFlg())
+	if (View(90.0f, 2000.0f, m_Position, m_Jet->GetPosition(), GetForwardQuaternion()) && !m_Jet->GetStealthFlg())
 	{
 		m_EnemyState = ENEMY_ATTACK;
 	}
@@ -474,7 +475,7 @@ void EnemyJet::GroundRisk()
 //範囲外
 void EnemyJet::OutOfRange()
 {
-	MoveHoming(m_Player->GetPosition(), false);
+	MoveHoming(m_Jet->GetPosition(), false);
 	m_Velocity += GetForwardQuaternion() * 0.03f;
 
 	if (m_PlayerLength < MAX_RANGE)

@@ -28,6 +28,7 @@ private:
 	D3DXMATRIX m_Pearent{};
 
 	float m_Alpha = 0.5f;
+	int m_Time{};
 public:
 	void Init() override;
 	void Uninit() override;

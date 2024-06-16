@@ -1,7 +1,7 @@
 #include "main.h"
 #include "renderer.h"
 #include "fire.h"
-#include "player.h"
+#include "jet.h"
 #include "scene.h"
 #include "manager.h"
 #include "input.h"
@@ -67,11 +67,11 @@ void Fire::Update()
 void Fire::Draw()
 {
 	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	Jet* jet = scene->GetGameObject<Jet>();
 
 	if(m_PlayerFire)
 	{
-		m_Pearent = player->GetMatrix();
+		m_Pearent = jet->GetMatrix();
 		m_OffsetX = 0.0f;
 		m_OffsetY = -0.2f;
 		m_OffsetZ = -4.5f;
@@ -80,11 +80,11 @@ void Fire::Draw()
 		float rt = InputX::GetRightTrigger(0) / 637.5;
 
 		//‘å‚«‚³•ÏX
-		if (Input::GetKeyPress('W') && !player->GetEngineLock())
+		if (Input::GetKeyPress('W') && !jet->GetEngineLock())
 		{
 			m_Scale.z = 0.4f;
 		}
-		else if (m_Scale.z <= 0.4f && InputX::GetRightTrigger(0) > 0 && !player->GetEngineLock())
+		else if (m_Scale.z <= 0.4f && InputX::GetRightTrigger(0) > 0 && !jet->GetEngineLock())
 		{
 			m_Scale.z = rt;
 		}

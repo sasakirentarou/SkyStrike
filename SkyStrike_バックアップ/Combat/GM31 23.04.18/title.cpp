@@ -14,13 +14,7 @@
 #include "titleCamera.h"
 #include "airport.h"
 #include "teamJet.h"
-#include "leftWing.h"
-#include "rightWing.h"
-#include "backLeftWing.h"
-#include "backRightWing.h"
-#include "leftVertical.h"
-#include "rightVertical.h"
-#include "player.h"
+#include "jet.h"
 #include "textureManager.h"
 #include "audio.h"
 #include "enemyJet.h"
@@ -60,15 +54,15 @@ void Title::Init()
 	air->SetScale(D3DXVECTOR3(6.0f, 6.0f, 6.0f));
 
 	//parts
-	AddGameObject<RightWing>(1);//å—ƒ
-	AddGameObject<LeftWing>(1);//å—ƒ
-	AddGameObject<BackLeftWing>(1);//…•½”ö—ƒ
-	AddGameObject<BackRightWing>(1);//…•½”ö—ƒ
-	AddGameObject<LeftVertical>(1);//‚’¼”ö—ƒ
-	AddGameObject<RightVertical>(1);//‚’¼”ö—ƒ
+	//AddGameObject<RightWing>(1);//å—ƒ
+	//AddGameObject<LeftWing>(1);//å—ƒ
+	//AddGameObject<BackLeftWing>(1);//…•½”ö—ƒ
+	//AddGameObject<BackRightWing>(1);//…•½”ö—ƒ
+	//AddGameObject<LeftVertical>(1);//‚’¼”ö—ƒ
+	//AddGameObject<RightVertical>(1);//‚’¼”ö—ƒ
 
 	//player
-	Player* player = AddGameObject<Player>(1);
+	Jet* player = AddGameObject<Jet>(1);
 	player->SetPosition(D3DXVECTOR3(0.0f,25.0f,10.0f));
 	player->SetScale(D3DXVECTOR3(10.0f, 10.0f, 10.0f));
 

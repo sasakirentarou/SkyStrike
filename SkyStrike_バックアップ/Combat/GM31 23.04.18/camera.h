@@ -17,7 +17,7 @@ private:
 	D3DXMATRIX m_ScreenMatrix{};
 
 	class Scene* m_Scene{};
-	class Player* m_Player{};
+	class Jet* m_Jet{};
 
 	//çªêFÅF0.9f, 0.8f, 0.5f
 	D3DXCOLOR m_FogColor = (1.0f, 1.0f, 1.0f, 1.0f);

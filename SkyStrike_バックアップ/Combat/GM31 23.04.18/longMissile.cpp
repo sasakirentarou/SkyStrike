@@ -5,7 +5,7 @@
 #include "longMissile.h"
 #include "enemyJet.h"
 #include "explosion.h"
-#include "player.h"
+#include "jet.h"
 #include "smoke.h"
 #include "hpGauge.h"
 #include "camera.h"
@@ -17,7 +17,7 @@
 
 
 Model* LongMissile::m_Model{};
-Player* LongMissile::m_Player{};
+Jet* LongMissile::m_Jet{};
 
 void LongMissile::Load()
 {
@@ -34,7 +34,7 @@ void LongMissile::Unload()
 void LongMissile::Init()
 {
 	m_Scene = Manager::GetScene();
-	m_Player = m_Scene->GetGameObject<Player>();
+	m_Jet = m_Scene->GetGameObject<Jet>();
 	m_Camera = m_Scene->GetGameObject<Camera>();
 	m_Fire = m_Scene->AddGameObject<MissileFire>(1);
 	m_Fire->SetOffset(0.0f, 0.0f, -3.5f);
@@ -121,8 +121,8 @@ void LongMissile::Shot()
 
 	if (m_ShotCount == 0)
 	{
-		float playerQuaX = m_Player->GetQuaternion().x;
-		float playerQuaZ = m_Player->GetQuaternion().z;
+		float playerQuaX = m_Jet->GetQuaternion().x;
+		float playerQuaZ = m_Jet->GetQuaternion().z;
 
 		//機体が反転していたら即時ミサイル発射
 		if (playerQuaZ > 0.5f || playerQuaZ < -0.5f ||
@@ -155,8 +155,8 @@ void LongMissile::Shot()
 		{
 			if (!enemys.empty())
 			{
-				m_LockEnemyID = m_Player->GetMisLockID();
-				m_TrackingFlg = m_Player->GetLockFlg();
+				m_LockTargetID = m_Jet->GetWeaponSm()->GetTargetLockID();
+				m_TrackingFlg = m_Jet->GetLockOnSm()->GetLockFlg();
 			}
 
 			m_Fire->DrawFlg(true);
@@ -175,7 +175,7 @@ void LongMissile::Shot()
 		{
 			for (EnemyJet* enemy : enemys)
 			{
-				if (enemy->GetEnemyID() == m_LockEnemyID)
+				if (enemy->GetEnemyID() == m_LockTargetID)
 				{
 					m_EnemyPos = enemy->GetPosition();
 				}

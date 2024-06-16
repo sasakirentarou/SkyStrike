@@ -40,18 +40,9 @@ public:
 	void Update();
 	void Draw();
 
-	void SetGauge(float gauge)
-	{
-		m_Gauge = gauge;
-	}
+	void SetGauge(float gauge) { m_Gauge = gauge; }
+	float GetGauge(){ return m_Gauge; }
 
-	float GetGauge()
-	{
-		return m_Gauge;
-	}
-
-	void SetDrawFlg(bool draw)
-	{
-		m_DrawFlg = draw;
-	}
+	void SetDrawFlg(bool draw){ m_DrawFlg = draw; }
+	bool GetDrawFlg() { return m_DrawFlg; }
 };

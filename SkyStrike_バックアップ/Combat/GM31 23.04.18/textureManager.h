@@ -62,6 +62,11 @@ private:
 	int m_AccoCount{};
 	int m_EnemyNumber{};
 
+	int m_DefMissAmount{};
+	int m_SpeMissAmount{};
+	int m_flareAmount{};
+	float m_StealthAmount{};
+
 	float m_RankAlphaLevel{};
 	float m_ClearAlphaLevel{};
 	float m_FailedAlphaLevel{};

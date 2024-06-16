@@ -2,7 +2,7 @@
 #include "renderer.h"
 #include "missileUI.h"
 #include "sprite.h"
-#include "player.h"
+#include "jet.h"
 #include "scene.h"
 #include "manager.h"
 
@@ -112,9 +112,9 @@ void MissileUI::Uninit()
 void MissileUI::Update()
 {
 	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	auto jet = scene->GetGameObject<Jet>();
 
-	if(player->GetMissileAmount() > 0)
+	if(jet->GetWeaponSm()->GetDefMissAmount() > 0)	//C³“_‚ ‚è
 	{
 		if (m_Gauge < m_GaugeMax)
 		{

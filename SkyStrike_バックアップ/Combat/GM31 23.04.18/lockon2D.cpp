@@ -3,7 +3,7 @@
 #include "lockon2D.h"
 #include "manager.h"
 #include "scene.h"
-#include "player.h"
+#include "jet.h"
 #include "enemyJet.h"
 #include "camera.h"
 #include "cross.h"
@@ -187,7 +187,7 @@ void Lockon2D::Draw()
 void Lockon2D::LockonMove()
 {
 	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	auto jet = scene->GetGameObject<Jet>();
 	auto enemys = scene->GetGameObjects<EnemyJet>();
 	auto camera = scene->GetGameObject<Camera>();
 	auto cross = scene->GetGameObject<Cross>();
@@ -200,7 +200,7 @@ void Lockon2D::LockonMove()
 	D3DXVECTOR3 screenCameraEnemy;//スクリーン上の敵の位置
 	for (EnemyJet* enemy : enemys)
 	{
-		if (enemy->GetEnemyID() == player->GetLockEnemy())
+		if (enemy->GetEnemyID() == jet->GetLockOnSm()->GetLockEnemyID())
 		{
 			enemypos = enemy->GetPosition();
 			D3DXVec3TransformCoord(&screenCameraEnemy, &enemypos, &screenMatrix);

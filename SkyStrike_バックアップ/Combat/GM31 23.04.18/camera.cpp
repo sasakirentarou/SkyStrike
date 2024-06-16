@@ -2,7 +2,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "camera.h"
-#include "player.h"
+#include "jet.h"
 #include "scene.h"
 #include "input.h"
 #include "inputx.h"
@@ -26,7 +26,7 @@ void Camera::Init()
 
 void Camera::Update()
 {
-	m_Player = m_Scene->GetGameObject<Player>();
+	m_Jet = m_Scene->GetGameObject<Jet>();
 	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
 	auto enemy = m_Scene->GetGameObject<EnemyJet>();
 	auto missiles = m_Scene->GetGameObjects<Missile>();
@@ -34,7 +34,7 @@ void Camera::Update()
 	if (m_GameEnable)
 	{
 		//速度視野角変更
-		if (Input::GetKeyPress('W') || (InputX::GetRightTrigger(0) > 0) && m_Player->GetSpeed() * 1000.0f >= 2000.0f)
+		if (Input::GetKeyPress('W') || (InputX::GetRightTrigger(0) > 0) && m_Jet->GetSpeed() >= 2000.0f)
 		{
 			if (m_Fov <= MAX_FOV)
 			{
@@ -68,8 +68,8 @@ void Camera::Update()
 			}
 
 			// カメラの向きに基づいてビューマトリックスを更新
-			m_Target = m_Player->GetPosition() + m_Player->GetForwardQuaternion() * 2.0f;
-			m_Position = m_Target - GetForward() * m_Hweel + m_Player->GetTopQuaternion() * 4.0f;
+			m_Target = m_Jet->GetPosition() + m_Jet->GetForwardQuaternion() * 2.0f;
+			m_Position = m_Target - GetForward() * m_Hweel + m_Jet->GetTopQuaternion() * 4.0f;
 
 			m_UpMode = true;
 		}
@@ -82,7 +82,7 @@ void Camera::Update()
 				for (EnemyJet* enemy : enemys)
 				{
 					//Lockされている敵を特定
-					if (enemy->GetEnemyID() == m_Player->GetLockEnemy())
+					if (enemy->GetEnemyID() == m_Jet->GetLockOnSm()->GetLockEnemyID())
 					{
 						// カメラの位置から敵の位置を向くベクトルを計算
 						D3DXVECTOR3 length = m_Target - m_Position;
@@ -98,7 +98,7 @@ void Camera::Update()
 						D3DXVec3Lerp(&m_Target, &m_Target, &goal, 0.1f);
 
 						//ポジションはプレイヤー
-						m_Position = m_Player->GetPosition() - GetForward() * 20.0f + D3DXVECTOR3(0.0f, 2.0f, 0.0f);
+						m_Position = m_Jet->GetPosition() - GetForward() * 20.0f + D3DXVECTOR3(0.0f, 2.0f, 0.0f);
 
 						m_UpMode = false;
 					}
@@ -157,65 +157,36 @@ void Camera::Update()
 	{
 		//テスト
 		if (Input::GetKeyPress('B'))
-		{
 			m_FogHeight += 100.0f;
-		}
 		if (Input::GetKeyPress('N'))
-		{
 			m_FogHeight -= 100.0f;
-		}
 		if (Input::GetKeyPress('C'))
-		{
 			m_FogStart += 100.0f;
-		}
 		if (Input::GetKeyPress('V'))
-		{
 			m_FogStart -= 100.0f;
-		}
 
 		if (Input::GetKeyPress('W'))
-		{
 			m_Position += GetForward() * 1.0f;
-		}
 		if (Input::GetKeyPress('S'))
-		{
 			m_Position += GetForward() * -1.0f;
-		}
 		if (Input::GetKeyPress('A'))
-		{
 			m_Position += GetRight() * -1.0f;
-		}
 		if (Input::GetKeyPress('D'))
-		{
 			m_Position += GetRight() * 1.0f;
-		}
 
 		if (Input::GetKeyPress('E'))
-		{
 			m_Rotation.y += 0.03f;
-		}
 		if (Input::GetKeyPress('Q'))
-		{
 			m_Rotation.y -= 0.03f;
-		}
 		if (Input::GetKeyPress(VK_SHIFT))
-		{
 			m_Rotation.x -= 0.03f;
-		}
 		if (Input::GetKeyPress(VK_CONTROL))
-		{
 			m_Rotation.x += 0.03f;
-		}
+
 		m_Fov = 1.5f;
 		m_Position += m_Velocity;
 		m_Target = m_Position + GetForward() * 10.0f;
 	}
-
-	//ImGui表示
-	//ImGui::Begin("CAMERA");
-	//ImGui::InputFloat3("Target", m_Target);
-	//ImGui::InputFloat3("enemypos", enemypos);
-	//ImGui::End();
 
 	// ファーストパーソンビュー(valorant)
 	//m_Position = player->GetPosition() + D3DXVECTOR3(0.0f, 1.5f, 0.0f);
@@ -224,8 +195,8 @@ void Camera::Update()
 
 void Camera::Draw()
 {
-	D3DXVECTOR3 position = m_Position + m_Player->GetRightQuaternion() * m_ShakeOffsetX + m_Player->GetTopQuaternion() * m_ShakeOffsetY;
-	D3DXVECTOR3 target = m_Target + m_Player->GetRightQuaternion() * m_ShakeOffsetX + m_Player->GetTopQuaternion() * m_ShakeOffsetY;
+	D3DXVECTOR3 position = m_Position + m_Jet->GetRightQuaternion() * m_ShakeOffsetX + m_Jet->GetTopQuaternion() * m_ShakeOffsetY;
+	D3DXVECTOR3 target = m_Target + m_Jet->GetRightQuaternion() * m_ShakeOffsetX + m_Jet->GetTopQuaternion() * m_ShakeOffsetY;
 
 	//カメラの上方向ベクトル
 	if (m_UpMode)
@@ -235,7 +206,7 @@ void Camera::Draw()
 	}
 	else
 	{
-		D3DXVECTOR3 goal = m_Player->GetTopQuaternion();
+		D3DXVECTOR3 goal = m_Jet->GetTopQuaternion();
 		D3DXVec3Lerp(&m_UpCamera, &m_UpCamera, &goal, 0.3f);
 	}
 
@@ -268,12 +239,7 @@ void Camera::Draw()
 
 void Camera::DefaultCamera()
 {
-	m_Player = m_Scene->GetGameObject<Player>();
-
-	// サードパーソンビュー(通常)
-	//m_Target = m_Player->GetPosition();
-	//m_Position = m_Target - m_Player->GetForwardQuaternion() * 15.0f + m_Player->GetTopQuaternion() * 4.0f;
-
+	m_Jet = m_Scene->GetGameObject<Jet>();
 
 	//フリーカメラテスト
 	float forwardplus;
@@ -287,39 +253,34 @@ void Camera::DefaultCamera()
 	float rightdiff = -4 * pow(abs(InputX::GetThumbRightX(0)) - 0.5f, 2.0f) + 1;
 	float topdiff = -4 * pow(abs(InputX::GetThumbRightY(0)) - 0.5f, 2.0f) + 1;
 
+	//線形補間にする!!
+
 	if (InputX::GetThumbRightX(0) <= 0)
-		rightplus = (rightdiff * 20.0f) * -1;
+		rightplus = (rightdiff * -20.0f);
 	else
 		rightplus = (rightdiff * 20.0f);
 
 	if (InputX::GetThumbRightY(0) <= 0)
-		topplus = (topdiff * 15.0f) * -1;
+		topplus = (topdiff * -15.0f);
 	else
 		topplus = (topdiff * 10.0f);
 
 	//カメラの向きに基づいてビューマトリックスを更新
-	m_Position = m_Player->GetPosition()
-		- m_Player->GetForwardQuaternion() * -forwardplus
-		+ m_Player->GetRightQuaternion() * rightplus
-		+ m_Player->GetTopQuaternion() * (topplus + 4.0f);
+	m_Position = m_Jet->GetPosition() + 
+				 m_Jet->LocalVector(m_Jet->GetQuaternion(), 
+					D3DXVECTOR3(rightplus, (topplus + 4.0f), forwardplus));
 
-	m_Target = m_Player->GetPosition() + m_Player->GetForwardQuaternion() * 2.0f;
+	m_Target = m_Jet->GetPosition() + m_Jet->GetForwardQuaternion() * 2.0f;
 
 
 	m_UpMode = false;
-
-	//ImGui::Begin("camera");
-	//ImGui::InputFloat("forward", &forwardplus);
-	//ImGui::InputFloat("right", &rightplus);
-	//ImGui::InputFloat("difference", &rightdiff);
-	//ImGui::End();
 }
 
 //爆発時カメラ振動  第一引数:position,第二引数:大きい爆発距離,第三引数:小さい爆発距離
 void Camera::SetBomShake(D3DXVECTOR3 pos,float shortDistance,float maxDistance)
 {
 	//距離計算
-	D3DXVECTOR3 direction = m_Player->GetPosition() - pos;
+	D3DXVECTOR3 direction = m_Jet->GetPosition() - pos;
 	float length = D3DXVec3Length(&direction);
 
 	if (length < shortDistance)

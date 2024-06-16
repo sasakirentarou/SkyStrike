@@ -12,6 +12,14 @@
 #define MAX_ESCAPE			800  //最大撤退距離
 #define MAX_VIEW_LENGTH		1000 //ミサイル発射距離
 
+enum ENEMY_STATE
+{
+	ENEMY_ATTACK,		// 攻撃
+	ENEMY_ESCAPE,		// 退避
+	ENEMY_SEACH,		// 探索
+	ENAMY_GROUNDRISK,	// 墜落回避
+	ENEMY_OUT_OF_RANGE	// 範囲外
+};
 
 class EnemyJet : public EnemyManager
 {
@@ -34,7 +42,7 @@ private:
 	class Scene* m_Scene{};
 	class Lock* m_Lock{};
 	class Tgt* m_Tgt{};
-	class Player* m_Player{};
+	class Jet* m_Jet{};
 	class Trail* m_Trail01{};
 	class Trail* m_Trail02{};
 	class Fire* m_Fire01{};
@@ -55,21 +63,20 @@ public:
 	static void Load();
 	static void Unload();
 
-	void Init()override;
-	void Uninit()override;
-	void Update()override;
-	void Draw()override;
+	void Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	bool EnemyView(D3DXVECTOR3 forward, float fieldOfViewRadians, float viewDistancee);//視界
 	void MoveHoming(D3DXVECTOR3 target,bool reverse);//移動誘導
 	void EnemyStateChange(int number);//ステート変更
 
 	// ステート関数
 	void Attack() override;		//攻撃
-	void Escape() override;		//撤退
-	void Seach() override;		//捜索
-	void GroundRisk() override;	//地面回避
-	void OutOfRange() override;	//飛行範囲
+	void Escape();				//撤退
+	void Seach() override;				//捜索
+	void GroundRisk();			//地面回避
+	void OutOfRange();			//飛行範囲
 
 	Lock* GetAddLock() { return m_Lock; }
 	

@@ -1,7 +1,7 @@
 #include "main.h"
 #include "textureManager.h"
 #include "textureLoad.h"
-#include "player.h"
+#include "jet.h"
 #include "scene.h"
 #include "manager.h"
 #include "enemyJet.h"
@@ -305,7 +305,7 @@ void TextureManager::Update()
 
 void TextureManager::Draw()
 {
-	auto player = m_Scene->GetGameObject<Player>();
+	Jet* jet = m_Scene->GetGameObject<Jet>();
 
 	switch (m_SceneTexture)
 	{
@@ -399,8 +399,9 @@ void TextureManager::Draw()
 		break;
 
 	case TEXTURE_GAME: //Game
+
 		//select
-		if(!player->GetWeaponChange())
+		if(!jet->GetWeaponSm()->GetWeaponChange())
 			g_GameWeaponSelect->Draw(SCREEN_WIDTH - 360, SCREEN_HEIGHT - 510);
 		else
 			g_GameWeaponSelect->Draw(SCREEN_WIDTH - 360, SCREEN_HEIGHT - 470);
@@ -408,75 +409,70 @@ void TextureManager::Draw()
 		g_GameWeaponSelect->SetSize(15.0f, 25.0f);
 		g_GameWeaponSelect->SetRGB(0.0f,1.0f,0.0f);
 
+
+
 		//AmountUI
+	
 		//missile
+		m_DefMissAmount = jet->GetWeaponSm()->GetDefMissAmount();
+
 		g_GameMissileAmount->Draw(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 520);
 		g_GameMissileAmount->SetSize(120.0f, 65.0f);
-		if (player->GetMissileAmount() == 0)
-		{
+		if (m_DefMissAmount == 0)
 			g_GameMissileAmount->SetRGB(1.0f, 0.0f, 0.0f);
-		}
 		else
-		{
 			g_GameMissileAmount->SetRGB(0.0f, 1.0f, 0.0f);
-		}
 
 		g_GameMissileNumber->Draw(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 515, true);
 		g_GameMissileNumber->SetSize(22.5f, 30.0f);
-		g_GameMissileNumber->SetNumberOption(3, 20.0f, player->GetMissileAmount());
+		g_GameMissileNumber->SetNumberOption(3, 20.0f, m_DefMissAmount);
+
 
 		//specialweapon
+		m_SpeMissAmount = jet->GetWeaponSm()->GetSpeMissAmount();
+
 		g_GameLongMissileAmount->Draw(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 480);
 		g_GameLongMissileAmount->SetSize(145.0f, 65.0f);
-		if (player->GetSpecialAmount() == 0)
-		{
+		if (m_SpeMissAmount == 0)
 			g_GameLongMissileAmount->SetRGB(1.0f, 0.0f, 0.0f);
-		}
 		else
-		{
 			g_GameLongMissileAmount->SetRGB(0.0f, 1.0f, 0.0f);
-		}
 
 		g_GameSpecialNumber->Draw(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 475, true);
 		g_GameSpecialNumber->SetSize(22.5f, 30.0f);
-		g_GameSpecialNumber->SetNumberOption(3, 20.0f, player->GetSpecialAmount());
+		g_GameSpecialNumber->SetNumberOption(3, 20.0f, m_SpeMissAmount);
+
 
 		//flare
+		m_flareAmount = jet->GetFlareSm()->GetAmount();
+
 		g_GameFlareAmount->Draw(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 440);
 		g_GameFlareAmount->SetSize(120.0f, 65.0f);
-		if (player->GetFlareAmount() == 0)
-		{
+		if (m_flareAmount == 0)
 			g_GameFlareAmount->SetRGB(1.0f, 0.0f, 0.0f);
-		}
 		else
-		{
 			g_GameFlareAmount->SetRGB(0.0f, 1.0f, 0.0f);
-		}
 
 		g_GameFlareNumber->Draw(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 435, true);
 		g_GameFlareNumber->SetSize(22.5f, 30.0f);
-		g_GameFlareNumber->SetNumberOption(1, 0.0f, player->GetFlareAmount());
+		g_GameFlareNumber->SetNumberOption(1, 0.0f, m_flareAmount);
 
 
 		//stealth
+		m_StealthAmount = jet->GetStealthSm()->GetAmount();
+
 		g_GameStealthAmount->Draw(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 400);
 		g_GameStealthAmount->SetSize(120.0f, 60.0f);
-		if (player->GetStealthAmount() <= 30)
-		{
+		if (m_StealthAmount <= 30.0f)
 			g_GameStealthAmount->SetRGB(1.0f, 0.0f, 0.0f);
-		}
-		else if (player->GetStealthAmount() > 30 && player->GetStealthAmount() <= 60)
-		{
+		else if (m_StealthAmount <= 60.0f && m_StealthAmount > 30.0f)
 			g_GameStealthAmount->SetRGB(1.0f, 1.0f, 0.0f);
-		}
 		else
-		{
 			g_GameStealthAmount->SetRGB(0.0f, 1.0f, 0.0f);
-		}
 
 		g_GameStealthNumber->Draw(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 395, true);
 		g_GameStealthNumber->SetSize(22.5f, 30.0f);
-		g_GameStealthNumber->SetNumberOption(3, 20.0f, player->GetStealthAmount());
+		g_GameStealthNumber->SetNumberOption(3, 20.0f, m_StealthAmount);
 
 
 
@@ -576,7 +572,7 @@ void TextureManager::Draw()
 			g_GameSpeedBox->SetAlpha(0.8f);
 			g_GameSpeedNumber->Draw((SCREEN_WIDTH / 2) - 260.0f, 405.0f, true);
 			g_GameSpeedNumber->SetSize(20.0f, 30.0f);
-			g_GameSpeedNumber->SetNumberOption(4, 25.0f, player->GetSpeed() * 1000.0f);
+			g_GameSpeedNumber->SetNumberOption(4, 25.0f, jet->GetSpeed());
 			g_GameSpeedNumber->SetAlpha(0.8f);
 			g_GameSpeed->Draw((SCREEN_WIDTH / 2) - 400.0f, 360.0f);
 			g_GameSpeed->SetSize(160.0f, 50.0f);
@@ -589,7 +585,7 @@ void TextureManager::Draw()
 			g_GameAltBox->SetAlpha(0.8f);
 			g_GameAltNumber->Draw((SCREEN_WIDTH / 2) + 320.0f, 405.0f, true);
 			g_GameAltNumber->SetSize(20.0f, 30.0f);
-			g_GameAltNumber->SetNumberOption(4, 25.0f, player->GetPosition().y);
+			g_GameAltNumber->SetNumberOption(4, 25.0f, jet->GetPosition().y);
 			g_GameAltNumber->SetAlpha(0.8f);
 			g_GameAlt->Draw((SCREEN_WIDTH / 2) + 170.0f, 360.0f);
 			g_GameAlt->SetSize(160.0f, 50.0f);
@@ -631,56 +627,48 @@ void TextureManager::Draw()
 	case TEXTURE_TUTORIAL:
 
 		//AmountUI
+		m_DefMissAmount = jet->GetWeaponSm()->GetDefMissAmount();
+
 		g_GameMissileAmount->Draw(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 480);
 		g_GameMissileAmount->SetSize(120.0f, 65.0f);
-		if (player->GetMissileAmount() == 0)
-		{
+		if (m_DefMissAmount == 0)
 			g_GameMissileAmount->SetRGB(1.0f, 0.0f, 0.0f);
-		}
 		else
-		{
 			g_GameMissileAmount->SetRGB(0.0f, 1.0f, 0.0f);
-		}
 
 		g_GameMissileNumber->Draw(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 475, true);
 		g_GameMissileNumber->SetSize(22.5f, 30.0f);
-		g_GameMissileNumber->SetNumberOption(3, 20.0f, player->GetMissileAmount());
+		g_GameMissileNumber->SetNumberOption(3, 20.0f, m_DefMissAmount);
 
+
+		m_flareAmount = jet->GetFlareSm()->GetAmount();
 
 		g_GameFlareAmount->Draw(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 440);
 		g_GameFlareAmount->SetSize(120.0f, 65.0f);
-		if (player->GetFlareAmount() == 0)
-		{
+		if (m_flareAmount == 0)
 			g_GameFlareAmount->SetRGB(1.0f, 0.0f, 0.0f);
-		}
 		else
-		{
 			g_GameFlareAmount->SetRGB(0.0f, 1.0f, 0.0f);
-		}
 
 		g_GameFlareNumber->Draw(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 435, true);
 		g_GameFlareNumber->SetSize(22.5f, 30.0f);
-		g_GameFlareNumber->SetNumberOption(1, 0.0f, player->GetFlareAmount());
+		g_GameFlareNumber->SetNumberOption(1, 0.0f, m_flareAmount);
 
+
+		m_StealthAmount = jet->GetStealthSm()->GetAmount();
 
 		g_GameStealthAmount->Draw(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 400);
 		g_GameStealthAmount->SetSize(120.0f, 60.0f);
-		if (player->GetStealthAmount() <= 30)
-		{
+		if (m_StealthAmount <= 30)
 			g_GameStealthAmount->SetRGB(1.0f, 0.0f, 0.0f);
-		}
-		else if (player->GetStealthAmount() > 30 && player->GetStealthAmount() <= 60)
-		{
+		else if (m_StealthAmount <= 60.0f && m_StealthAmount > 30.0f)
 			g_GameStealthAmount->SetRGB(1.0f, 1.0f, 0.0f);
-		}
 		else
-		{
 			g_GameStealthAmount->SetRGB(0.0f, 1.0f, 0.0f);
-		}
 
 		g_GameStealthNumber->Draw(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 395, true);
 		g_GameStealthNumber->SetSize(22.5f, 30.0f);
-		g_GameStealthNumber->SetNumberOption(3, 20.0f, player->GetStealthAmount());
+		g_GameStealthNumber->SetNumberOption(3, 20.0f, m_StealthAmount);
 
 
 
@@ -806,7 +794,7 @@ void TextureManager::Draw()
 			g_GameSpeedBox->SetAlpha(0.8f);
 			g_GameSpeedNumber->Draw((SCREEN_WIDTH / 2) - 260.0f, 405.0f, true);
 			g_GameSpeedNumber->SetSize(20.0f, 30.0f);
-			g_GameSpeedNumber->SetNumberOption(4, 25.0f, player->GetSpeed() * 1000.0f);
+			g_GameSpeedNumber->SetNumberOption(4, 25.0f, jet->GetSpeed());
 			g_GameSpeedNumber->SetAlpha(0.8f);
 			g_GameSpeed->Draw((SCREEN_WIDTH / 2) - 400.0f, 360.0f);
 			g_GameSpeed->SetSize(160.0f, 50.0f);
@@ -819,7 +807,7 @@ void TextureManager::Draw()
 			g_GameAltBox->SetAlpha(0.8f);
 			g_GameAltNumber->Draw((SCREEN_WIDTH / 2) + 320.0f, 405.0f, true);
 			g_GameAltNumber->SetSize(20.0f, 30.0f);
-			g_GameAltNumber->SetNumberOption(4, 25.0f, player->GetPosition().y);
+			g_GameAltNumber->SetNumberOption(4, 25.0f, jet->GetPosition().y);
 			g_GameAltNumber->SetAlpha(0.8f);
 			g_GameAlt->Draw((SCREEN_WIDTH / 2) + 170.0f, 360.0f);
 			g_GameAlt->SetSize(160.0f, 50.0f);
@@ -845,10 +833,10 @@ void TextureManager::Draw()
 		switch (m_TutorialProcess)
 		{
 		case 0://開始
-			player->SetRoleLock(true);
-			player->SetPitchLock(true);
-			player->SetYawLock(true);
-			player->SetEngineLock(true);
+			jet->SetRoleLock(true);
+			jet->SetPitchLock(true);
+			jet->SetYawLock(true);
+			jet->SetEngineLock(true);
 
 			m_TutorialCount++;
 			g_TutorialStart->Draw(30.0f, SCREEN_HEIGHT - 290.0f);
@@ -864,7 +852,7 @@ void TextureManager::Draw()
 
 			break;
 		case 1://ピッチ
-			player->SetPitchLock(false);
+			jet->SetPitchLock(false);
 			g_TutorialPitch->Draw(30.0f, SCREEN_HEIGHT - 290.0f);
 			g_TutorialPitch->SetSize(700.0f, 150.0f);
 			g_TutorialPitch->SetRGB(0.0f, 1.0f, 0.0f);
@@ -893,7 +881,7 @@ void TextureManager::Draw()
 
 			break;
 		case 2://ロール
-			player->SetRoleLock(false);
+			jet->SetRoleLock(false);
 			g_TutorialRole->Draw(30.0f, SCREEN_HEIGHT - 290.0f);
 			g_TutorialRole->SetSize(650.0f, 150.0f);
 			g_TutorialRole->SetRGB(0.0f, 1.0f, 0.0f);
@@ -922,7 +910,7 @@ void TextureManager::Draw()
 
 			break;
 		case 3://ヨー
-			player->SetYawLock(false);
+			jet->SetYawLock(false);
 			g_TutorialYaw->Draw(30.0f, SCREEN_HEIGHT - 290.0f);
 			g_TutorialYaw->SetSize(650.0f, 150.0f);
 			g_TutorialYaw->SetRGB(0.0f, 1.0f, 0.0f);
@@ -952,7 +940,7 @@ void TextureManager::Draw()
 			break;
 
 		case 4://加速と減速
-			player->SetEngineLock(false);
+			jet->SetEngineLock(false);
 			g_TutorialSpeed->Draw(30.0f, SCREEN_HEIGHT - 290.0f);
 			g_TutorialSpeed->SetSize(750.0f, 150.0f);
 			g_TutorialSpeed->SetRGB(0.0f, 1.0f, 0.0f);
@@ -985,7 +973,7 @@ void TextureManager::Draw()
 			if (m_TutorialCount == 0)
 			{
 				m_EnemyTuto00 = m_Scene->AddGameObject<EnemyJet>(1);
-				m_EnemyTuto00->SetPosition(player->GetPosition() + player->GetForwardQuaternion() * 3000.0f);
+				m_EnemyTuto00->SetPosition(jet->GetPosition() + jet->GetForwardQuaternion() * 3000.0f);
 				m_EnemyTuto00->SetStateLock(true);
 			}
 
@@ -1034,8 +1022,8 @@ void TextureManager::Draw()
 			if (m_TutorialCount == 60 * 5)
 			{
 				m_EnemyTuto01 = m_Scene->AddGameObject<EnemyJet>(1);
-				m_EnemyTuto01->SetPosition(player->GetPosition() + player->GetForwardQuaternion() * 4000.0f);
-				player->SwitchTarget();
+				m_EnemyTuto01->SetPosition(jet->GetPosition() + jet->GetForwardQuaternion() * 4000.0f);
+				jet->GetLockOnSm()->SwitchTarget();
 			}
 
 			break;

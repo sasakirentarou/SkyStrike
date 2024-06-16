@@ -74,7 +74,7 @@ public:
 	bool GetReflectEnable() { return m_ReflectEnable; }
 	bool GetGameEnable() { return m_GameEnable; }
 
-	// 前方向ベクトル取得
+	// 前方向ベクトル取得(オイラー角)
 	D3DXVECTOR3 GetForward()
 	{
 		D3DXMATRIX rot;
@@ -88,7 +88,7 @@ public:
 		return forward;
 	}
 
-	// 右方向ベクトル取得
+	// 右方向ベクトル取得(オイラー角)
 	D3DXVECTOR3 GetRight()
 	{
 		D3DXMATRIX rot;
@@ -102,7 +102,7 @@ public:
 		return forward;
 	}
 
-	// 上方向ベクトル取得
+	// 上方向ベクトル取得(オイラー角)
 	D3DXVECTOR3 GetTop()
 	{
 		D3DXMATRIX rot;
@@ -160,14 +160,16 @@ public:
 
 
 	//collision
-	D3DXVECTOR3 MatrixtoPosition(D3DXMATRIX matrix) {
+	D3DXVECTOR3 MatrixtoPosition(D3DXMATRIX matrix) 
+	{
 		D3DXVECTOR3 pos;
 		pos.x = matrix._41;
 		pos.y = matrix._42;
 		pos.z = matrix._43;
 		return pos;
 	}
-	D3DXVECTOR3 MatrixtoScale(D3DXMATRIX matrix) {
+	D3DXVECTOR3 MatrixtoScale(D3DXMATRIX matrix) 
+	{
 		D3DXVECTOR3 scale;
 		scale.x = matrix._11;
 		scale.y = matrix._22;
@@ -213,6 +215,25 @@ public:
 	}
 
 
+	D3DXVECTOR3 LocalVector(D3DXVECTOR3 rot, D3DXVECTOR3 offset)
+	{
+		D3DXVECTOR3 vector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		vector += GetForward()  * offset.z;
+		vector += GetRight()	* offset.x;
+		vector += GetTop()		* offset.y;
+
+		return vector;
+	}
+	D3DXVECTOR3 LocalVector(D3DXQUATERNION qua, D3DXVECTOR3 offset)
+	{
+		D3DXVECTOR3 vector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		vector += GetForwardQuaternion() * offset.z;
+		vector += GetRightQuaternion()   * offset.x;
+		vector += GetTopQuaternion()	 * offset.y;
+
+		return vector;
+	}
+
 	//軸周りのクォータニオン回転
 	void SetQuaternionRotation(const D3DXVECTOR3& axis, float angle)
 	{
@@ -233,12 +254,14 @@ public:
 		}
 	}
 
+
 	//クランプ
 	float Clamp(float clamp, float min, float max) {
 		return (clamp < min) ? min : (clamp > max) ? max : clamp;
 	}
 	
-	//視界
+
+	//視界: 視野角,視距離,位置,ターゲット,前方向ベクトル
 	bool View(float fieldOfViewRadians, float viewDistancee,
 		D3DXVECTOR3 myPos, D3DXVECTOR3 targetPos, D3DXVECTOR3 myForward)
 	{

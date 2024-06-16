@@ -5,7 +5,9 @@
 #include "camera.h"
 #include "cross.h"
 #include "spritefield.h"
-#include "player.h"
+#include "jet.h"
+#include "enemyJet.h"
+#include "lockOnSystem.h"
 
 void Cross::Init()
 {
@@ -57,6 +59,8 @@ void Cross::Init()
 
 	m_Green = 1.0f;
 
+	m_Scene = Manager::GetScene();
+
 	GameObject::Init();
 }
 
@@ -74,12 +78,23 @@ void Cross::Uninit()
 
 void Cross::Update()
 {
-	auto scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
-	D3DXVECTOR3 playerPos = player->GetPosition();
+	m_Jet = m_Scene->GetGameObject<Jet>();
 
-	D3DXVec3Lerp(&m_Position, &m_Position, &playerPos, 0.25f);
-	m_Position += player->GetForwardQuaternion() * 15.0f + player->GetTopQuaternion() * 0.5f;
+	if (AutoRange())
+	{
+		m_Red = 1.0f;
+		m_Green = 0.0f;
+	}
+	else
+	{
+		m_Green = 1.0f;
+		m_Red = 0.0f;
+	}
+
+	//Jetに付ける
+	D3DXVECTOR3 pos = m_Jet->GetPosition();
+	D3DXVec3Lerp(&m_Position, &m_Position, &pos, 0.25f);
+	m_Position += m_Jet->LocalVector(m_Jet->GetQuaternion(), D3DXVECTOR3(0.0f, 0.5f, 15.0f));
 
 	GameObject::Update();
 }
@@ -143,4 +158,45 @@ void Cross::Draw()
 
 	//深度を戻す
 	Renderer::SetDepthEnable(true);
+}
+
+bool Cross::AutoRange()
+{
+	Camera* camera = m_Scene->GetGameObject<Camera>();
+	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
+
+
+	//オートエイム機能
+	D3DXMATRIX screenMatrix = camera->GetScreenMatrix();
+
+	D3DXVECTOR3 enemypos;
+	D3DXVECTOR3 screenCameraEnemy;
+
+
+	for (EnemyJet* enemy : enemys)
+	{
+		if (enemy->GetEnemyID() == m_Jet->GetLockOnSm()->GetLockEnemyID())
+		{
+			enemypos = enemy->GetPosition();
+			D3DXVec3TransformCoord(&screenCameraEnemy, &enemypos, &screenMatrix);
+		}
+	}
+
+	//クロスヘアの2Dposを取得
+	D3DXVECTOR3 screenCameraCross;
+	D3DXVec3TransformCoord(&screenCameraCross, &m_Position, &screenMatrix);
+
+	//端の最大値が1なので端の値をスクリーン座標の半分の値に変換
+	float CEx = (SCREEN_WIDTH / 2) * screenCameraEnemy.x;
+	float CEy = (SCREEN_HEIGHT / 2) * screenCameraEnemy.y;
+	float CCx = (SCREEN_WIDTH / 2) * screenCameraCross.x;
+	float CCy = (SCREEN_HEIGHT / 2) * screenCameraCross.y;
+
+	//クロスヘアを起点にAUTO_RANGEの内の範囲を指定
+	if (CCx + AUTO_RANGE > CEx && CCx - AUTO_RANGE < CEx &&
+		CCy + AUTO_RANGE > CEy && CCy - AUTO_RANGE < CEy)
+		return true;
+
+
+	return false;
 }

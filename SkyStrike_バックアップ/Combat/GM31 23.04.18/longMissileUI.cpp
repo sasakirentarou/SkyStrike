@@ -2,7 +2,7 @@
 #include "renderer.h"
 #include "longMissileUI.h"
 #include "sprite.h"
-#include "player.h"
+#include "jet.h"
 #include "scene.h"
 #include "manager.h"
 
@@ -112,9 +112,9 @@ void LongMissileUI::Uninit()
 void LongMissileUI::Update()
 {
 	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	Jet* jet = scene->GetGameObject<Jet>();
 
-	if (player->GetSpecialAmount() > 0)
+	if (jet->GetWeaponSm()->GetSpeMissAmount() > 0)
 	{
 		if (m_Gauge < m_GaugeMax)
 		{

@@ -4,7 +4,7 @@
 #include "scene.h"
 #include "flare.h"
 #include "smoke.h"
-#include "player.h"
+#include "jet.h"
 
 Model* Flare::m_Model{};
 
@@ -46,7 +46,7 @@ void Flare::Update()
 {
 	GameObject::Update();
 	Scene* scene = Manager::GetScene();
-	auto player = scene->GetGameObject<Player>();
+	Jet* jet = scene->GetGameObject<Jet>();
 
 	m_Count++;
 	if (m_Count > 60 * 4)
@@ -60,11 +60,13 @@ void Flare::Update()
 	smoke->SetScale(D3DXVECTOR3(0.1f, 0.1f, 0.1f));
 
 	//Ž©—R—Ž‰º
-	D3DXVECTOR3 accele = D3DXVECTOR3(0.0f, -0.5f, 0.0f);
-	m_BulletTime += 0.0005f;
+	{
+		D3DXVECTOR3 accele = D3DXVECTOR3(0.0f, -0.5f, 0.0f);
+		m_BulletTime += 0.0005f;
 
-	m_Velocity += accele * m_BulletTime;
-	m_Position += m_Velocity * m_BulletTime;
+		m_Velocity += accele * m_BulletTime;
+		m_Position += m_Velocity * m_BulletTime;
+	}
 }
 
 void Flare::Draw()

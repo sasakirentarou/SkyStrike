@@ -5,11 +5,10 @@
 #include "bullet.h"
 #include "enemyJet.h"
 #include "explosion.h"
-#include "player.h"
-#include "camera.h"
 #include "cross.h"
 #include "textureManager.h"
 #include "hitBullet.h"
+#include "jet.h"
 
 Model* Bullet::m_Model{};
 
@@ -51,47 +50,24 @@ void Bullet::Uninit()
 void Bullet::Update()
 {
 	Scene* scene = Manager::GetScene();
+	Cross* cross = scene->GetGameObject<Cross>();
+	TextureManager* texture = scene->GetGameObject<TextureManager>();
+	Jet* jet = scene->GetGameObject<Jet>();
 	auto enemys = scene->GetGameObjects<EnemyJet>();
-	auto player = scene->GetGameObject<Player>();
-	auto camera = scene->GetGameObject<Camera>();
-	auto cross = scene->GetGameObject<Cross>();
-	auto texture = scene->GetGameObject<TextureManager>();
 
-	//マトリックス取得
-	D3DXMATRIX screenMatrix = camera->GetScreenMatrix();
-
-	//敵のの2Dposを取得
-	D3DXVECTOR3 enemypos;
-	D3DXVECTOR3 screenCameraEnemy;//スクリーン上の敵の位置
-	for (EnemyJet* enemy : enemys)
-	{
-		if (enemy->GetEnemyID() == player->GetLockEnemy())
-		{
-			enemypos = enemy->GetPosition();
-			D3DXVec3TransformCoord(&screenCameraEnemy, &enemypos, &screenMatrix);
-		}
-	}
-
-	//クロスヘアの2Dposを取得
-	D3DXVECTOR3 crosspos = cross->GetPosition();
-	D3DXVECTOR3 screenCameraCross;
-	D3DXVec3TransformCoord(&screenCameraCross, &crosspos, &screenMatrix);
-	
-	//端の最大値が1なので端の値をスクリーン座標の半分の値に変換
-	float CEx = (SCREEN_WIDTH  / 2) * screenCameraEnemy.x;
-	float CEy = (SCREEN_HEIGHT / 2) * screenCameraEnemy.y;
-	float CCx = (SCREEN_WIDTH  / 2) * screenCameraCross.x;
-	float CCy = (SCREEN_HEIGHT / 2) * screenCameraCross.y;
-
-	//クロスヘアを起点にAUTO_RANGEの内の範囲を指定
-	if( CCx + AUTO_RANGE > CEx &&
-		CCx - AUTO_RANGE < CEx &&
-		CCy + AUTO_RANGE > CEy &&
-		CCy - AUTO_RANGE < CEy)
+	if(cross->AutoRange())
 	{
 		//誘導計算
 		D3DXVECTOR3 forward = GetForwardQuaternion();
-		D3DXVECTOR3 gaiseki;
+		D3DXVECTOR3 gaiseki, enemypos;
+
+		for (EnemyJet* enemy : enemys)
+		{
+			if (enemy->GetEnemyID() == jet->GetLockOnSm()->GetLockEnemyID())
+			{
+				enemypos = enemy->GetPosition();
+			}
+		}
 
 		D3DXVECTOR3 direction = enemypos - m_Position;//法線ベクトル
 		D3DXVec3Normalize(&direction, &direction);//法線を正規化

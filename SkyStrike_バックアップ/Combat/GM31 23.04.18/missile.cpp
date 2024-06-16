@@ -5,7 +5,7 @@
 #include "missile.h"
 #include "enemyJet.h"
 #include "explosion.h"
-#include "player.h"
+#include "jet.h"
 #include "smoke.h"
 #include "hpGauge.h"
 #include "camera.h"
@@ -16,7 +16,7 @@
 #include "collisionBox.h"
 
 Model* Missile::m_Model{};
-Player* Missile::m_Player{};
+Jet* Missile::m_Jet{};
 
 void Missile::Load()
 {
@@ -33,7 +33,7 @@ void Missile::Unload()
 void Missile::Init()
 {
 	m_Scene = Manager::GetScene();
-	m_Player = m_Scene->GetGameObject<Player>();
+	m_Jet = m_Scene->GetGameObject<Jet>();
 	m_Camera = m_Scene->GetGameObject<Camera>();
 	m_Fire = m_Scene->AddGameObject<MissileFire>(1);
 	m_Fire->SetOffset(0.0f,0.0f,-3.5f);
@@ -137,8 +137,8 @@ void Missile::Shot()
 	{
 		if(!enemys.empty())
 		{
-			m_LockEnemyID = m_Player->GetMisLockID();
-			m_TrackingFlg = m_Player->GetLockFlg();
+			m_LockTargetID = m_Jet->GetWeaponSm()->GetTargetLockID();
+			m_TrackingFlg = m_Jet->GetLockOnSm()->GetLockFlg();
 		}
 
 		m_Fire->DrawFlg(true);
@@ -158,7 +158,7 @@ void Missile::Shot()
 	{
 		for (EnemyJet* enemy : enemys)
 		{
-			if (enemy->GetEnemyID() == m_LockEnemyID)
+			if (enemy->GetEnemyID() == m_LockTargetID)
 			{
 				m_EnemyPos = enemy->GetPosition();
 			}
@@ -269,7 +269,7 @@ void Missile::EnemyShot()
 	{
 		//計算処理
 		D3DXVECTOR3 forward = GetForwardQuaternion();
-		D3DXVECTOR3 playerpos = m_Player->GetPosition();
+		D3DXVECTOR3 playerpos = m_Jet->GetPosition();
 		D3DXVECTOR3 gaiseki;
 
 		D3DXVECTOR3 direction = playerpos - m_Position;//法線ベクトル
@@ -284,13 +284,13 @@ void Missile::EnemyShot()
 		if (angle >= 1.0f)
 		{
 			m_PlayerTrackingFlg = false;
-			m_Player->GetMissileAlertSE()->Stop();
+			m_Jet->GetAlertSE()->Stop();
 		}
 
-		if (!m_Player->GetFlareFlg())
+		if (!m_Jet->GetFlareFlg())
 			angle *= -1.0f;
 		else
-			m_Player->GetMissileAlertSE()->Stop();
+			m_Jet->GetAlertSE()->Stop();
 
 		D3DXQUATERNION quat;
 		D3DXQuaternionRotationAxis(&quat, &gaiseki, angle);//外積を軸に角度分回す
@@ -317,14 +317,14 @@ void Missile::EnemyShot()
 	// playerとの衝突判定
 	{
 		//-------OBB-------//
-		if (m_Collision->SetOBB(this, m_Player, 1.0f))
+		if (m_Collision->SetOBB(this, m_Jet, 1.0f))
 		{
 			MisiileBom();
 			m_PlayerHp->HPMinus(10.0f);
 			m_Camera->Shake(5.0f, 0.6f);
 
 			if (m_PlayerTrackingFlg)
-				m_Player->GetMissileAlertSE()->Stop();
+				m_Jet->GetAlertSE()->Stop();
 
 			return;
 		}

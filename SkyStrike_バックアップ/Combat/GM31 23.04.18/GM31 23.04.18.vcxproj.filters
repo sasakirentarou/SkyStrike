@@ -198,24 +198,6 @@
     <ClCompile Include="player.cpp">
       <Filter>ソース ファイル\Model\Player</Filter>
     </ClCompile>
-    <ClCompile Include="backLeftWing.cpp">
-      <Filter>ソース ファイル\Model\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="backRightWing.cpp">
-      <Filter>ソース ファイル\Model\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="leftVertical.cpp">
-      <Filter>ソース ファイル\Model\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="rightVertical.cpp">
-      <Filter>ソース ファイル\Model\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="rightWing.cpp">
-      <Filter>ソース ファイル\Model\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="leftWing.cpp">
-      <Filter>ソース ファイル\Model\Player</Filter>
-    </ClCompile>
     <ClCompile Include="flare.cpp">
       <Filter>ソース ファイル\Model\Weapon</Filter>
     </ClCompile>
@@ -363,6 +345,27 @@
     <ClCompile Include="debug.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="engine.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="weaponSystem.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="controlStick.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="lockOnSystem.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="stealthSystem.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="flareSystem.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="wing.cpp">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui_impl_win32.h">
@@ -395,12 +398,6 @@
     <ClInclude Include="box.h">
       <Filter>ヘッダー ファイル\Model\Object</Filter>
     </ClInclude>
-    <ClInclude Include="backLeftWing.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="backRightWing.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
     <ClInclude Include="bullet.h">
       <Filter>ヘッダー ファイル\Model\Weapon</Filter>
     </ClInclude>
@@ -419,12 +416,6 @@
     <ClInclude Include="jetUI.h">
       <Filter>ヘッダー ファイル\Polygon\2D</Filter>
     </ClInclude>
-    <ClInclude Include="leftVertical.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="leftWing.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
     <ClInclude Include="loadingScreen.h">
       <Filter>ヘッダー ファイル\Polygon\2D</Filter>
     </ClInclude>
@@ -436,12 +427,6 @@
     </ClInclude>
     <ClInclude Include="fade.h">
       <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="rightVertical.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="rightWing.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
     </ClInclude>
     <ClInclude Include="lock.h">
       <Filter>ヘッダー ファイル\Polygon\3D</Filter>
@@ -613,6 +598,27 @@
     </ClInclude>
     <ClInclude Include="debug.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponSystem.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="controlStick.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="lockOnSystem.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="flareSystem.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="stealthSystem.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="wing.h">
+      <Filter>ヘッダー ファイル\Model\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

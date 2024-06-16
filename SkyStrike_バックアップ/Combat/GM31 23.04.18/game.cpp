@@ -5,7 +5,7 @@
 
 #include "field.h"
 #include "camera.h"
-#include "player.h"
+#include "jet.h"
 #include "enemyJet.h"
 #include "explosion.h"
 #include "cylinder.h"
@@ -26,12 +26,6 @@
 #include "lockOn.h"
 #include "jetUI.h"
 #include "flare.h"
-#include "leftWing.h"
-#include "rightWing.h"
-#include "backLeftWing.h"
-#include "backRightWing.h"
-#include "leftVertical.h"
-#include "rightVertical.h"
 #include "collisionBox.h"
 #include "enemyDistance.h"
 #include "textureManager.h"
@@ -107,23 +101,16 @@ void Game::Init()
 	// field
 	GameObject* field = AddGameObject<Field>(1);
 
-	//parts
-	AddGameObject<RightWing>(1);//主翼
-	AddGameObject<LeftWing>(1);//主翼
-	AddGameObject<BackLeftWing>(1);//水平尾翼
-	AddGameObject<BackRightWing>(1);//水平尾翼
-	AddGameObject<LeftVertical>(1);//垂直尾翼
-	AddGameObject<RightVertical>(1);//垂直尾翼
-
+	//噴射
 	Fire* fire = AddGameObject<Fire>(1);
 	fire->SetPlayerFire();
 	Arrow* arrow = AddGameObject<Arrow>(1);
 
 	// player
-	m_Player = AddGameObject<Player>(1);
-	m_Player->SetPosition(D3DXVECTOR3(1000.0f, 1000.0f, 0.0f));
-	m_Player->SetGameEnable(true);
-	m_Player->Init();
+	m_Jet = AddGameObject<Jet>(1);
+	m_Jet->SetPosition(D3DXVECTOR3(1000.0f, 1000.0f, 0.0f));
+	m_Jet->SetGameEnable(true);
+	m_Jet->Init();
 
 	//enemy
 	GameObject* enemy0 = AddGameObject<EnemyJet>(1);
@@ -184,16 +171,6 @@ void Game::Init()
 
 	//HPバー
 	GameObject* hp = AddGameObject<HpGauge>(2);
-
-	//ミサイルUI
-	GameObject* missileUI_0;
-	GameObject* missileUI_1;
-	//GameObject* longMissileUI_0;
-	//GameObject* longMissileUI_1;
-	missileUI_0 = AddGameObject<MissileUI>(2);
-	missileUI_1 = AddGameObject<MissileUI>(2);
-	//longMissileUI_0 = AddGameObject<LongMissileUI>(2);
-	//longMissileUI_1 = AddGameObject<LongMissileUI>(2);
 
 	//機体UI
 	GameObject* jetUI;
@@ -257,7 +234,7 @@ void Game::Update()
 		m_Fade->FadeOut();
 	}
 
-	if (m_Player->GetDeath())
+	if (m_Jet->GetDeath())
 	{
 		m_Texture->SetGameOverFlg(true);
 		m_Fade->FadeOut();
@@ -318,7 +295,7 @@ void Game::Draw()
 	D3DXVECTOR3 lookat;
 	D3DXVECTOR3 up;
 	D3DXMATRIX viewMatrixArray[6];
-	D3DXVECTOR3 vPlayerPos = m_Player->GetPosition();
+	D3DXVECTOR3 vPlayerPos = m_Jet->GetPosition();
 	for (int i = 0; i < 6; i++)
 	{
 		eye = vPlayerPos;

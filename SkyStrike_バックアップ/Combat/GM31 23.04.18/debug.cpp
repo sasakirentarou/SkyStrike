@@ -3,7 +3,7 @@
 #include "input.h"
 #include "scene.h"
 #include "manager.h"
-#include "player.h"
+#include "jet.h"
 #include "enemyJet.h"
 #include "collisionBox.h"
 
@@ -13,7 +13,7 @@ float Debug::m_Frame = 60.0f;
 void Debug::Update()
 {
 	Scene* scene = Manager::GetScene();
-	Player* player = scene->GetGameObject<Player>();
+	Jet* jet = scene->GetGameObject<Jet>();
 	std::vector <EnemyJet*>		enemys = scene->GetGameObjects<EnemyJet>();
 	std::vector <CollisionBox*> collisions = scene->GetGameObjects<CollisionBox>();
 
@@ -37,10 +37,10 @@ void Debug::Update()
 		case SCENE_TUTORIAL:
 
 		{//Player
-			ImGui::Begin("Player");
-			ImGui::InputFloat3("Position", player->GetPosition());
-			ImGui::InputFloat4("Quaternion", player->GetQuaternion());
-			ImGui::InputFloat3("Velocity", player->GetVelocity());
+			ImGui::Begin("Jet");
+			ImGui::InputFloat3("Position", jet->GetPosition());
+			ImGui::InputFloat4("Quaternion", jet->GetQuaternion());
+			ImGui::InputFloat3("Velocity", jet->GetVelocity());
 			ImGui::End();
 		}
 
@@ -61,10 +61,10 @@ void Debug::Update()
 		case SCENE_GAME:
 
 		{//Player
-			ImGui::Begin("Player");
-			ImGui::InputFloat3("Position", player->GetPosition());
-			ImGui::InputFloat4("Quaternion", player->GetQuaternion());
-			ImGui::InputFloat3("Velocity", player->GetVelocity());
+			ImGui::Begin("Jet");
+			ImGui::InputFloat3("Position", jet->GetPosition());
+			ImGui::InputFloat4("Quaternion", jet->GetQuaternion());
+			ImGui::InputFloat3("Velocity", jet->GetVelocity());
 			ImGui::End();
 		}
 

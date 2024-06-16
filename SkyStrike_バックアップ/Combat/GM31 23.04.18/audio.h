@@ -26,7 +26,7 @@ public:
 	void Uninit();
 
 	void Load(const char *FileName);
-	void Play(bool Loop = false);
+	void Play(bool Loop = false, bool Update = false);
 
 	void Volume(float vol);
 	void Stop();
