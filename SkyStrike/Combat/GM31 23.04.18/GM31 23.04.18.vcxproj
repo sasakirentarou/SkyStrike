@@ -270,7 +270,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">main.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="player.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="seaField.cpp" />
@@ -355,7 +354,6 @@
     <ClInclude Include="missileFire.h" />
     <ClInclude Include="missileUI.h" />
     <ClInclude Include="model.h" />
-    <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />

@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -43,33 +39,6 @@
     <Filter Include="ソース ファイル\Model\Object">
       <UniqueIdentifier>{df3dfa05-4f91-4aaf-9cd9-7fd966e9f71c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Polygon">
-      <UniqueIdentifier>{fe00ad8b-e079-4149-bcf1-e6fe230aa0a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Polygon\2D">
-      <UniqueIdentifier>{422c1032-f757-4615-a3b4-7bcf08c158e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Polygon\3D">
-      <UniqueIdentifier>{b7952878-38ba-455b-930f-9ac5e04a15b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Scene">
-      <UniqueIdentifier>{5ba09a44-a3f9-418b-93a8-ab3b5fb9f680}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Model">
-      <UniqueIdentifier>{8a552f46-dd64-4392-893d-1a412e9a9937}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Model\Object">
-      <UniqueIdentifier>{adf9b1a1-887d-4275-a515-cb014f6b45aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Model\Player">
-      <UniqueIdentifier>{132aae14-0bbc-472f-8030-d60a24f5a730}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Model\Weapon">
-      <UniqueIdentifier>{6eb0e0d9-25fc-4d81-a49e-5de10cf198bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Camera">
-      <UniqueIdentifier>{2b7b5349-2df0-420c-a40e-b097112447db}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Camera">
       <UniqueIdentifier>{df0ed7f3-8e43-4624-80c2-490c5d454b1c}</UniqueIdentifier>
     </Filter>
@@ -79,23 +48,11 @@
     <Filter Include="hlsl\VS">
       <UniqueIdentifier>{3cb4ee80-6724-4cd2-9565-892f8d176b09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Polygon\2D\Texture">
-      <UniqueIdentifier>{97d37f27-4e5d-4059-8cd9-de02b824debe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Polygon\2D\Texture">
       <UniqueIdentifier>{44f66ac6-f02c-46a0-accc-d5f12d6ef86a}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Polygon\3D\Effect">
       <UniqueIdentifier>{0caf18cf-bbdd-43c8-a7b4-7141d2eae822}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Polygon\3D\Effect">
-      <UniqueIdentifier>{04c5c6d9-d0db-4712-8cc7-746b77572b8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\System">
-      <UniqueIdentifier>{93777287-668e-4d0f-8c45-06ba6aac3760}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Component">
-      <UniqueIdentifier>{8aff2fff-027e-4b42-b80e-e9e0900732d9}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Component">
       <UniqueIdentifier>{04c5f7cb-5596-4ea4-a360-1f94a3114fc3}</UniqueIdentifier>
@@ -109,17 +66,8 @@
     <Filter Include="ソース ファイル\Model\Enemy">
       <UniqueIdentifier>{e7ecf76a-bd09-4c61-95aa-8670e702a551}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Model\Enemy">
-      <UniqueIdentifier>{bbbe8e70-ff2a-49fd-9ae8-7ea117ef6924}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Polygon\3D\Field">
-      <UniqueIdentifier>{41a75535-7215-4b21-8cbd-66df430cab35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Model\Weapon\Missile">
       <UniqueIdentifier>{2027c5a3-0c53-4987-bdbd-47638b00c4be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Model\Weapon\Missile">
-      <UniqueIdentifier>{c4f03fe0-3db5-429c-bc53-b84634d6d5d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +142,6 @@
     </ClCompile>
     <ClCompile Include="result.cpp">
       <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>ソース ファイル\Model\Player</Filter>
     </ClCompile>
     <ClCompile Include="flare.cpp">
       <Filter>ソース ファイル\Model\Weapon</Filter>
@@ -392,233 +337,230 @@
     <ClInclude Include="imgui\imgui_impl_dx11.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="airport.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="box.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="bullet.h">
-      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="cross.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="cylinder.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="explosion.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="hpGauge.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="jetUI.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="loadingScreen.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="loadingLogo.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="flare.h">
-      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="fade.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="lock.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="missileUI.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="lockOn.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="startButton.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="titleLogo.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="trail.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="smoke.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="loading.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="result.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="title.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="dome.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>ヘッダー ファイル\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="titleCamera.h">
-      <Filter>ヘッダー ファイル\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="teamJet.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="collisionBox.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="textureLoad.h">
-      <Filter>ヘッダー ファイル\Polygon\2D\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="textureManager.h">
-      <Filter>ヘッダー ファイル\Polygon\2D\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="enemyDistance.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="effectLoad.h">
-      <Filter>ヘッダー ファイル\Polygon\3D\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="effectManager.h">
-      <Filter>ヘッダー ファイル\Polygon\3D\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="gameObject.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="manager.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="renderer.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="component.h">
-      <Filter>ヘッダー ファイル\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="audio.h">
-      <Filter>ヘッダー ファイル\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="sprite.h">
-      <Filter>ヘッダー ファイル\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="spritefield.h">
-      <Filter>ヘッダー ファイル\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="inputx.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="fire.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="engineFire.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="tutorial.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="arrow.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="enemyJet.h">
-      <Filter>ヘッダー ファイル\Model\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="meshField.h">
-      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="titleField.h">
-      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="field.h">
-      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="sundome.h">
-      <Filter>ヘッダー ファイル\Model\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="seaField.h">
-      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="hitBullet.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="desertField.h">
-      <Filter>ヘッダー ファイル\Polygon\3D\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="missile.h">
-      <Filter>ヘッダー ファイル\Model\Weapon\Missile</Filter>
-    </ClInclude>
-    <ClInclude Include="longMissile.h">
-      <Filter>ヘッダー ファイル\Model\Weapon\Missile</Filter>
-    </ClInclude>
-    <ClInclude Include="missileFire.h">
-      <Filter>ヘッダー ファイル\Model\Weapon\Missile</Filter>
-    </ClInclude>
-    <ClInclude Include="tgt.h">
-      <Filter>ヘッダー ファイル\Polygon\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="lockon2D.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="longMissileUI.h">
-      <Filter>ヘッダー ファイル\Polygon\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="jet.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="enemyManager.h">
-      <Filter>ヘッダー ファイル\Model\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="weaponManager.h">
-      <Filter>ヘッダー ファイル\Model\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="debug.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="engine.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="weaponSystem.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
+      <Filter>ソース ファイル\Model\Player</Filter>
     </ClInclude>
     <ClInclude Include="controlStick.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
+      <Filter>ソース ファイル\Model\Player</Filter>
     </ClInclude>
-    <ClInclude Include="lockOnSystem.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
+    <ClInclude Include="engine.h">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="fire.h">
+      <Filter>ソース ファイル\Model\Player</Filter>
     </ClInclude>
     <ClInclude Include="flareSystem.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="jet.h">
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="lockOnSystem.h">
+      <Filter>ソース ファイル\Model\Player</Filter>
     </ClInclude>
     <ClInclude Include="stealthSystem.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponSystem.h">
+      <Filter>ソース ファイル\Model\Player</Filter>
     </ClInclude>
     <ClInclude Include="wing.h">
-      <Filter>ヘッダー ファイル\Model\Player</Filter>
+      <Filter>ソース ファイル\Model\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="titleCamera.h">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="audio.h">
+      <Filter>ソース ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="component.h">
+      <Filter>ソース ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>ソース ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="spritefield.h">
+      <Filter>ソース ファイル\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyJet.h">
+      <Filter>ソース ファイル\Model\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyManager.h">
+      <Filter>ソース ファイル\Model\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="airport.h">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="box.h">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionBox.h">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="cylinder.h">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="dome.h">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="sundome.h">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="teamJet.h">
+      <Filter>ソース ファイル\Model\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="longMissile.h">
+      <Filter>ソース ファイル\Model\Weapon\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
+      <Filter>ソース ファイル\Model\Weapon\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="missileFire.h">
+      <Filter>ソース ファイル\Model\Weapon\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>ソース ファイル\Model\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="flare.h">
+      <Filter>ソース ファイル\Model\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponManager.h">
+      <Filter>ソース ファイル\Model\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="textureLoad.h">
+      <Filter>ソース ファイル\Polygon\2D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="textureManager.h">
+      <Filter>ソース ファイル\Polygon\2D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="hpGauge.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="jetUI.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="loadingLogo.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="loadingScreen.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="lockon2D.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="longMissileUI.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="missileUI.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="startButton.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="titleLogo.h">
+      <Filter>ソース ファイル\Polygon\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="cross.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyDistance.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="engineFire.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="explosion.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="hitBullet.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="lock.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="lockOn.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="smoke.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="tgt.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="trail.h">
+      <Filter>ソース ファイル\Polygon\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="effectLoad.h">
+      <Filter>ソース ファイル\Polygon\3D\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="effectManager.h">
+      <Filter>ソース ファイル\Polygon\3D\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="desertField.h">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="field.h">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="meshField.h">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="seaField.h">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="titleField.h">
+      <Filter>ソース ファイル\Polygon\3D\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="loading.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorial.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="inputx.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>ソース ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
