@@ -7,10 +7,16 @@ SamplerState g_SamplerState : register(s0);
 
 
 void main(in PS_IN In, out float4 outDiffuse : SV_Target)
-{
+{	
 	//テクスチャから色をサンプリングする
-	outDiffuse = g_Texture.Sample(g_SamplerState, In.TexCoord);
-	outDiffuse *= In.Diffuse;
+	float4 baseColor = g_Texture.Sample(g_SamplerState, In.TexCoord);
+    float4 normal = normalize(In.Normal);
+	
+	//ハーフランバート
+    outDiffuse.rgb = saturate(dot(-Light.Direction.xyz, normal.xyz) + 0.5);
+    outDiffuse.rgb *= baseColor.rgb;
+	
+    outDiffuse.a = In.Diffuse.a;
 
 	In.ShadowPosition.xyz /= In.ShadowPosition.w;
 	In.ShadowPosition.x = In.ShadowPosition.x * 0.5 + 0.5;

@@ -323,6 +323,8 @@ public:
 		}
 	}
 
+	virtual void Debug(){}
+
 	// テンプレート関数
 	template <typename T>
 	T* AddComponet()

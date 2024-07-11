@@ -2,7 +2,6 @@
 #include"manager.h"
 #include"renderer.h"
 #include"titleCamera.h"
-#include"player.h"
 #include"scene.h"
 #include "input.h"
 #include "jet.h"

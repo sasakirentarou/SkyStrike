@@ -258,14 +258,14 @@ void Game::Draw()
 	light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//ライトカメラのビュー行列を作成
-	D3DXVECTOR3 lightPos = D3DXVECTOR3(10000.0f, 4000.0f, 10000.0f);
-	D3DXVECTOR3 lightTarget = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 lightPos = D3DXVECTOR3(15000.0f, 4000.0f, 15000.0f);
+	D3DXVECTOR3 lightTarget = m_Jet->GetPosition()/*D3DXVECTOR3(0.0f, 0.0f, 0.0f)*/;
 	D3DXVECTOR3 lightUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&light.ViewMatrix, &lightPos, &lightTarget, &lightUp);
 
 	//ライトカメラのプロジェクション行列を作成
 	D3DXMatrixPerspectiveFovLH(&light.ProjectionMatrix, 1.0f,
-		(float)1.0f, 100.0f, -600.0f);
+		(float)1.0f, 10.0f, -600.0f);
 
 	Renderer::SetLight(light);
 

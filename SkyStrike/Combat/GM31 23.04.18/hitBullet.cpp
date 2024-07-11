@@ -6,7 +6,6 @@
 #include "hitBullet.h"
 #include "spritefield.h"
 #include "audio.h"
-#include "player.h"
 
 ID3D11Buffer* HitBullet::m_VertexBuffer{};
 ID3D11ShaderResourceView* HitBullet::m_Texture{};

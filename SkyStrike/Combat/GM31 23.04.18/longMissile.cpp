@@ -40,6 +40,7 @@ void LongMissile::Init()
 	m_Fire->SetOffset(0.0f, 0.0f, -3.5f);
 	m_Collision = m_Scene->AddGameObject<CollisionBox>(1);
 	m_Collision->SetScale(D3DXVECTOR3(1.0f, 1.0f, 5.0f));
+	m_Collision->SetName("LongMissile");
 
 	m_Scale = D3DXVECTOR3(0.35f, 0.35f, 0.35f);
 

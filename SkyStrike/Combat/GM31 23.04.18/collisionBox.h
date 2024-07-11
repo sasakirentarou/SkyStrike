@@ -2,6 +2,7 @@
 
 #include "gameObject.h"
 #include "model.h"
+#include <string>
 
 class CollisionBox : public GameObject
 {
@@ -14,6 +15,8 @@ private:
 	D3DXMATRIX m_Pearent{};
 	D3DXCOLOR m_Color = D3DXCOLOR(0.0f,1.0f,0.0f,1.0f);
 
+	std::string m_Name{};
+
 	bool m_HitFlg{};
 	bool m_DrawFlg{};
 public:
@@ -24,12 +27,13 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void Debug();
 
 	bool SetOBB(GameObject* obb1, GameObject* obb2,float offset);
 	float LenSegOnSeparateAxis(D3DXVECTOR3* Sep, D3DXVECTOR3* e1, D3DXVECTOR3* e2, D3DXVECTOR3* e3);
 	
 	void SetPearent(D3DXMATRIX pearent) { m_Pearent = pearent; }
 	void SetColor(D3DXCOLOR color) { m_Color = color; }
-
 	void SetDrawFlg(bool draw) { m_DrawFlg = draw; }
+	void SetName(const char* name) { m_Name = name; }
 };

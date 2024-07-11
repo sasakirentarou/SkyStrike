@@ -6,14 +6,16 @@
 #include "jet.h"
 #include "enemyJet.h"
 #include "collisionBox.h"
+#include "camera.h"
 
 bool Debug::m_DebugMode{};
 float Debug::m_Frame = 60.0f;
 
-void Debug::Update()
+void Debug::Draw()
 {
 	Scene* scene = Manager::GetScene();
 	Jet* jet = scene->GetGameObject<Jet>();
+	Camera* camera = scene->GetGameObject<Camera>();
 	std::vector <EnemyJet*>		enemys = scene->GetGameObjects<EnemyJet>();
 	std::vector <CollisionBox*> collisions = scene->GetGameObjects<CollisionBox>();
 
@@ -36,63 +38,41 @@ void Debug::Update()
 
 		case SCENE_TUTORIAL:
 
-		{//Player
-			ImGui::Begin("Jet");
-			ImGui::InputFloat3("Position", jet->GetPosition());
-			ImGui::InputFloat4("Quaternion", jet->GetQuaternion());
-			ImGui::InputFloat3("Velocity", jet->GetVelocity());
-			ImGui::End();
-		}
+			//Player
+			jet->Debug();
 
-		{//CollisionBox
-			ImGui::Begin("CollsionBox");
+			//Camera
+			camera->Debug();
+
+			//CollisionBox
 			for (CollisionBox* collision : collisions)
 			{
-				collision->SetDrawFlg(true);
-				ImGui::InputFloat3("Scale", collision->GetScale());
-				//ImGui::Checkbox("Draw", &);
+				collision->Debug();
 			}
-			ImGui::End();
-		}
-
+		
 
 			break;
 
 		case SCENE_GAME:
 
-		{//Player
-			ImGui::Begin("Jet");
-			ImGui::InputFloat3("Position", jet->GetPosition());
-			ImGui::InputFloat4("Quaternion", jet->GetQuaternion());
-			ImGui::InputFloat3("Velocity", jet->GetVelocity());
-			ImGui::End();
-		}
+			//Player
+			jet->Debug();
 
-		{//EnemyJet
-			ImGui::Begin("EnemyJet");
+			//Camera
+			camera->Debug();
+
+			//EnemyJet
 			for (EnemyJet* enemy : enemys)
 			{
-				int id = enemy->GetEnemyID();
-				int health = enemy->GetHealth();
-				ImGui::InputInt("ID", &id);
-				ImGui::InputFloat3("Position", enemy->GetPosition());
-				ImGui::InputFloat4("Quaternion", enemy->GetQuaternion());
-				ImGui::InputFloat3("Velocity", enemy->GetVelocity());
-				ImGui::InputInt("HP", &health);
+				enemy->Debug();
 			}
-			ImGui::End();
-		}
-
-		{//CollisionBox
-			ImGui::Begin("CollsionBox");
+		
+			//CollisionBox
 			for (CollisionBox* collision : collisions)
 			{
-				collision->SetDrawFlg(true);
-				ImGui::InputFloat3("Scale", collision->GetScale());
-				//ImGui::Checkbox("Draw", &);
+				collision->Debug();
 			}
-			ImGui::End();
-		}
+
 
 			break;
 

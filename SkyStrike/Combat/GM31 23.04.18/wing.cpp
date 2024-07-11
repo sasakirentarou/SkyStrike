@@ -8,8 +8,10 @@
 void Wing::Init(const char* fileName)
 {
 	m_DepthEnable = true;
-	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\DepthShadowEnvMappingVS.cso");
-	Renderer::CreatePixelShader(&m_PixelShader, "shader\\DepthShadowEnvMappingPS.cso");
+	m_ReflectEnable = true;
+
+	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\jetVS.cso");
+	Renderer::CreatePixelShader(&m_PixelShader, "shader\\jetPS.cso");
 
 	m_Model = new Model();
 	m_Model->Load(fileName);
@@ -32,6 +34,7 @@ void Wing::Uninit()
 
 void Wing::Update()
 {
+	GameObject::Update();
 
 }
 
@@ -59,6 +62,8 @@ void Wing::Draw(D3DXMATRIX pearent, D3DXVECTOR3 offset)
 	GameObject::Draw();
 }
 
+
+//‰Â“®
 void Wing::Movable(D3DXVECTOR3 axis, float movable,float maxRange)
 {
 	float angle = 0;

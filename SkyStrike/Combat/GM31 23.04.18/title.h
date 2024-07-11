@@ -25,6 +25,7 @@ private:
 	class Fade* m_Fade{};
 	class TitleCamera* m_Camera{};
 	class TextureManager* m_Texture{};
+	class Jet* m_Jet{};
 
 	SelectMode m_SelectMode = SELECT_NONE;
 	//D3DXVECTOR2 m_MousePos{};

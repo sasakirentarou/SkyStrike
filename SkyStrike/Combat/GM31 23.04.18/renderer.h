@@ -84,9 +84,17 @@ struct PARAMETER
 	float dissolveThreshold;
 	float dissolveRange;
 	float dummy[2];
+	D3DXCOLOR dissolveColor;
 
 	//box
 	D3DXCOLOR boxColor;
+};
+
+struct ENV_PARAMETER
+{
+	float reflectivity;
+	float brightness;
+	float envDummy[2];
 };
 
 class CVertexBuffer;
@@ -123,7 +131,7 @@ private:
 	static ID3D11ShaderResourceView* m_DepthShadowShaderResourceView;
 	static ID3D11Buffer* m_CameraBuffer;
 	static ID3D11Buffer* m_ParameterBuffer;
-
+	static ID3D11Buffer* m_EnvParameterBuffer;
 
 	//reflect
 	static ID3D11Texture2D* m_ReflectTexture;
@@ -162,6 +170,7 @@ public:
 
 	//shader
 	static void SetParameter(PARAMETER param);
+	static void SetEnvParameter(ENV_PARAMETER param);
 
 	//fog
 	static void SetCameraPosition(CAMERA camera);

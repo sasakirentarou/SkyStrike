@@ -62,9 +62,9 @@ void Title::Init()
 	//AddGameObject<RightVertical>(1);//垂直尾翼
 
 	//player
-	Jet* player = AddGameObject<Jet>(1);
-	player->SetPosition(D3DXVECTOR3(0.0f,25.0f,10.0f));
-	player->SetScale(D3DXVECTOR3(10.0f, 10.0f, 10.0f));
+	m_Jet = AddGameObject<Jet>(1);
+	m_Jet->SetPosition(D3DXVECTOR3(0.0f,25.0f,10.0f));
+	m_Jet->SetScale(D3DXVECTOR3(10.0f, 10.0f, 10.0f));
 
 	//jet
 	for(int i = 0; i < 3; i++)
@@ -322,6 +322,62 @@ void Title::Draw()
 		(float)1.0f, 100.0f, -600.0f);
 
 	Renderer::SetLight(light);
+
+	//reflect
+//ビュー変換行列を作成する
+//注視点オフセットテーブル
+	D3DXVECTOR3 lookatOffset[6] = {
+		{ 1.0f, 0.0f, 0.0f },//+X D3D11_TEXTURECUBE_FACE_POSITIVE_X
+		{ -1.0f, 0.0f, 0.0f },//-X D3D11_TEXTURECUBE_FACE_NEGATIVE_X
+		{ 0.0f, 1.0f, 0.0f },//+Y D3D11_TEXTURECUBE_FACE_POSITIVE_Y
+		{ 0.0f, -1.0f, 0.0f },//-Y D3D11_TEXTURECUBE_FACE_NEGATIVE_Y
+		{ 0.0f, 0.0f, 1.0f },//+Z D3D11_TEXTURECUBE_FACE_POSITIVE_Z
+		{ 0.0f, 0.0f, -1.0f },//-Z D3D11_TEXTURECUBE_FACE_NEGATIVE_Z
+	};
+
+	//upベクトルテーブル
+	D3DXVECTOR3 upOffset[6] = {
+		{ 0.0f, 1.0f, 0.0f },
+		{ 0.0f, 1.0f, 0.0f },
+		{ 0.0f, 0.0f, -1.0f },
+		{ 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 1.0f, 0.0f },
+		{ 0.0f, 1.0f, 0.0f },
+	};
+
+	D3DXVECTOR3 eye;
+	D3DXVECTOR3 lookat;
+	D3DXVECTOR3 up;
+	D3DXMATRIX viewMatrixArray[6];
+	D3DXVECTOR3 vPlayerPos = m_Jet->GetPosition();
+	for (int i = 0; i < 6; i++)
+	{
+		eye = vPlayerPos;
+		lookat = vPlayerPos + lookatOffset[i];
+		up = -upOffset[i];
+		D3DXMatrixLookAtLH(&viewMatrixArray[i], &eye, &lookat, &up);
+	}
+
+	//プロジェクションマトリクス設定
+	D3DXMATRIX projectionMatrix;
+	D3DXMatrixPerspectiveFovLH(&projectionMatrix, D3DX_PI / 2, 1.0f, 0.01f, 15000.0f);
+	Renderer::SetProjectionMatrix(&projectionMatrix);
+	//ビューポート変更
+	Renderer::SetReflectViewport();
+	//6面分描画する
+	for (int i = 0; i < 6; i++)
+	{
+		Renderer::BeginCube();
+		//ビュー変換マトリクス設定
+		Renderer::SetViewMatrix(&viewMatrixArray[i]);
+		Scene::ReflectDraw();
+
+		//描画したテクスチャをキューブマップ用テクスチャにコピーしていく
+		Renderer::GetDeviceContext()->CopySubresourceRegion(
+			Renderer::GetCubeReflectTexture(),
+			D3D11CalcSubresource(0, i, 1),
+			0, 0, 0, Renderer::GetReflectTexture(), 0, nullptr);
+	}
 
 	//shader
 	// 1パス目 シャドウバッファの作成 //

@@ -215,13 +215,13 @@ void Camera::Draw()
 	Renderer::SetViewMatrix(&m_ViewMatrix);
 
 	// プロジェクションマトリクス設定
-	D3DXMATRIX projectionMatorix;
+	D3DXMATRIX projectionMatrix;
 	//↓引数：マトリックス,視野角,アスペクト比,ニアクリップ,ファークリップ(描画距離)
-	D3DXMatrixPerspectiveFovLH(&projectionMatorix, m_Fov,
+	D3DXMatrixPerspectiveFovLH(&projectionMatrix, m_Fov,
 		(float)SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 20000.0f);
-	Renderer::SetProjectionMatrix(&projectionMatorix);
+	Renderer::SetProjectionMatrix(&projectionMatrix);
 
-	m_ScreenMatrix = m_ViewMatrix * projectionMatorix;
+	m_ScreenMatrix = m_ViewMatrix * projectionMatrix;
 
 	//fog設定
 	CAMERA camera;
@@ -236,6 +236,22 @@ void Camera::Draw()
 	camera.SkyColor = m_SkyColor;
 	Renderer::SetCameraPosition(camera);
 }
+
+
+void Camera::Debug()
+{
+	ImGui::Begin("Fog");
+	ImGui::InputFloat("Start", &m_FogStart);
+	ImGui::InputFloat("End", &m_FogEnd);
+	ImGui::InputFloat("Height", &m_FogHeight);
+	ImGui::InputFloat4("FogColor", m_FogColor);
+	ImGui::InputFloat4("GroundColor", m_GroundFogColor);
+	ImGui::InputFloat4("SkyColor", m_SkyColor);
+	ImGui::End();
+}
+
+
+
 
 void Camera::DefaultCamera()
 {
@@ -267,8 +283,10 @@ void Camera::DefaultCamera()
 
 	//カメラの向きに基づいてビューマトリックスを更新
 	m_Position = m_Jet->GetPosition() + 
-				 m_Jet->LocalVector(m_Jet->GetQuaternion(), 
-					D3DXVECTOR3(rightplus, (topplus + 4.0f), forwardplus));
+				 m_Jet->LocalVector(
+					m_Jet->GetQuaternion(), 
+					D3DXVECTOR3(rightplus, (topplus + 4.0f), forwardplus)
+				 );
 
 	m_Target = m_Jet->GetPosition() + m_Jet->GetForwardQuaternion() * 2.0f;
 

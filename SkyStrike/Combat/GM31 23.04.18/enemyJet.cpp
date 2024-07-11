@@ -66,6 +66,7 @@ void EnemyJet::Init()
 	//collision
 	m_Collision = m_Scene->AddGameObject<CollisionBox>(1);
 	m_Collision->SetScale(D3DXVECTOR3(7.0f, 2.0f, 8.0f));
+	m_Collision->SetName("EnemyJet");
 
 	m_Health = MAX_HEALTH;
 	m_OldHealth = m_Health;
@@ -77,7 +78,7 @@ void EnemyJet::Init()
 	m_Model->GetModelVertex("asset\\model\\F-15\\F-15.obj", m_Top);
 
 	// 0から200までの範囲に10を足して調整
-	m_RandomTracking = std::rand() % 201 + 10;
+	m_RandomTracking = rand() % 401 + 10;
 
 	GameObject::Init();
 }
@@ -186,7 +187,7 @@ void EnemyJet::Update()
 				Seach();
 				break;
 
-			case ENAMY_GROUNDRISK:
+			case ENEMY_GROUNDRISK:
 				GroundRisk();
 				break;
 
@@ -202,17 +203,22 @@ void EnemyJet::Update()
 			m_Velocity += GetForwardQuaternion() * 0.04f;
 		}
 
+		//墜落
+		if (m_Position.y < 0.0f)
+		{
+			m_CrashFlg = true;
+		}
 
 		//地面に当たらないようにする
 		m_RiskPoint = m_Position + GetForwardQuaternion() * 500.0f;
-		if (m_RiskPoint.y < 0.0f)
+		if (m_RiskPoint.y < 0.0f && m_Position.y < RISK_RELEASE)
 		{
-			m_StateKeep = m_EnemyState;
+			//m_StateKeep = m_EnemyState;
 
-			if (m_StateKeep == ENAMY_GROUNDRISK)
-				m_StateKeep = ENEMY_SEACH;
+			//if (m_StateKeep == ENEMY_GROUNDRISK)
+			//	m_StateKeep = ENEMY_SEACH;
 
-			m_EnemyState = ENAMY_GROUNDRISK;
+			m_EnemyState = ENEMY_GROUNDRISK;
 		}
 
 		//移動範囲制限
@@ -240,15 +246,6 @@ void EnemyJet::Update()
 			m_Trail02->SetVertexPos(m_Position - GetRightQuaternion() * (m_Top.x * 1.5f) + GetForwardQuaternion() * -2.0f,
 				m_Position - GetRightQuaternion() * (m_Top.x * 1.48f) + GetForwardQuaternion() * -2.0f);
 		}
-
-		//ImGui表示
-		//ImGui::Begin("Enemy");
-		//ImGui::InputFloat3("pos", m_Position);
-		//ImGui::InputFloat("length", &m_PlayerLength);
-		//ImGui::InputFloat4("qua", m_Quaternion);
-		//ImGui::InputFloat3("vel", m_Velocity);
-		//ImGui::InputInt("HP", &m_Health);
-		//ImGui::End();
 	}
 
 	//前進
@@ -293,26 +290,22 @@ void EnemyJet::Draw()
 	GameObject::Draw();
 }
 
-////視界関数
-//bool EnemyJet::EnemyView(D3DXVECTOR3 forward, float fieldOfViewRadians, float viewDistancee)
-//{
-//	// 視野範囲内かどうかの判定
-//	D3DXVECTOR3 normalizedDirection;
-//	D3DXVECTOR3 direction = m_Jet->GetPosition() - m_Position;
-//	D3DXVec3Normalize(&normalizedDirection, &direction);
-//	D3DXVECTOR3 houkou = forward;
-//	float dotProduct = D3DXVec3Dot(&houkou, &normalizedDirection);
-//	float angle = acos(dotProduct);
-//	fieldOfViewRadians = D3DXToRadian(fieldOfViewRadians);
-//	bool isInFieldOfView = angle <= fieldOfViewRadians / 2.0f;
-//
-//	// 視野距離内かどうかの判定
-//	D3DXVECTOR3 dice = m_Position - m_Player->GetPosition();
-//	float distance = D3DXVec3Length(&dice);
-//	bool isInViewDistance = distance <= viewDistancee;
-//
-//	return isInFieldOfView && isInViewDistance;
-//}
+void EnemyJet::Debug()
+{
+	const char* stateName[] = { "Attack","Escape","Seach","GroundRisk","OutofRange" };
+	
+	ImGui::Begin("EnemyJet");
+	ImGui::Text("ID : %d", m_EnemyID);
+	//ImGui::InputInt("ID", &m_EnemyID);
+	ImGui::Text("EnemyState : %s", stateName[m_EnemyState]);
+	ImGui::InputFloat3("Position", m_Position);
+	ImGui::InputFloat4("Quaternion", m_Quaternion);
+	ImGui::InputFloat3("Velocity", m_Velocity);
+	ImGui::InputFloat3("RandomSeachPoint", m_Position + m_RandomSeachPoint);
+	ImGui::InputInt("HP", &m_Health);
+	ImGui::End();
+}
+
 
 
 //誘導関数
@@ -381,6 +374,7 @@ void EnemyJet::EnemyStateChange(int number)
 // 攻撃
 void EnemyJet::Attack()
 {
+
 	//プレイヤーの後ろに回る
 	MoveHoming(m_Jet->GetPosition() + m_Jet->GetForwardQuaternion() * -m_RandomTracking, false);
 
@@ -446,9 +440,9 @@ void EnemyJet::Seach()
 	if (m_SeachCount > 60 * 4)
 	{
 		//-2000～2000のランダム
-		m_RandomSeachPoint.x = rand() % (4001) - 2000;
-		m_RandomSeachPoint.y = rand() % (4001) - 2000;
-		m_RandomSeachPoint.z = rand() % (4001) - 2000;
+		m_RandomSeachPoint.x = rand() % 4001 - 2000;
+		m_RandomSeachPoint.y = rand() % 4001 - 2000;
+		m_RandomSeachPoint.z = rand() % 4001 - 2000;
 		m_SeachCount = 0;
 	}
 	D3DXVECTOR3 targetPos = m_Position + m_RandomSeachPoint;
@@ -464,11 +458,11 @@ void EnemyJet::Seach()
 //地面回避
 void EnemyJet::GroundRisk()
 {
-	MoveHoming(D3DXVECTOR3(m_Position.x, 1000.0f, m_Position.z) + GetForwardQuaternion() * 50.0f, false);
+	MoveHoming(D3DXVECTOR3(m_Position.x, 1200.0f, m_Position.z) + GetForwardQuaternion() * 50.0f, false);
 
-	if (m_RiskPoint.y > 1000.0f)
+	if (m_Position.y > RISK_RELEASE)
 	{
-		m_EnemyState = m_StateKeep;
+		m_EnemyState = ENEMY_ATTACK;
 	}
 }
 

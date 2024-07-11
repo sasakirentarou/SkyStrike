@@ -39,6 +39,7 @@ void Missile::Init()
 	m_Fire->SetOffset(0.0f,0.0f,-3.5f);
 	m_Collision = m_Scene->AddGameObject<CollisionBox>(1);
 	m_Collision->SetScale(D3DXVECTOR3(1.5f, 1.5f, 5.0f));
+	m_Collision->SetName("Missile");
 
 	m_Scale = D3DXVECTOR3(0.3f, 0.3f, 0.35f);
 

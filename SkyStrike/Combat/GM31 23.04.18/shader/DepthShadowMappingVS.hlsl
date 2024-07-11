@@ -20,11 +20,13 @@ void main(in VS_IN In, out PS_IN Out)
 	Out.Normal = worldNormal;
 
 	//光源処理
-	float light = -dot(Light.Direction.xyz, worldNormal.xyz);
-	light = saturate(light);
+	//float light = -dot(Light.Direction.xyz, worldNormal.xyz);
+	//light = saturate(light);
+	//Out.Diffuse = light;
+	//Out.Diffuse.a = In.Diffuse.a;
+	
 	//頂点カラーはそのままコピー
-	Out.Diffuse = light;
-	Out.Diffuse.a = In.Diffuse.a;
+    Out.Diffuse = In.Diffuse;
 
 	//入力されたUV座標を出力先へ代入する
     Out.TexCoord = In.TexCoord;

@@ -187,9 +187,9 @@ bool Cross::AutoRange()
 	D3DXVec3TransformCoord(&screenCameraCross, &m_Position, &screenMatrix);
 
 	//端の最大値が1なので端の値をスクリーン座標の半分の値に変換
-	float CEx = (SCREEN_WIDTH / 2) * screenCameraEnemy.x;
+	float CEx = (SCREEN_WIDTH  / 2) * screenCameraEnemy.x;
 	float CEy = (SCREEN_HEIGHT / 2) * screenCameraEnemy.y;
-	float CCx = (SCREEN_WIDTH / 2) * screenCameraCross.x;
+	float CCx = (SCREEN_WIDTH  / 2) * screenCameraCross.x;
 	float CCy = (SCREEN_HEIGHT / 2) * screenCameraCross.y;
 
 	//クロスヘアを起点にAUTO_RANGEの内の範囲を指定

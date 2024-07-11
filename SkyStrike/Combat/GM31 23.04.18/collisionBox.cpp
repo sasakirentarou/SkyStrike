@@ -23,7 +23,6 @@ void CollisionBox::Init()
 	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\unlitTextureVS.cso");
 	Renderer::CreatePixelShader(&m_PixelShader, "shader\\boxTexturePS.cso");
 
-
 	GameObject::Init();
 }
 
@@ -73,6 +72,15 @@ void CollisionBox::Draw()
 	
 	Renderer::SetATCEnable(false);
 
+}
+
+void CollisionBox::Debug()
+{
+	m_DrawFlg = true;
+	ImGui::Begin("CollsionBox");
+	ImGui::Text(m_Name.c_str());
+	ImGui::InputFloat3("Scale", m_Scale);
+	ImGui::End();
 }
 
 

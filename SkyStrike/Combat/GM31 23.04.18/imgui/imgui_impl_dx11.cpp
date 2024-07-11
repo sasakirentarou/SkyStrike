@@ -90,6 +90,8 @@ static void ImGui_ImplDX11_SetupRenderState(ImDrawData* draw_data, ID3D11DeviceC
     memset(&vp, 0, sizeof(D3D11_VIEWPORT));
     vp.Width = draw_data->DisplaySize.x;
     vp.Height = draw_data->DisplaySize.y;
+    //vp.Width = 1920.0f;
+    //vp.Height = 1080.0f;
     vp.MinDepth = 0.0f;
     vp.MaxDepth = 1.0f;
     vp.TopLeftX = vp.TopLeftY = 0;
@@ -124,6 +126,7 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
     // Avoid rendering when minimized
     if (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f)
         return;
+
 
     ImGui_ImplDX11_Data* bd = ImGui_ImplDX11_GetBackendData();
     ID3D11DeviceContext* ctx = bd->pd3dDeviceContext;

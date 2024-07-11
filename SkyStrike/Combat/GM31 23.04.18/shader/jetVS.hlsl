@@ -29,11 +29,12 @@ void main(in VS_IN In, out PS_IN Out)
     Out.Binormal = float4(0.0, 0.0, 0.0, 0.0);
 
 	//光源処理
-	float light = -dot(Light.Direction.xyz, worldNormal.xyz);
-	light = saturate(light);
-	//頂点カラーはそのままコピー
-	Out.Diffuse = light;
-    Out.Diffuse.a = In.Diffuse.a;
+	//float light = -dot(Light.Direction.xyz, worldNormal.xyz);
+	//light = saturate(light);
+	//Out.Diffuse = light;
+    //Out.Diffuse.a = In.Diffuse.a;
+
+    Out.Diffuse = In.Diffuse;
 
     Out.WorldPosition = mul(In.Position, World);
 

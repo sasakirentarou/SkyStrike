@@ -17,9 +17,10 @@
 void Jet::Init()
 {
 	m_DepthEnable = true;
+	m_ReflectEnable = true;
 
-	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\DepthShadowEnvMappingVS.cso");
-	Renderer::CreatePixelShader(&m_PixelShader, "shader\\DepthShadowEnvMappingPS.cso");
+	Renderer::CreateVertexShader(&m_VertexShader, &m_VertexLayout, "shader\\jetVS.cso");
+	Renderer::CreatePixelShader(&m_PixelShader, "shader\\jetPS.cso");
 
 
 	std::string jetName = "F-35\\F-35B";
@@ -52,16 +53,17 @@ void Jet::Init()
 
 		m_WeaponSm.Init();
 
+
 		//頂点取得
 		m_Model->GetModelVertex(gameFile.c_str(), m_TopVertex);
 
-		//トレイル生成
 		m_Trail[0] = m_Scene->AddGameObject<Trail>(1);
 		m_Trail[1] = m_Scene->AddGameObject<Trail>(1);
 
-		//collision
+
 		m_Collision = m_Scene->AddGameObject<CollisionBox>(1);
 		m_Collision->SetScale(D3DXVECTOR3(6.0f, 1.0f, 8.0f));
+		m_Collision->SetName("Jet");
 	}
 
 	m_LockOnSm.Init();
@@ -235,28 +237,27 @@ void Jet::Update()
 				if (InputX::GetRightTrigger(0) > 0)
 				{
 					m_JetState.Accele = InputX::GetRightTrigger(0) / 255;
-					m_Engine.Active(this, SPEED_UP, m_JetState.Accele);
 				}
 				else if (InputX::GetLeftTrigger(0) > 0)
 				{
 					m_JetState.Brake = InputX::GetLeftTrigger(0) / 255;
-					m_Engine.ReverseActive(this, SPEED_DOWN, m_JetState.Brake);
 				}
 				else if (Input::GetKeyPress('W'))
 				{
 					m_JetState.Accele = 1.0f;
-					m_Engine.Active(this, SPEED_UP,m_JetState.Accele);
 				}
 				else if (Input::GetKeyPress('S'))
 				{
 					m_JetState.Brake = 1.0f;
-					m_Engine.ReverseActive(this, SPEED_DOWN, m_JetState.Brake);
 				}
 				else
 				{
 					m_JetState.Accele = 0.0f;
+					m_JetState.Brake = 0.0f;
 				}
 
+				m_Engine.Active(this, SPEED_UP, m_JetState.Accele);
+				m_Engine.ReverseActive(this, SPEED_DOWN, m_JetState.Brake);
 			}
 		}
 
@@ -425,14 +426,6 @@ void Jet::Update()
 
 void Jet::Draw()
 {
-	//ウィング(matrix計算の前に行う)
-	m_WingFR.Draw(m_WorldMatrix, D3DXVECTOR3(-5.45f, -0.05f, -2.25f));
-	m_WingFL.Draw(m_WorldMatrix, D3DXVECTOR3 (5.45f, -0.05f, -2.25f));
-	m_WingBR.Draw(m_WorldMatrix, D3DXVECTOR3( 1.16f, -0.2f,  -5.0f));
-	m_WingBL.Draw(m_WorldMatrix, D3DXVECTOR3(-1.16f, -0.2f,  -5.0f));
-	m_WingTR.Draw(m_WorldMatrix, D3DXVECTOR3(  1.9f, 1.45f,  -4.9f));
-	m_WingTL.Draw(m_WorldMatrix, D3DXVECTOR3( -1.9f, 1.45f,  -4.9f));
-
 
 	// 入力レイアウト設定
 	Renderer::GetDeviceContext()->IASetInputLayout(m_VertexLayout);
@@ -465,16 +458,46 @@ void Jet::Draw()
 	Renderer::GetDeviceContext()->PSSetShaderResources(3, 1, &m_DissolveTexture);
 
 	//ディゾルブ設定
-	PARAMETER param;
-	ZeroMemory(&param, sizeof(param));
-	param.dissolveThreshold = m_StealthSm.GetThreshold();
-	param.dissolveRange = 0.05f;
-	Renderer::SetParameter(param);
+	{
+		PARAMETER param;
+		ZeroMemory(&param, sizeof(param));
+		param.dissolveThreshold = m_StealthSm.GetThreshold();
+		param.dissolveRange = 0.05f;
+		param.dissolveColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f);
+		Renderer::SetParameter(param);
+	}
 
+	//環境マッピング設定
+	{
+		ENV_PARAMETER param;
+		ZeroMemory(&param, sizeof(param));
+		param.brightness = 1.0f;
+		param.reflectivity = 0.05f;
+		Renderer::SetEnvParameter(param);
+	}
 
 	Renderer::SetATCEnable(true);
 	m_Model->Draw();
 	Renderer::SetATCEnable(false);
 
+
+	//ウィング (描画後にDraw)
+	m_WingFR.Draw(m_WorldMatrix, D3DXVECTOR3(-5.45f, -0.05f, -2.25f));
+	m_WingFL.Draw(m_WorldMatrix, D3DXVECTOR3(5.45f, -0.05f, -2.25f));
+	m_WingBR.Draw(m_WorldMatrix, D3DXVECTOR3(1.16f, -0.2f, -5.0f));
+	m_WingBL.Draw(m_WorldMatrix, D3DXVECTOR3(-1.16f, -0.2f, -5.0f));
+	m_WingTR.Draw(m_WorldMatrix, D3DXVECTOR3(1.9f, 1.45f, -4.9f));
+	m_WingTL.Draw(m_WorldMatrix, D3DXVECTOR3(-1.9f, 1.45f, -4.9f));
+
 	GameObject::Draw();
+}
+
+void Jet::Debug()
+{
+	ImGui::Begin("Jet");
+	ImGui::InputFloat3("Position", m_Position);
+	ImGui::InputFloat4("Quaternion", m_Quaternion);
+	ImGui::InputFloat3("Velocity", m_Velocity);
+	ImGui::InputFloat("Speed", &m_Speed);
+	ImGui::End();
 }

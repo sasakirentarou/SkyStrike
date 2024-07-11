@@ -6,7 +6,6 @@
 #include "explosion.h"
 #include "spritefield.h"
 #include "audio.h"
-#include "player.h"
 
 ID3D11Buffer* Explosion::m_VertexBuffer{};
 ID3D11ShaderResourceView* Explosion::m_Texture{};

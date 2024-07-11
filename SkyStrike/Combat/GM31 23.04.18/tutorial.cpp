@@ -157,7 +157,7 @@ void Tutorial::Init()
 	m_Wind1->Play(true);
 
 	//BGMÄ¶
-#if 1
+#if 0
 	m_BGM = AddGameObject<GameObject>(0)->AddComponet<Audio>();
 	m_BGM->Load("asset\\audio\\bgm_out.wav");
 	m_BGM->Play(true);

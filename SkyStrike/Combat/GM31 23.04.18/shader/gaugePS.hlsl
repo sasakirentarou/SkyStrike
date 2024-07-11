@@ -16,7 +16,7 @@ void main(in PS_IN In, out float4 outDiffuse : SV_Target)
         //HPゲージのグレー部分を作成する
         outDiffuse.rgb += lostColor.rgb * step(beforHp, gage);
         //HPゲージの緑部分を作成する
-        outDiffuse.rgb += baseColor.rgb * (1.0f - step(nowHp, gage));
+        outDiffuse.rgb += hpBaseColor.rgb * (1.0f - step(nowHp, gage));
         //HPゲージの赤色部分を作成する
         outDiffuse.rgb += diffColor.rgb * (1.0f - step(beforHp, gage)) * step(nowHp, gage);
     }

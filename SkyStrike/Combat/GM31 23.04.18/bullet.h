@@ -5,7 +5,7 @@
 
 #define AUTO_RANGE 20 //ÉIÅ[ÉgîÕàÕ
 
-class Bullet : public GameObject
+class Bullet : public WeaponManager
 {
 private:
 	static Model* m_Model;
@@ -14,7 +14,8 @@ private:
 	ID3D11PixelShader* m_PixelShader = nullptr;
 	ID3D11InputLayout* m_VertexLayout = nullptr;
 
-	int m_Count = 0;
+	class Scene* m_Scene{};
+	class CollisionBox* m_Collision{};
 
 	float m_BulletTime{};
 	float m_Period = 2.0f;
@@ -27,4 +28,6 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+
+	void Shot()override;
 };

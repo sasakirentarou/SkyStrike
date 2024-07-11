@@ -19,9 +19,10 @@
 
 #define TRAIL_WIDTH			0.02		//ƒgƒŒƒCƒ‹•
 
-#define MAIN_WING_RANGE		D3DX_PI / 10
-#define BACK_WING_RANGE		D3DX_PI / 10
-#define VERTICAL_WING_RANGE	D3DX_PI / 20
+//—ƒ‰Â“®”ÍˆÍ
+#define MAIN_WING_RANGE		D3DX_PI / 8		//å—ƒ
+#define BACK_WING_RANGE		D3DX_PI / 8		//”ö—ƒ
+#define VERTICAL_WING_RANGE	D3DX_PI / 20	//‚’¼”ö—ƒ
 
 
 struct Jet_State
@@ -100,6 +101,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void Debug();
 
 
 	float GetSpeed() { return m_Speed; }

@@ -16,7 +16,7 @@ void main(in PS_IN In, out float4 outDiffuse : SV_Target)
         //UV値からピクセルへのスケール変換
         float gage = In.TexCoord.x * maxHp;
         //HPゲージの緑部分を作成する
-        outDiffuse.rgb *= baseColor.rgb * (1.0f - step(nowHp, gage));
+        outDiffuse.rgb *= hpBaseColor.rgb * (1.0f - step(nowHp, gage));
         //HPゲージの赤色部分を作成する
         outDiffuse.r += lostColor.a * (1.0f - step(maxHp, gage)) * step(nowHp, gage);
         //全体を半透明

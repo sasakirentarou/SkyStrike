@@ -9,6 +9,6 @@ private:
 	static bool m_DebugMode;
 	static float m_Frame;
 public:
-	static void Update();
+	static void Draw();
 	void DebugMode(bool mode) { m_DebugMode = mode; }
 };

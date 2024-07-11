@@ -92,7 +92,6 @@ void Manager::Update()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	Debug::Update();
 	m_Scene->Update();
 }
 
@@ -100,6 +99,7 @@ void Manager::Draw()
 {
 	Renderer::Begin();
 
+	Debug::Draw();
 	m_Scene->Draw();
 
 	//ImGUI‚Ì•`‰æˆ—

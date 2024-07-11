@@ -115,7 +115,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 					ShowCursor(true);
 				}
 
-				if (Input::GetKeyTrigger('O'))
+				if (Input::GetKeyTrigger(VK_F1))
 				{
 					g_Pause = !g_Pause;
 				}

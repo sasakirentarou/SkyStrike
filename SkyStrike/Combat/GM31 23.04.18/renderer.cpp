@@ -29,6 +29,8 @@ ID3D11BlendState* Renderer::m_BlendStateATC{};
 //shader
 ID3D11Buffer* Renderer::m_CameraBuffer = NULL;
 ID3D11Buffer* Renderer::m_ParameterBuffer = NULL;
+ID3D11Buffer* Renderer::m_EnvParameterBuffer = NULL;
+
 ID3D11DepthStencilView* Renderer::m_DepthShadowDepthStencilView = NULL;
 ID3D11ShaderResourceView* Renderer::m_DepthShadowShaderResourceView = NULL;
 
@@ -295,6 +297,11 @@ void Renderer::Init()
 	m_DeviceContext->PSSetConstantBuffers(6, 1, &m_ParameterBuffer);
 
 
+	bufferDesc.ByteWidth = sizeof(ENV_PARAMETER);
+
+	m_Device->CreateBuffer(&bufferDesc, NULL, &m_EnvParameterBuffer);
+	m_DeviceContext->VSSetConstantBuffers(7, 1, &m_EnvParameterBuffer);
+	m_DeviceContext->PSSetConstantBuffers(7, 1, &m_EnvParameterBuffer);
 
 #if 0
 	//GM
@@ -596,6 +603,11 @@ void Renderer::SetLight(LIGHT Light)
 void Renderer::SetParameter(PARAMETER param)
 {
 	m_DeviceContext->UpdateSubresource(m_ParameterBuffer, 0, NULL, &param, 0, 0);
+}
+
+void Renderer::SetEnvParameter(ENV_PARAMETER param)
+{
+	m_DeviceContext->UpdateSubresource(m_EnvParameterBuffer, 0, NULL, &param, 0, 0);
 }
 
 //fog

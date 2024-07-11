@@ -47,6 +47,7 @@ public:
 	void Init();
 	void Update();
 	void Draw();
+	void Debug();
 
 	void DefaultCamera();
 

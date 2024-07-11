@@ -567,10 +567,10 @@
     <FxCompile Include="shader\common.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
-    <FxCompile Include="shader\DepthShadowEnvMappingPS.hlsl">
+    <FxCompile Include="shader\jetPS.hlsl">
       <Filter>hlsl\PS</Filter>
     </FxCompile>
-    <FxCompile Include="shader\DepthShadowEnvMappingVS.hlsl">
+    <FxCompile Include="shader\jetVS.hlsl">
       <Filter>hlsl\VS</Filter>
     </FxCompile>
     <FxCompile Include="shader\DepthShadowFogMappingPS.hlsl">

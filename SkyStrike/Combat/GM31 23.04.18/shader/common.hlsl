@@ -97,7 +97,7 @@ cbuffer ParamBuffer : register(b6)
 {
     //hp
     float4 hp;
-    float4 baseColor;
+    float4 hpBaseColor;
     float4 lostColor;
     float4 diffColor;
     
@@ -105,7 +105,21 @@ cbuffer ParamBuffer : register(b6)
     float dissolveThreshold;
     float dissolveRange;
     float2 dummy;
+    float4 dissolveColor;
     
     //box
     float4 boxColor;
 }
+
+
+
+cbuffer EnvParamBuffer : register(b7)
+{
+    float reflectivity;
+    float brightness;
+    float envDummy[2];
+}
+
+
+
+static float PI = 3.141592653589;
