@@ -159,6 +159,10 @@ public:
 	}
 
 
+
+
+
+
 	//collision
 	D3DXVECTOR3 MatrixtoPosition(D3DXMATRIX matrix) 
 	{
@@ -168,6 +172,7 @@ public:
 		pos.z = matrix._43;
 		return pos;
 	}
+
 	D3DXVECTOR3 MatrixtoScale(D3DXMATRIX matrix) 
 	{
 		D3DXVECTOR3 scale;
@@ -176,6 +181,7 @@ public:
 		scale.z = matrix._33;
 		return scale;
 	}
+
 	D3DXVECTOR3 MatrixtoForward(D3DXMATRIX matrix) //前方面ベクトルを取得
 	{
 		D3DXVECTOR3 forward;
@@ -185,6 +191,7 @@ public:
 
 		return forward;
 	}
+
 	D3DXVECTOR3 MatrixtoRight(D3DXMATRIX matrix) //右方面ベクトルを取得
 	{
 
@@ -195,6 +202,7 @@ public:
 
 		return right;
 	}
+
 	D3DXVECTOR3 MatrixtoUp(D3DXMATRIX matrix) //上方面ベクトル
 	{
 
@@ -205,6 +213,7 @@ public:
 
 		return up;
 	}
+
 	void SetCollider(D3DXMATRIX matrix)
 	{
 		m_MatrixPosition = MatrixtoPosition(matrix);
@@ -215,6 +224,10 @@ public:
 	}
 
 
+
+
+
+	//ローカルベクトルにoffset分足す関数
 	D3DXVECTOR3 LocalVector(D3DXVECTOR3 rot, D3DXVECTOR3 offset)
 	{
 		D3DXVECTOR3 vector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -224,6 +237,7 @@ public:
 
 		return vector;
 	}
+
 	D3DXVECTOR3 LocalVector(D3DXQUATERNION qua, D3DXVECTOR3 offset)
 	{
 		D3DXVECTOR3 vector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -234,6 +248,10 @@ public:
 		return vector;
 	}
 
+
+
+
+
 	//軸周りのクォータニオン回転
 	void SetQuaternionRotation(const D3DXVECTOR3& axis, float angle)
 	{
@@ -241,17 +259,15 @@ public:
 		D3DXQuaternionRotationAxis(&m_Quaternion,&axis, radian);
 	}
 
-	//整数ランダム範囲指定  第一引数:ランダム範囲,第二引数:マイナス範囲
+
+
+	//整数ランダム範囲指定  第一引数:ランダム範囲,第二引数:マイナスも含める
 	int RandomInt(int range,bool minus)
 	{
 		if (minus)
-		{
 			return rand() % (range * 2) - range;
-		}
 		else
-		{
 			return rand() % range;
-		}
 	}
 
 
@@ -261,15 +277,16 @@ public:
 	}
 	
 
-	//視界: 視野角,視距離,位置,ターゲット,前方向ベクトル
+
+	//視界関数: 視野角,視距離,位置,ターゲット位置,前方向ベクトル
 	bool View(float fieldOfViewRadians, float viewDistancee,
-		D3DXVECTOR3 myPos, D3DXVECTOR3 targetPos, D3DXVECTOR3 myForward)
+		D3DXVECTOR3 myPos, D3DXVECTOR3 targetPos, D3DXVECTOR3 directinVector)
 	{
 		// 視野範囲内かどうかの判定
 		D3DXVECTOR3 normalizedDirection;
 		D3DXVECTOR3 direction = targetPos - myPos;
 		D3DXVec3Normalize(&normalizedDirection, &direction);
-		D3DXVECTOR3 houkou = myForward;
+		D3DXVECTOR3 houkou = directinVector;
 		float dotProduct = D3DXVec3Dot(&houkou, &normalizedDirection);
 		float angle = acos(dotProduct);
 		fieldOfViewRadians = D3DXToRadian(fieldOfViewRadians);

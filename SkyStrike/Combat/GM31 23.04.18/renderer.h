@@ -88,13 +88,24 @@ struct PARAMETER
 
 	//box
 	D3DXCOLOR boxColor;
+
+	//lambert
+	BOOL lambertEnable;
+
+	//IBL
+	BOOL iblEnable;
+
+	//specular
+	BOOL specularEnable;
+	float shapness;
 };
 
 struct ENV_PARAMETER
 {
+	BOOL envEnable;
 	float reflectivity;
 	float brightness;
-	float envDummy[2];
+	float envDummy[5];
 };
 
 class CVertexBuffer;

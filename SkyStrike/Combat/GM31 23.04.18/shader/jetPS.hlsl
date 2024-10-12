@@ -5,6 +5,7 @@ Texture2D g_Texture : register(t0);
 Texture2D g_TextureDepthShadow : register(t1);
 TextureCube g_TextureEnvCube : register(t2); //キューブマップ受け取り
 Texture2D g_DissolveTexture : register(t3);
+Texture2D g_TextureIBL : register(t4);
 
 SamplerState g_SamplerState : register(s0);
 
@@ -23,40 +24,60 @@ void main(in PS_IN In, out float4 outDiffuse : SV_Target)
     refv = normalize(refv);
     
     
-    float4 baseColor = g_Texture.Sample(g_SamplerState, In.TexCoord);
+    float4 baseColor = g_Texture.Sample(g_SamplerState, In.TexCoord) * brightness;
 
 
+    
+    //ランバート
+    float3 lambert = float3(0.0, 0.0, 0.0);
+    if (lambertEnable)
+    {
+        //ハーフ
+        //lambert = saturate(dot(-Light.Direction.xyz, normal.xyz) + 0.5);
+        //通常
+        lambert = saturate(dot(-Light.Direction.xyz, normal.xyz));
+        lambert *= baseColor.rgb;
+    }
+        
+    //IBL
+    if (iblEnable)
+    {
+        float2 iblTexCoord;
+        iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
+        iblTexCoord.y = acos(normal.y) / PI;
+        
+        lambert.rgb += baseColor.rgb * g_TextureIBL.SampleLevel(g_SamplerState, iblTexCoord, 9).rgb;
+        lambert.rgb += GroundFogColor.rgb * (FogParam.z * 0.00001); //フォグ色を加算
+    }
+
+    
+    //スペキュラ
+    float3 specular = float3(0.0, 0.0, 0.0);
+    if (specularEnable)
+    {
+        //フォン
+        specular = saturate(dot(-Light.Direction.xyz, refv.xyz)); //内積を計算
+        specular = pow(specular, shapness); //n乗して鋭さを調整
+        
+        //outDiffuse.rgb += specular;
+    }
+
+    
     //環境マッピング
-    float3 env;
+    float3 env = float3(0.0, 0.0, 0.0);
+    if (envEnable)
     {
         float4 envColor = g_TextureEnvCube.Sample(g_SamplerState, refv);
 
-        env = baseColor.rgb;
-        env = saturate((envColor.rgb * reflectivity) + (env.rgb * brightness)); //反射度 + 明度
+        env = saturate(envColor.rgb * reflectivity); //反射度
         
         //outDiffuse = baseColor;
         //outDiffuse.rgb = saturate((envColor.rgb * 0.05) + (outDiffuse.rgb * 1.0)); //反射度 + 明度
         //outDiffuse.a *= In.Diffuse.a;//toon(ライティングなし)
         //outDiffuse *= In.Diffuse * 0.8 + 0.2; //ライティングあり(0.2～1.0)
     }
-    
-    //ハーフランバート
-    float3 lambert;
-    {
-        lambert = saturate(dot(-Light.Direction.xyz, normal.xyz) + 0.5);
-        lambert *= baseColor.rgb;
-    }
-    
-    //スペキュラ
-    float3 specular;
-    {
-        //フォン
-        //specular = saturate(dot(-Light.Direction.xyz, refv.xyz)); //内積を計算
-        //specular = pow(specular, 100); //n乗して鋭さを調整
-        
-        //outDiffuse.rgb += specular;
-    }
 
+    
     //ディゾルブ
     float3 dissolve = float3(0.0, 0.0, 0.0);
     {
@@ -69,7 +90,13 @@ void main(in PS_IN In, out float4 outDiffuse : SV_Target)
         // オレンジ:1.0f, 0.3f, 0.0f
     }
 
-    outDiffuse.rgb = saturate(lambert + env + dissolve) - 0.3;
+    
+    //合成
+    outDiffuse.rgb = saturate(lambert + env + dissolve + specular);
+    
+    
+    
+    
     
     //デプスシャドウ
     {

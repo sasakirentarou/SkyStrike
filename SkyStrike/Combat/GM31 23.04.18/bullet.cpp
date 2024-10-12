@@ -58,50 +58,10 @@ void Bullet::Uninit()
 
 void Bullet::Update()
 {
-	TextureManager* texture = m_Scene->GetGameObject<TextureManager>();
-	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
-
 	//”­ŽË
 	Shot();
 	
-	//‹ó‹C’ïR
-	m_Velocity += m_Velocity * -0.03f;
 	m_Position += m_Velocity;
-
-	for (EnemyJet* enemy : enemys)
-	{
-		//OBB//
-		if (m_Collision->SetOBB(this, enemy, 1.0f))
-		{
-			auto hit = m_Scene->AddGameObject<HitBullet>(1);
-			hit->SetPosition(m_Position);
-			hit->SetScale(D3DXVECTOR3(2.0f, 2.0f, 0.0f));
-			hit->AnimTime(1);
-
-			enemy->HealthDamage(5);//“G‚Ì‘Ì—Í‚ðŒ¸‚ç‚·
-			texture->SetHitReportFlg(true);
-			SetDestroy();
-			return;
-		}
-
-		//AABB//
-		//D3DXVECTOR3 enemypos = enemy->GetPosition();
-		//D3DXVECTOR3 direction = m_Position - enemypos;
-		//float length = D3DXVec3Length(&direction);
-
-		//if (length < 10.0f)
-		//{
-		//	auto hit = m_Scene->AddGameObject<HitBullet>(1);
-		//	hit->SetPosition(m_Position);
-		//	hit->SetScale(D3DXVECTOR3(2.0f, 2.0f,0.0f));
-		//	hit->AnimTime(1);
-
-		//	enemy->HealthDamage(5);//“G‚Ì‘Ì—Í‚ðŒ¸‚ç‚·
-		//	texture->SetHitReportFlg(true);
-		//	SetDestroy();
-		//	return;
-		//}
-	}
 }
 
 void Bullet::Draw()
@@ -131,10 +91,13 @@ void Bullet::Draw()
 	GameObject::Draw();
 }
 
+
+
 void Bullet::Shot()
 {
 	Jet* jet = m_Scene->GetGameObject<Jet>();
 	Cross* cross = m_Scene->GetGameObject<Cross>();
+	TextureManager* texture = m_Scene->GetGameObject<TextureManager>();
 	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
 
 	if (cross->AutoRange())
@@ -191,4 +154,42 @@ void Bullet::Shot()
 	//¶‰E‚Éƒ‰ƒ“ƒ_ƒ€‚É‘¬“x‚ð—^‚¦‚Ä‚Î‚ç‚Â‚©‚¹‚é
 	m_Velocity += GetForwardQuaternion() * randomForward + GetRightQuaternion() * randomRight;
 
+
+	//‹ó‹C’ïR
+	m_Velocity += m_Velocity * -0.03f;
+
+	for (EnemyJet* enemy : enemys)
+	{
+		//OBB//
+		if (m_Collision->SetOBB(this, enemy, 1.0f))
+		{
+			auto hit = m_Scene->AddGameObject<HitBullet>(1);
+			hit->SetPosition(m_Position);
+			hit->SetScale(D3DXVECTOR3(2.0f, 2.0f, 0.0f));
+			hit->AnimTime(1);
+
+			enemy->HealthDamage(5);//“G‚Ì‘Ì—Í‚ðŒ¸‚ç‚·
+			texture->SetHitReportFlg(true);
+			SetDestroy();
+			return;
+		}
+
+		//AABB//
+		//D3DXVECTOR3 enemypos = enemy->GetPosition();
+		//D3DXVECTOR3 direction = m_Position - enemypos;
+		//float length = D3DXVec3Length(&direction);
+
+		//if (length < 10.0f)
+		//{
+		//	auto hit = m_Scene->AddGameObject<HitBullet>(1);
+		//	hit->SetPosition(m_Position);
+		//	hit->SetScale(D3DXVECTOR3(2.0f, 2.0f,0.0f));
+		//	hit->AnimTime(1);
+
+		//	enemy->HealthDamage(5);//“G‚Ì‘Ì—Í‚ðŒ¸‚ç‚·
+		//	texture->SetHitReportFlg(true);
+		//	SetDestroy();
+		//	return;
+		//}
+	}
 }

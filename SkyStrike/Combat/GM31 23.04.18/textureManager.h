@@ -33,6 +33,7 @@ private:
 	class Scene* m_Scene{};
 	class EnemyJet* m_EnemyTuto00{};
 	class EnemyJet* m_EnemyTuto01{};
+	class Jet* m_Jet{};
 
 	TextureScene m_SceneTexture{};//textureÉVÅ[ÉìêÿÇËë÷Ç¶
 	
@@ -81,6 +82,9 @@ public:
 	void Update();
 	void Draw();
 
+	void TutorialScene();
+	void GameUI();
+	
 	void SetSceneTexture(TextureScene scene) { m_SceneTexture = scene; }
 
 	void SetSelectUpDown(bool select,float downmax)
@@ -113,9 +117,28 @@ public:
 	void SetSEPinPlus() { m_SEPin++; }
 	void SetSEPinMinus() { m_SEPin--; }
 
-	void SetBGMPinRGB(float red, float green, float blue) { m_BGMPinColor.r = red; m_BGMPinColor.g = green; m_BGMPinColor.b = blue;};
-	void SetSEPinRGB(float red, float green, float blue) { m_SEPinColor.r = red; m_SEPinColor.g = green; m_SEPinColor.b = blue; };
-	void SetPitchFlipCheckRGB(float red, float green, float blue) { m_PitchFlipCheckColor.r = red; m_PitchFlipCheckColor.g = green; m_PitchFlipCheckColor.b = blue; };
+	void SetBGMPinRGB(float red, float green, float blue) 
+	{ 
+		m_BGMPinColor.r = red;
+		m_BGMPinColor.g = green;
+		m_BGMPinColor.b = blue;
+	};
+
+	void SetSEPinRGB(float red, float green, float blue) 
+	{ 
+		m_SEPinColor.r = red;
+		m_SEPinColor.g = green;
+		m_SEPinColor.b = blue; 
+	};
+
+	void SetPitchFlipCheckRGB(float red, float green, float blue) 
+	{ 
+		m_PitchFlipCheckColor.r = red; 
+		m_PitchFlipCheckColor.g = green;
+		m_PitchFlipCheckColor.b = blue; 
+	};
+
+
 
 	bool GetPitchFlipCheck() { return m_PitchFlipCheckFlg; }
 	void SetPitchFlipCheck() { m_PitchFlipCheckFlg = !m_PitchFlipCheckFlg; }

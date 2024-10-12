@@ -10,7 +10,6 @@ private:
 
 	class Fade* m_Fade{};
 	class TextureManager* m_Texture{};
-	class Timer* m_Timer{};
 	class Jet* m_Jet{};
 
 	static bool m_LoadFinish;

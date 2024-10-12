@@ -56,6 +56,8 @@ public:
 
 	void Draw();
 
+	ID3D11ShaderResourceView* GetTexture();
+
 	void Load( const char *FileName );
 	void Unload();
 

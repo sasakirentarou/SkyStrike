@@ -109,15 +109,26 @@ cbuffer ParamBuffer : register(b6)
     
     //box
     float4 boxColor;
+    
+    //lambert
+    bool lambertEnable;
+    
+    //IBL
+    bool iblEnable;
+
+    //specular
+    bool specularEnable;
+    float shapness;
 }
 
 
 
 cbuffer EnvParamBuffer : register(b7)
 {
+    bool envEnable;
     float reflectivity;
     float brightness;
-    float envDummy[2];
+    float envDummy[5];
 }
 
 

@@ -120,22 +120,18 @@ void Trail::Draw()
 			// 透明度
 			{
 				//末端
-				if (i < 50) //50を超えたら少しずつ透明度を上げる
-					m_Alpha += 1.2f / (50 * 2);
+				if (i < END_UP_POINT) //超えるまで少しずつ透明度を上げる
+					m_Alpha += 1.2f / (END_UP_POINT * 2);
 
 				if (m_Alpha > 1.0f)
-				{
 					m_Alpha = 1.0f;
-				}
 
 				//先端
-				if (i > (VERTEX_NUMBER / 2) - 13) //先端から13離れた位置から透明度を下げる
+				if (i > (VERTEX_NUMBER / 2) - 13) //先端から13離れた位置を起点に透明度を下げる
 					m_Alpha -= 1.5f / (12.0f * 2);
 
 				if (m_Alpha < 0.0f)
-				{
 					m_Alpha = 0.0f;
-				}
 			}
 		}
 	}

@@ -70,7 +70,6 @@ void Jet::Init()
 	m_FlareSm.Init();
 	m_StealthSm.Init();
 
-
 	//SE
 	m_StealthSE = AddComponet<Audio>();
 	m_StealthSE->Load("asset\\audio\\stealth.wav");
@@ -114,6 +113,7 @@ void Jet::Uninit()
 		m_Trail[0]->SetDestroy();
 		m_Trail[1]->SetDestroy();
 		m_Collision->SetDestroy();
+		m_WeaponSm.MachineGunStop();
 	}
 
 	m_VertexLayout->Release();
@@ -457,13 +457,17 @@ void Jet::Draw()
 	// ディゾルブテクスチャ設定
 	Renderer::GetDeviceContext()->PSSetShaderResources(3, 1, &m_DissolveTexture);
 
-	//ディゾルブ設定
+	//シェーダー設定
 	{
 		PARAMETER param;
 		ZeroMemory(&param, sizeof(param));
 		param.dissolveThreshold = m_StealthSm.GetThreshold();
-		param.dissolveRange = 0.05f;
-		param.dissolveColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f);
+		param.dissolveRange = m_DissolveRange;
+		param.dissolveColor = m_DissolveColor;
+		param.specularEnable = m_SpecularEnable;
+		param.shapness = m_Shapness;
+		param.lambertEnable = m_LambertEnable;
+		param.iblEnable = m_IBLEnable;
 		Renderer::SetParameter(param);
 	}
 
@@ -471,23 +475,25 @@ void Jet::Draw()
 	{
 		ENV_PARAMETER param;
 		ZeroMemory(&param, sizeof(param));
-		param.brightness = 1.0f;
-		param.reflectivity = 0.05f;
+		param.envEnable = m_EnvEnable;
+		param.brightness = m_Brightness;
+		param.reflectivity = m_Reflect;
 		Renderer::SetEnvParameter(param);
 	}
+
 
 	Renderer::SetATCEnable(true);
 	m_Model->Draw();
 	Renderer::SetATCEnable(false);
 
 
-	//ウィング (描画後にDraw)
+	//ウィング (機体描画後にDraw)
 	m_WingFR.Draw(m_WorldMatrix, D3DXVECTOR3(-5.45f, -0.05f, -2.25f));
-	m_WingFL.Draw(m_WorldMatrix, D3DXVECTOR3(5.45f, -0.05f, -2.25f));
-	m_WingBR.Draw(m_WorldMatrix, D3DXVECTOR3(1.16f, -0.2f, -5.0f));
-	m_WingBL.Draw(m_WorldMatrix, D3DXVECTOR3(-1.16f, -0.2f, -5.0f));
-	m_WingTR.Draw(m_WorldMatrix, D3DXVECTOR3(1.9f, 1.45f, -4.9f));
-	m_WingTL.Draw(m_WorldMatrix, D3DXVECTOR3(-1.9f, 1.45f, -4.9f));
+	m_WingFL.Draw(m_WorldMatrix, D3DXVECTOR3( 5.45f, -0.05f, -2.25f));
+	m_WingBR.Draw(m_WorldMatrix, D3DXVECTOR3( 1.16f, -0.2f,  -5.0f));
+	m_WingBL.Draw(m_WorldMatrix, D3DXVECTOR3(-1.16f, -0.2f,  -5.0f));
+	m_WingTR.Draw(m_WorldMatrix, D3DXVECTOR3( 1.9f,   1.45f, -4.9f));
+	m_WingTL.Draw(m_WorldMatrix, D3DXVECTOR3(-1.9f,   1.45f, -4.9f));
 
 	GameObject::Draw();
 }
@@ -495,9 +501,39 @@ void Jet::Draw()
 void Jet::Debug()
 {
 	ImGui::Begin("Jet");
+
 	ImGui::InputFloat3("Position", m_Position);
 	ImGui::InputFloat4("Quaternion", m_Quaternion);
 	ImGui::InputFloat3("Velocity", m_Velocity);
 	ImGui::InputFloat("Speed", &m_Speed);
+	
+	if (ImGui::TreeNode("ShaderParam"))
+	{
+		if (ImGui::TreeNode("Dissolve"))
+		{
+			ImGui::InputFloat("Range", &m_DissolveRange);
+			ImGui::ColorPicker4("Color", m_DissolveColor);
+		}
+
+		if (ImGui::TreeNode("Lambert"))
+		{
+			ImGui::Checkbox("Lambert", &m_LambertEnable);
+			ImGui::Checkbox("IBL", &m_IBLEnable);
+		}
+
+		if (ImGui::TreeNode("Specular"))
+		{
+			ImGui::Checkbox("Enable", &m_SpecularEnable);
+			ImGui::InputFloat("Shapness", &m_Shapness);
+		}
+
+		if (ImGui::TreeNode("EnvMapping"))
+		{
+			ImGui::Checkbox("Enable", &m_EnvEnable);
+			ImGui::InputFloat("Brightness", &m_Brightness);
+			ImGui::InputFloat("Reflectivity", &m_Reflect);
+		}
+	}
+
 	ImGui::End();
 }

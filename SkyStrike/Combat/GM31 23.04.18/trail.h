@@ -4,7 +4,10 @@
 #include <queue>
 
 //’è”’è‹`
-#define VERTEX_NUMBER			600
+#define VERTEX_NUMBER	600
+
+//“§–¾“x
+#define END_UP_POINT	50
 
 class Trail : public GameObject
 {
@@ -28,6 +31,7 @@ private:
 	D3DXMATRIX m_Pearent{};
 
 	float m_Alpha = 0.5f;
+	float m_Random{};
 	int m_Time{};
 public:
 	void Init() override;

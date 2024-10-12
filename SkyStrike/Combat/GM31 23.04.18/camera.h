@@ -2,9 +2,17 @@
 
 #include "gameObject.h"
 
-#define MAX_FOV 1.3 //最大視野
-#define MIN_FOV 1.1 //最小視野
-#define FOV_SPEED 0.002
+#define MAX_FOV			1.3		//最大視野
+#define MIN_FOV			1.1		//最小視野
+#define FOV_SPEED		0.002	//視野角変化速度
+
+#define HOLD_BUTTON		20		//ターゲットカメラ長押し時間
+
+
+//StickCamera
+#define MAX_LEFT_DIFF		15	//スティックカメラ左最大値
+#define MAX_RIGHT_DIFF		20	//スティックカメラ右最大値
+#define MAX_FORWARD_DIFF	18	//スティックカメラ前最大値
 
 class Camera : public GameObject
 {

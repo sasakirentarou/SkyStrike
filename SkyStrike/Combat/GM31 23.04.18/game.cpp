@@ -252,14 +252,15 @@ void Game::Draw()
 	//ライトカメラ構造体の初期化
 	LIGHT light;
 	light.Enable = true;
-	light.Direction = D3DXVECTOR4(-1.0f, -1.0f, -1.0f, 0.0f);
+	light.Direction = D3DXVECTOR4(-10.0f, -1.0f, -10.0f, 0.0f);
 	D3DXVec4Normalize(&light.Direction, &light.Direction);
 	light.Ambient = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
 	light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//ライトカメラのビュー行列を作成
-	D3DXVECTOR3 lightPos = D3DXVECTOR3(15000.0f, 4000.0f, 15000.0f);
-	D3DXVECTOR3 lightTarget = m_Jet->GetPosition()/*D3DXVECTOR3(0.0f, 0.0f, 0.0f)*/;
+	//D3DXVECTOR3 lightPos = D3DXVECTOR3(10000.0f, 8000.0f, 10000.0f);
+	D3DXVECTOR3 lightPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 lightTarget = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 lightUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&light.ViewMatrix, &lightPos, &lightTarget, &lightUp);
 

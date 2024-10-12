@@ -85,7 +85,7 @@ void Tutorial::Init()
 	// camera
 	Camera* camera = AddGameObject<Camera>(0); 
 	camera->SetGameEnable(true);
-	camera->SetFog(3000.0f, 20000.0f, 2000.0f,
+	camera->SetFog(3000.0f, 20000.0f, 4000.0f,
 		D3DXCOLOR(0.9f, 0.8f, 0.5f, 1.0f),
 		D3DXCOLOR(0.9f, 0.8f, 0.5f, 1.0f),
 		D3DXCOLOR(0.2f, 0.3f, 0.4f, 1.0f));
@@ -140,9 +140,6 @@ void Tutorial::Init()
 	//texture
 	m_Texture = AddGameObject<TextureManager>(2);
 	m_Texture->SetSceneTexture(TEXTURE_TUTORIAL);
-
-	//timer
-	m_Timer = AddGameObject<Timer>(2);
 
 	//fade
 	m_Fade = AddGameObject<Fade>(2);
@@ -199,7 +196,6 @@ void Tutorial::Update()
 
 	if (m_Fade->GetFadeFinish())
 	{
-		m_Texture->SetResultTimer(m_Timer->GetTime());
 		Manager::SetScene<Title>();
 	}
 }

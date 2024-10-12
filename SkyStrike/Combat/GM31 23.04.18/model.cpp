@@ -40,6 +40,11 @@ void Model::Draw()
 
 }
 
+ID3D11ShaderResourceView* Model::GetTexture()
+{
+	return m_SubsetArray[0].Material.Texture;
+}
+
 
 
 void Model::Load( const char *FileName )

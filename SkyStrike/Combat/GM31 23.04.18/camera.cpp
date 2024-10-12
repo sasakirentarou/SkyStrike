@@ -9,6 +9,8 @@
 #include "enemyJet.h"
 #include "missile.h"
 #include "inputx.h"
+#include "weaponSystem.h"
+#include "longMissile.h"
 
 void Camera::Init()
 {
@@ -30,6 +32,7 @@ void Camera::Update()
 	auto enemys = m_Scene->GetGameObjects<EnemyJet>();
 	auto enemy = m_Scene->GetGameObject<EnemyJet>();
 	auto missiles = m_Scene->GetGameObjects<Missile>();
+	auto lmissiles = m_Scene->GetGameObjects<LongMissile>();
 
 	if (m_GameEnable)
 	{
@@ -50,14 +53,14 @@ void Camera::Update()
 		}
 
 
-		if (Input::GetKeyPress('F'))//フリールック
+		if (Input::GetKeyPress('F')) //マウスフリールック
 		{
-			// カメラの向きをRotに足す
 			m_Rotation.y += GetMouseX() / 300;
 			m_Rotation.x += GetMouseY() / 300;
 
 			//マウスホイール操作
 			m_Hweel = GetMouseHwheel() / 100;
+
 			if (m_Hweel < 15.0f)
 			{
 				m_Hweel = 15.0f;
@@ -76,7 +79,7 @@ void Camera::Update()
 		else if (Input::GetKeyPress(VK_SPACE) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_Y) && !enemys.empty())//ターゲットカメラ
 		{
 			m_Count++;
-			if(m_Count > 20)
+			if(m_Count > HOLD_BUTTON)
 			{
 				//すべての敵をforで回す
 				for (EnemyJet* enemy : enemys)
@@ -112,7 +115,7 @@ void Camera::Update()
 		else if (Input::GetKeyPress(VK_LBUTTON) || InputX::IsButtonPressed(0, XINPUT_GAMEPAD_B))//ミサイルカメラ
 		{
 			m_Count++;
-			if (m_Count > 20 && !missiles.empty())
+			if (m_Count > 20 && !m_Jet->GetWeaponSm()->GetWeaponChange() && !missiles.empty()) //通常ミサイル
 			{
 				for (Missile* missile : missiles)
 				{
@@ -124,16 +127,23 @@ void Camera::Update()
 				}
 				m_UpMode = true;
 			}
+			else if (m_Count > 20 && m_Jet->GetWeaponSm()->GetWeaponChange() && !lmissiles.empty()) //ロングミサイル
+			{
+				for (LongMissile* missile : lmissiles)
+				{
+					if (missile->GetShot())
+					{	
+						m_Target = missile->GetPosition();
+						m_Position = m_Target - missile->GetForwardQuaternion() * 15.0f + missile->GetTopQuaternion() * 4.0f;
+					}
+				}
+				m_UpMode = true;
+			}
 			else
 			{
 				DefaultCamera();
 			}
 		}
-		//else if (InputX::GetThumbRightX(0) != 0 && InputX::GetThumbRightY(0) != 0)
-		//{
-
-		//	m_Count = 0;
-		//}
 		else //通常
 		{
 			DefaultCamera();
@@ -195,13 +205,10 @@ void Camera::Update()
 
 void Camera::Draw()
 {
-	D3DXVECTOR3 position = m_Position + m_Jet->GetRightQuaternion() * m_ShakeOffsetX + m_Jet->GetTopQuaternion() * m_ShakeOffsetY;
-	D3DXVECTOR3 target = m_Target + m_Jet->GetRightQuaternion() * m_ShakeOffsetX + m_Jet->GetTopQuaternion() * m_ShakeOffsetY;
-
 	//カメラの上方向ベクトル
 	if (m_UpMode)
 	{
-		D3DXVECTOR3 goal = (D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+		D3DXVECTOR3 goal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 		D3DXVec3Lerp(&m_UpCamera, &m_UpCamera, &goal, 0.1f);
 	}
 	else
@@ -209,6 +216,10 @@ void Camera::Draw()
 		D3DXVECTOR3 goal = m_Jet->GetTopQuaternion();
 		D3DXVec3Lerp(&m_UpCamera, &m_UpCamera, &goal, 0.3f);
 	}
+
+	//振動を追加
+	D3DXVECTOR3 position = m_Position + m_Jet->GetRightQuaternion() * m_ShakeOffsetX + m_Jet->GetTopQuaternion() * m_ShakeOffsetY;
+	D3DXVECTOR3 target = m_Target + m_Jet->GetRightQuaternion() * m_ShakeOffsetX + m_Jet->GetTopQuaternion() * m_ShakeOffsetY;
 
 	//ビュー行列作成
 	D3DXMatrixLookAtLH(&m_ViewMatrix, &position, &target, &m_UpCamera);
@@ -240,6 +251,10 @@ void Camera::Draw()
 
 void Camera::Debug()
 {
+	ImGui::Begin("Camera");
+	ImGui::InputFloat3("Position", m_Position);
+	ImGui::End();
+
 	ImGui::Begin("Fog");
 	ImGui::InputFloat("Start", &m_FogStart);
 	ImGui::InputFloat("End", &m_FogEnd);
@@ -257,42 +272,56 @@ void Camera::DefaultCamera()
 {
 	m_Jet = m_Scene->GetGameObject<Jet>();
 
-	//フリーカメラテスト
-	float forwardplus;
-	float rightplus;
-	float topplus;
 
-	//右スティックの値を絶対値にする
-	forwardplus = abs((InputX::GetThumbRightX(0) + InputX::GetThumbRightY(0)) * 36.0f) - 18.0f;
 
-	//0.0が最小値0.5が最大値1.0が最小値になる
-	float rightdiff = -4 * pow(abs(InputX::GetThumbRightX(0)) - 0.5f, 2.0f) + 1;
-	float topdiff = -4 * pow(abs(InputX::GetThumbRightY(0)) - 0.5f, 2.0f) + 1;
+	//フリーカメラテスト(最終目標はsin,cosなどで実装)
+	float forwardplus, rightplus, topplus, rightdiff, topdiff;
+	{//スティックに応じた方向ベクトルを計算
 
-	//線形補間にする!!
+		//カメラのZベクトル、右スティックの値を絶対値にする
+		forwardplus = abs((InputX::GetThumbRightX(0) + (InputX::GetThumbRightY(0) * 0.5f)) * (MAX_FORWARD_DIFF * 2)) - MAX_FORWARD_DIFF;
 
-	if (InputX::GetThumbRightX(0) <= 0)
-		rightplus = (rightdiff * -20.0f);
+		//中間値が1.0、最大値,最小値が0.0になる
+		rightdiff = -4 * pow(abs(InputX::GetThumbRightX(0)) - 0.5f, 2.0f) + 1;
+
+		if (InputX::GetThumbRightX(0) <= 0)
+			rightplus = (rightdiff * -MAX_RIGHT_DIFF);
+		else
+			rightplus = (rightdiff * MAX_RIGHT_DIFF);
+
+		topplus = InputX::GetThumbRightY(0) * -MAX_LEFT_DIFF;
+	}
+
+
+
+	if(false)
+	{
+		//線形補間 ※問題点あり
+		D3DXVECTOR3 endCameraPos = m_Jet->GetPosition() + m_Jet->LocalVector(m_Jet->GetQuaternion(), D3DXVECTOR3(rightplus, (topplus + 4.0f), forwardplus));
+
+		if (InputX::GetThumbRightX(0) != 0 || InputX::GetThumbRightY(0) != 0)
+			D3DXVec3Lerp(&m_Position, &m_Position, &endCameraPos, 0.5f);
+		else
+			m_Position = m_Jet->GetPosition() + m_Jet->LocalVector(m_Jet->GetQuaternion(), D3DXVECTOR3(0.0f, 4.0f, -MAX_FORWARD_DIFF));
+	}
 	else
-		rightplus = (rightdiff * 20.0f);
+	{
+		//そのまま代入
+		m_Position = m_Jet->GetPosition() +
+			m_Jet->LocalVector(
+				m_Jet->GetQuaternion(),
+				D3DXVECTOR3(rightplus, (topplus + 4.0f), forwardplus)
+			);
+	}
 
-	if (InputX::GetThumbRightY(0) <= 0)
-		topplus = (topdiff * -15.0f);
-	else
-		topplus = (topdiff * 10.0f);
-
-	//カメラの向きに基づいてビューマトリックスを更新
-	m_Position = m_Jet->GetPosition() + 
-				 m_Jet->LocalVector(
-					m_Jet->GetQuaternion(), 
-					D3DXVECTOR3(rightplus, (topplus + 4.0f), forwardplus)
-				 );
 
 	m_Target = m_Jet->GetPosition() + m_Jet->GetForwardQuaternion() * 2.0f;
 
 
 	m_UpMode = false;
 }
+
+
 
 //爆発時カメラ振動  第一引数:position,第二引数:大きい爆発距離,第三引数:小さい爆発距離
 void Camera::SetBomShake(D3DXVECTOR3 pos,float shortDistance,float maxDistance)
@@ -301,6 +330,7 @@ void Camera::SetBomShake(D3DXVECTOR3 pos,float shortDistance,float maxDistance)
 	D3DXVECTOR3 direction = m_Jet->GetPosition() - pos;
 	float length = D3DXVec3Length(&direction);
 
+	//距離に応じて振動
 	if (length < shortDistance)
 	{
 		Shake(0.3f, 1.0f);
@@ -314,6 +344,8 @@ void Camera::SetBomShake(D3DXVECTOR3 pos,float shortDistance,float maxDistance)
 		m_StopVibFlg = true;
 	}
 }
+
+
 
 void Camera::SetFog(float fogstart, float fogend, float fogheight,
 					D3DXCOLOR fog, D3DXCOLOR groundfog, D3DXCOLOR sky)

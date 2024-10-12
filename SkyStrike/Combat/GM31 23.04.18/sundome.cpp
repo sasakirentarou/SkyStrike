@@ -47,6 +47,12 @@ void SunDome::Draw()
 	Renderer::GetDeviceContext()->VSSetShader(m_VertexShader, NULL, 0);
 	Renderer::GetDeviceContext()->PSSetShader(m_PixelShader, NULL, 0);
 
+
+	//IBLへ送る
+	ID3D11ShaderResourceView* texture = m_Model->GetTexture();
+	Renderer::GetDeviceContext()->PSSetShaderResources(4, 1, &texture);
+
+
 	// マトリクス設定
 	D3DXMATRIX world, scale, rot, trans;
 	D3DXMatrixScaling(&scale, m_Scale.x, m_Scale.y, m_Scale.z);

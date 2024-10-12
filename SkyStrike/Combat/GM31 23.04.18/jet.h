@@ -82,7 +82,7 @@ private:
 	D3DXVECTOR3 m_TopVertex = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 
-	float m_Speed{};
+	float m_Speed{};					//速度
 
 
 	int m_DeathCount{};					//墜落用
@@ -96,6 +96,19 @@ private:
 	bool m_PitchLock{};					//ピッチ操作ロック
 	bool m_YawLock{};					//ヨー操作ロック
 	bool m_EngineLock{};				//エンジン操作ロック
+
+
+	//シェーダーパラメータ
+	bool m_SpecularEnable = false;		//スペキュラフラグ
+	bool m_EnvEnable = true;			//環境マッピングフラグ
+	bool m_LambertEnable = true;			//IBLフラグ
+	bool m_IBLEnable = true;			//IBLフラグ
+	float m_Shapness = 30.0f;			//鋭さ
+	float m_Brightness = 1.0f;			//明度
+	float m_Reflect = 0.05;				//反射度
+	float m_DissolveRange = 0.3f;		//ディゾルブ範囲
+	D3DXCOLOR m_DissolveColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f); //ディゾルブカラー
+
 public:
 	void Init();
 	void Uninit();
